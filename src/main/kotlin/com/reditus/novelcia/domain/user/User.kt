@@ -45,6 +45,23 @@ class User(
                 role = Role.USER,
             )
         }
+        fun fixture(
+            email: String = "test@a.c",
+            encodedPassword: String = "encodedPassword",
+            nickname: String = "nickname",
+            point: Int = 0,
+            memberShipExpiredAt: LocalDateTime = LocalDateTime.now(),
+            isDeleted: Boolean = false,
+            role: Role = Role.USER,
+        ) = User(
+            email = email,
+            encodedPassword = encodedPassword,
+            nickname = nickname,
+            point = point,
+            memberShipExpiredAt = memberShipExpiredAt,
+            isDeleted = isDeleted,
+            role = role,
+        )
     }
 }
 

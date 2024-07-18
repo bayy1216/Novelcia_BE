@@ -9,7 +9,7 @@ import jakarta.persistence.*
 @Table(
     uniqueConstraints = [
         UniqueConstraint(
-            columnNames = ["novel", "episode_id", "user_id"]
+            columnNames = ["novel_id", "episode_id", "user_id"]
         )
     ]
 )

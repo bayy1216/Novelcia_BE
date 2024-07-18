@@ -90,6 +90,33 @@ class Novel(
                 tags.forEach { addTags(it) }
             }
         }
+        fun fixture(
+            id: Long = 0L,
+            author: User = User.fixture(),
+            title: String = "title",
+            description: String = "description",
+            thumbnailImageUrl: String? = null,
+            viewCount: Long = 0,
+            likeCount: Long = 0,
+            favoriteCount: Long = 0,
+            alarmCount: Long = 0,
+            episodeCount: Long = 0,
+            isDeleted: Boolean = false,
+            readAuthority: ReadAuthority = ReadAuthority.ALL,
+        ) = Novel(
+            id = id,
+            author = author,
+            title = title,
+            description = description,
+            thumbnailImageUrl = thumbnailImageUrl,
+            viewCount = viewCount,
+            likeCount = likeCount,
+            favoriteCount = favoriteCount,
+            alarmCount = alarmCount,
+            episodeCount = episodeCount,
+            isDeleted = isDeleted,
+            readAuthority = readAuthority,
+        )
     }
 }
 
