@@ -51,7 +51,7 @@ class WebSecurityConfig(
 
         http.authorizeHttpRequests {
             it.requestMatchers("/api/test/**").permitAll()
-            it.anyRequest().authenticated()
+            it.anyRequest().permitAll() //TODO
         }
 
 
