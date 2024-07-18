@@ -6,6 +6,13 @@ import com.reditus.novelcia.domain.user.User
 import jakarta.persistence.*
 
 @Entity
+@Table(
+    uniqueConstraints = [
+        UniqueConstraint(
+            columnNames = ["episode_id", "user_id"]
+        )
+    ]
+)
 class EpisodeLike(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,

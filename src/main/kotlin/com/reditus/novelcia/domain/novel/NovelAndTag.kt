@@ -4,6 +4,13 @@ import com.reditus.novelcia.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
+@Table(
+    uniqueConstraints = [
+        UniqueConstraint(
+            columnNames = ["novel_id", "tag_id"]
+        )
+    ]
+)
 class NovelAndTag(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,

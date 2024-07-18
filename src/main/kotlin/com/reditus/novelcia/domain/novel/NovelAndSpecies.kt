@@ -5,6 +5,13 @@ import com.reditus.novelcia.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
+@Table(
+    uniqueConstraints = [
+        UniqueConstraint(
+            columnNames = ["novel_id", "novel_species_id"]
+        )
+    ]
+)
 class NovelAndSpecies(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
