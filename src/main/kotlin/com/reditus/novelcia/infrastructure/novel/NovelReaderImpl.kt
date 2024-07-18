@@ -18,4 +18,8 @@ class NovelReaderImpl(
     override fun getTagsByTagNamesIn(tagNames: List<String>): List<Tag> {
         return tagRepository.findAllByNameIn(tagNames)
     }
+
+    override fun getAllTags(): List<Tag> {
+        return tagRepository.findAll()
+    }
 }
