@@ -17,6 +17,8 @@ class Novel(
     @Column(nullable = false)
     var title: String,
 
+    var thumbnailImageUrl: String?,
+
     @Column(nullable = false)
     var viewCount: Long,
 
