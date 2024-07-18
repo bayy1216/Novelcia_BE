@@ -1,0 +1,73 @@
+spring: # test profile
+  application:
+    name: novelcia-api-server
+  config:
+    import: optional:configserver:${CONFIG_SERVER:http://localhost:8888}
+    name: novelcia-api-server
+  datasource:
+    url: "jdbc:h2:mem:novelcia;"
+    username: "sa"
+    password: ""
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  sql.init.mode: never
+  flyway:
+    enabled: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  data:
+    redis: # redis auto-config ?? (RedisProperties ? ???? ??)
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  lifecycle:
+    timeout-per-shutdown-phase: 15s
+  task:
+    execution:
+      pool:
+        core-size: 8
+        max-size: 16
+logging:
+  level.org.hibernate:
+    orm.jdbc.bind: trace
+    SQL: debug
+springdoc:
+  default-consumes-media-type: application/json;charset=UTF-8
+  default-produces-media-type: application/json;charset=UTF-8
+server:
+  shutdown: graceful
+  tomcat:
+    connection-timeout: 2s
+    keep-alive-timeout: 15s
+---
+spring: # local profile
+  config:
+    activate:
+      on-profile: local
+  datasource:
+    url: jdbc:mysql://localhost:3306/novelcia?createDatabaseIfNotExist=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+      defer-datasource-initialization: false
+  sql.init.mode: never
+  h2.console.enabled: false
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+    fail-on-missing-locations: true
+    baseline-version: 1
