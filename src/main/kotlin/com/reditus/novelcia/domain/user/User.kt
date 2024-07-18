@@ -20,10 +20,10 @@ class User(
     var nickname: String,
 
     @Column(nullable = false)
-    var point : Int,
+    var point: Int,
 
     @Column(nullable = false)
-    var memberShipExpiredAt : LocalDateTime,
+    var memberShipExpiredAt: LocalDateTime,
 
     @Column(nullable = false)
     var isDeleted: Boolean,
@@ -32,9 +32,38 @@ class User(
     val role: Role,
 ) : BaseTimeEntity() {
 
-
+    companion object {
+        fun create(command: UserCommand.Create): User {
+            require(command.password == null && command.encodedPassword != null)
+            return User(
+                email = command.email,
+                encodedPassword = command.encodedPassword,
+                nickname = command.nickname,
+                point = 0,
+                memberShipExpiredAt = LocalDateTime.now(),
+                isDeleted = false,
+                role = Role.USER,
+            )
+        }
+    }
 }
 
 enum class Role {
     USER, ADMIN
+}
+
+class UserCommand {
+    class Create(
+        val email: String,
+        val password: String?,
+        val nickname: String,
+        val encodedPassword: String? = null,
+    ) {
+        fun copyWith(encodedPassword: String) = Create(
+            email = email,
+            password = null,
+            nickname = nickname,
+            encodedPassword = encodedPassword,
+        )
+    }
 }

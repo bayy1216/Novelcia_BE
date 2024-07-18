@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 class TagReq {
     @Schema(name = "TagReq.Create")
     data class Create(
+        @Schema(example = "태그1")
         val name: String,
         @Schema(example = "#FFFFFF")
         val colorHexCode: String,
