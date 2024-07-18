@@ -10,9 +10,18 @@ class TagService(
     private val novelWriter: NovelWriter,
 ){
     @Transactional
-    fun saveTags(commands: List<TagCommand.Create>) {
-        val tags = commands.map { Tag.create(it) }
-        novelWriter.saveTags(tags)
+    fun upsertTags(commands: List<TagCommand.Upsert>) {
+        val existTags = novelReader.getTagsByTagNamesIn(commands.map { it.name })
+        val newTags = mutableListOf<Tag>()
+        commands.forEach { upsertCommand ->
+            val exitsTag = existTags.find { tag -> tag.name == upsertCommand.name }
+            if(exitsTag != null) {
+                exitsTag.update(upsertCommand)
+            } else {
+                newTags.add(Tag.create(upsertCommand))
+            }
+        }
+        novelWriter.saveTags(newTags)
     }
 
     @Transactional(readOnly = true)

@@ -15,10 +15,10 @@ class TagController(
     fun getAllTags(): List<TagModel> = tagService.getAllTags()
 
     @PostMapping("/api/tags")
-    fun createTag(
+    fun upsertTags(
         @RequestBody req: TagReq.CreateTags,
     ) {
-        tagService.saveTags(req.toCommands())
+        tagService.upsertTags(req.toCommands())
     }
 
 }
