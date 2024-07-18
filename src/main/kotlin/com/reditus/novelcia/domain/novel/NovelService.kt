@@ -15,7 +15,13 @@ class NovelService(
     @Transactional
     fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Register): Novel {
         val author = userReader.getReferenceById(loginUserId.value)
-        val novel = Novel.create(author, command)
+        val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
+            if(it.size != command.tagNames.size) {
+                throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
+            }
+            it
+        }
+        val novel = Novel.create(author, command, tags)
         return novelWriter.save(novel)
     }
 

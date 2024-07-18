@@ -40,6 +40,9 @@ class Novel(
 
     @Enumerated(EnumType.STRING)
     var readAuthority: ReadAuthority,
+
+    @OneToMany(mappedBy = "novel", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val novelAndTags: MutableList<NovelAndTag> = mutableListOf(),
 ) : BaseTimeEntity() {
 
     val authorId: Long
@@ -51,8 +54,13 @@ class Novel(
         thumbnailImageUrl = command.thumbnailImageUrl
     }
 
+    fun addTags(tag: Tag) {
+        val newNovelAndTag = NovelAndTag(novel = this, tag = tag)
+        novelAndTags.add(newNovelAndTag)
+    }
+
     companion object{
-        fun create(author: User, command: NovelCommand.Register): Novel {
+        fun create(author: User, command: NovelCommand.Register,tags: List<Tag>): Novel {
             return Novel(
                 author = author,
                 title = command.title,
@@ -64,8 +72,10 @@ class Novel(
                 alarmCount = 0,
                 episodeCount = 0,
                 isDeleted = false,
-                readAuthority = ReadAuthority.ALL
-            )
+                readAuthority = ReadAuthority.ALL,
+            ).apply {
+                tags.forEach { addTags(it) }
+            }
         }
     }
 }
@@ -79,7 +89,7 @@ class NovelCommand {
         val title: String,
         val description: String,
         val thumbnailImageUrl: String?,
-        val tags: List<String>,
+        val tagNames: List<String>,
     )
 
     class Update(

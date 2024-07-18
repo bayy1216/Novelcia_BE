@@ -11,5 +11,8 @@ class Tag(
 
     @Column(nullable = false)
     var name: String,
+
+    @Column
+    var colorHexCode: String,
 ) {
 }
