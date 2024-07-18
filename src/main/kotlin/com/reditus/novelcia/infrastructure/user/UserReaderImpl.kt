@@ -9,6 +9,10 @@ import org.springframework.stereotype.Repository
 class UserReaderImpl(
     private val userRepository: UserRepository
 ) : UserReader {
+    override fun getReferenceById(id: Long): User {
+        return userRepository.getReferenceById(id)
+    }
+
     override fun findByEmail(email: String): User? {
         return userRepository.findByEmail(email)
     }
