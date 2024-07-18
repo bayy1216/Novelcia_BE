@@ -31,8 +31,10 @@ class Novel(
     @Column(nullable = false)
     var favoriteCount: Long,
 
+    @Column(nullable = false)
     var alarmCount: Long,
 
+    @Column(nullable = false)
     var episodeCount: Long,
 
     @Column(nullable = false)

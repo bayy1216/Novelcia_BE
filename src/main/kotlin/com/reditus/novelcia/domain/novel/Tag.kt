@@ -1,6 +1,7 @@
 package com.reditus.novelcia.domain.novel
 
 
+import com.reditus.novelcia.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
@@ -14,7 +15,7 @@ class Tag(
 
     @Column
     var colorHexCode: String,
-) {
+) : BaseTimeEntity() {
     fun update(command: TagCommand.Upsert) {
         name = command.name
         colorHexCode = command.colorHexCode

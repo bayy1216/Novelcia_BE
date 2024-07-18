@@ -1,5 +1,6 @@
 package com.reditus.novelcia.domain.novel
 
+import com.reditus.novelcia.domain.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity
@@ -8,12 +9,8 @@ class Species(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
 
-    @Enumerated
-    var speciesType: SpeciesType,
-) {
+    @Column(nullable = false)
+    var name: String,
+) : BaseTimeEntity() {
 
-}
-
-enum class SpeciesType {
-    PLUS, MONOPOLY, ORIGINAL
 }

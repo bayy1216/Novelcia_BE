@@ -23,6 +23,9 @@ class Episode(
     @Column(nullable = false)
     var isDeleted: Boolean,
 
+    @Column(nullable = false)
+    var authorComment: String,
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "novel_id", nullable = false)
     val novel: Novel,
