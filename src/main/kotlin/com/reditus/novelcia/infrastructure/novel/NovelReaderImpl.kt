@@ -1,5 +1,6 @@
 package com.reditus.novelcia.infrastructure.novel
 
+import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.domain.CursorRequest
@@ -28,25 +29,32 @@ class NovelReaderImpl(
         return tagRepository.findAll()
     }
 
-    override fun getNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest) : List<Novel>{
+    override fun getNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel> {
         val query = jpaQueryFactory
             .select(novel).from(novel)
             .where(
-                novel.createdAt.lt(
-                    JPAExpressions.select(novel.createdAt)
-                        .from(novel)
-                        .where(novel.id.eq(cursorRequest.cursorId))
-                ).or(
-                    novel.createdAt.eq(
-                        JPAExpressions.select(novel.createdAt)
-                            .from(novel)
-                            .where(novel.id.eq(cursorRequest.cursorId))
-                    ).and(novel.id.lt(cursorRequest.cursorId))
-                )
+                cursorWhereExpression(cursorRequest)
             )
             .orderBy(novel.createdAt.desc(), novel.id.desc())
             .limit(cursorRequest.size.toLong())
             .fetch()
         return query
+    }
+
+    private fun cursorWhereExpression(cursorRequest: CursorRequest): BooleanExpression? {
+        if(cursorRequest.cursorId == null){
+            return null
+        }
+        return novel.createdAt.lt(
+            JPAExpressions.select(novel.createdAt)
+                .from(novel)
+                .where(novel.id.eq(cursorRequest.cursorId))
+        ).or(
+            novel.createdAt.eq(
+                JPAExpressions.select(novel.createdAt)
+                    .from(novel)
+                    .where(novel.id.eq(cursorRequest.cursorId))
+            ).and(novel.id.lt(cursorRequest.cursorId))
+        )
     }
 }

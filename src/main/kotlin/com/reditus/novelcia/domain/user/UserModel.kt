@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 class UserModel(
     val id: Long,
     val email: String?,
-    val nickname: String?,
+    val nickname: String,
     val point : Int,
     val memberShipExpiredAt : LocalDateTime,
     val role: Role

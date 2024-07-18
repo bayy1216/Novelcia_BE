@@ -1,6 +1,8 @@
 package com.reditus.novelcia.interfaces.novel
 
+import com.reditus.novelcia.domain.CursorRequest
 import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.novel.NovelQueryService
 import com.reditus.novelcia.domain.novel.NovelService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -10,7 +12,21 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class NovelController(
     private val novelService: NovelService,
+    private val novelQueryService: NovelQueryService,
 ) {
+
+    @Operation(summary = "소설 cursor 조회")
+    @GetMapping("/api/novels")
+    fun getNovels(
+        @RequestParam cursorId: Long?,
+        @RequestParam size: Int = 20,
+    ): List<NovelRes.Meta> {
+        val models = novelQueryService.getNovelModelsByCursor(
+            CursorRequest(cursorId, size)
+        )
+        return models.map(NovelRes.Meta::from)
+    }
+
     @Operation(summary = "소설 생성")
     @PostMapping("/api/novels")
     fun createNovel(
