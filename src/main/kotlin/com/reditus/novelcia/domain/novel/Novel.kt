@@ -48,10 +48,21 @@ class Novel(
     val authorId: Long
         get() = author.id
 
-    fun update(command: NovelCommand.Update) {
+    val tags : List<Tag>
+        get() = novelAndTags.map { it.tag }
+
+    fun update(command: NovelCommand.Update, tags: List<Tag>) {
         title = command.title
         description = command.description
         thumbnailImageUrl = command.thumbnailImageUrl
+        tags.forEach {tag->
+            val existNovelAndTag: NovelAndTag? = novelAndTags.find { it.tag == tag }
+            if(existNovelAndTag == null) {
+                addTags(tag)
+            }else{
+                novelAndTags.remove(existNovelAndTag)
+            }
+        }
     }
 
     fun addTags(tag: Tag) {
@@ -60,7 +71,7 @@ class Novel(
     }
 
     companion object{
-        fun create(author: User, command: NovelCommand.Register,tags: List<Tag>): Novel {
+        fun create(author: User, command: NovelCommand.Create, tags: List<Tag>): Novel {
             return Novel(
                 author = author,
                 title = command.title,
@@ -85,7 +96,7 @@ enum class ReadAuthority {
 }
 
 class NovelCommand {
-    class Register(
+    class Create(
         val title: String,
         val description: String,
         val thumbnailImageUrl: String?,
@@ -96,6 +107,6 @@ class NovelCommand {
         val title: String,
         val description: String,
         val thumbnailImageUrl: String?,
-        val tags: List<String>,
+        val tagNames: List<String>,
     )
 }

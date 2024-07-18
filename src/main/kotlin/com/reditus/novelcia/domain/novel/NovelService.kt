@@ -13,7 +13,7 @@ class NovelService(
     private val novelWriter: NovelWriter,
 ) {
     @Transactional
-    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Register): Novel {
+    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Novel {
         val author = userReader.getReferenceById(loginUserId.value)
         val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
             if(it.size != command.tagNames.size) {
@@ -35,7 +35,13 @@ class NovelService(
         if(novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
         }
-        novel.update(command)
+        val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
+            if(it.size != command.tagNames.size) {
+                throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
+            }
+            it
+        }
+        novel.update(command, tags)
         return novelWriter.save(novel)
     }
 

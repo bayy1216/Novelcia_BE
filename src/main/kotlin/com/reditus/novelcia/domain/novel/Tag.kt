@@ -15,4 +15,29 @@ class Tag(
     @Column
     var colorHexCode: String,
 ) {
+    fun update(command: TagCommand.Update) {
+        name = command.name
+        colorHexCode = command.colorHexCode
+    }
+
+    companion object{
+        fun create(command: TagCommand.Create): Tag {
+            return Tag(
+                name = command.name,
+                colorHexCode = command.colorHexCode,
+            )
+        }
+    }
+}
+
+class TagCommand {
+    data class Create(
+        val name: String,
+        val colorHexCode: String,
+    )
+
+    data class Update(
+        val name: String,
+        val colorHexCode: String,
+    )
 }
