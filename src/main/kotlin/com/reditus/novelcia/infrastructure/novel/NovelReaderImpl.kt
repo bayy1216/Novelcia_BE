@@ -33,7 +33,8 @@ class NovelReaderImpl(
         val query = jpaQueryFactory
             .select(novel).from(novel)
             .where(
-                cursorWhereExpression(cursorRequest)
+                cursorWhereIdEqExpression(cursorRequest),
+                novel.isDeleted.eq(false)
             )
             .orderBy(novel.createdAt.desc(), novel.id.desc())
             .limit(cursorRequest.size.toLong())
@@ -41,7 +42,7 @@ class NovelReaderImpl(
         return query
     }
 
-    private fun cursorWhereExpression(cursorRequest: CursorRequest): BooleanExpression? {
+    private fun cursorWhereIdEqExpression(cursorRequest: CursorRequest): BooleanExpression? {
         if(cursorRequest.cursorId == null){
             return null
         }
