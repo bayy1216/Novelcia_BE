@@ -4,8 +4,10 @@ import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.NovelWriter
 import com.reditus.novelcia.domain.novel.Tag
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
+@Transactional
 class NovelWriterImpl(
     private val novelRepository: NovelRepository,
     private val tagRepository: TagRepository,

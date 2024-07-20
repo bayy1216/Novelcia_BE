@@ -2,8 +2,10 @@ package com.reditus.novelcia.infrastructure.episode
 
 import com.reditus.novelcia.domain.episode.EpisodeWriter
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
+@Transactional
 class EpisodeWriterImpl(
     private val episodeRepository: EpisodeRepository
 ) : EpisodeWriter {

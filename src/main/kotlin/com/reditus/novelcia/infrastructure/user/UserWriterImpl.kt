@@ -4,8 +4,10 @@ import com.reditus.novelcia.domain.PositiveInt
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.UserWriter
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
+@Transactional
 class UserWriterImpl(
     private val userRepository: UserRepository
 ) : UserWriter {

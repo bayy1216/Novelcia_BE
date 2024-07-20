@@ -33,7 +33,7 @@ class NovelService(
         loginUserId: LoginUserId,
         novelId: Long,
         command: NovelCommand.Update,
-    ): Novel {
+    ) {
         val novel = novelReader.getNovelById(novelId)
         if(novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
@@ -45,7 +45,6 @@ class NovelService(
             it
         }
         novel.update(command, tags)
-        return novelWriter.save(novel)
     }
 
     @Transactional
