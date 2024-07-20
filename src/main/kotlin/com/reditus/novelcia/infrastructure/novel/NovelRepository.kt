@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param
 
 interface NovelRepository : JpaRepository<Novel, Long> {
 
-    @Modifying
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Novel n SET n.isDeleted = true WHERE n.id = :novelId")
     fun softDelete(@Param("novelId")novelId: Long) : Int
 }

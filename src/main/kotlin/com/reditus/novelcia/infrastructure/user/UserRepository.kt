@@ -11,7 +11,7 @@ interface UserRepository : JpaRepository<User, Long> {
     fun existsByNickname(nickname: String): Boolean
     fun existsByEmail(email: String): Boolean
 
-    @Modifying(clearAutomatically = true)
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE User u SET u.point = u.point + :point WHERE u.id = :userId")
     fun chargePoint(
         @Param("userId")
