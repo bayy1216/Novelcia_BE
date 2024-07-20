@@ -53,21 +53,30 @@ class Novel(
     val tags : List<Tag>
         get() = novelAndTags.map { it.tag }
 
-    fun update(command: NovelCommand.Update, tags: List<Tag>) {
+    /**
+     * 소설 정보 수정 - PUT과 같은 대치의 역할을 한다.
+     * - 기존 태그에 없다면 추가한다.
+     * - update 인자의 태그가 기존 태그에 없다면 추가한다
+     * - update 인자의 태그가 기존 태그에 있다면 기존 태그에서 제거한다
+     */
+    fun update(command: NovelCommand.Update, updateTagsSet: Set<Tag>) {
         title = command.title
         description = command.description
         thumbnailImageUrl = command.thumbnailImageUrl
-        tags.forEach {tag->
-            val existNovelAndTag: NovelAndTag? = novelAndTags.find { it.tag == tag }
-            if(existNovelAndTag == null) {
-                addTags(tag)
-            }else{
-                novelAndTags.remove(existNovelAndTag)
-            }
+
+        val currentTagsSet = tags.toSet()
+
+        val toAddTags = updateTagsSet.minus(currentTagsSet)
+        val toRemoveTags = currentTagsSet.minus(updateTagsSet)
+
+        toAddTags.forEach { addNovelAndTag(it) }
+        toRemoveTags.forEach { removeTag->
+            val novelAndTag = novelAndTags.find { it.tag == removeTag }
+            novelAndTags.remove(novelAndTag)
         }
     }
 
-    fun addTags(tag: Tag) {
+    fun addNovelAndTag(tag: Tag) {
         val newNovelAndTag = NovelAndTag(novel = this, tag = tag)
         novelAndTags.add(newNovelAndTag)
     }
@@ -87,7 +96,7 @@ class Novel(
                 isDeleted = false,
                 readAuthority = ReadAuthority.ALL,
             ).apply {
-                tags.forEach { addTags(it) }
+                tags.forEach { addNovelAndTag(it) }
             }
         }
         fun fixture(

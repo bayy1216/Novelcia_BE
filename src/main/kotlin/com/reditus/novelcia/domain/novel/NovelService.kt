@@ -38,7 +38,9 @@ class NovelService(
         if(novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
         }
-        val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
+        val tags = novelReader.getTagsByTagNamesIn(command.tagNames)
+            .toSet()
+            .let {
             if(it.size != command.tagNames.size) {
                 throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
             }

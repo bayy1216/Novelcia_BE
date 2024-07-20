@@ -28,6 +28,14 @@ class Tag(
                 colorHexCode = command.colorHexCode,
             )
         }
+
+        fun fixture(
+            name: String = "태그",
+            colorHexCode: String = "#000000",
+        ) = Tag(
+            name=name,
+            colorHexCode=colorHexCode,
+        )
     }
 }
 
