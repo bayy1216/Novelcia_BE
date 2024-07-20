@@ -30,4 +30,22 @@ class Episode(
     @JoinColumn(name = "novel_id", nullable = false)
     val novel: Novel,
 ) : BaseTimeEntity() {
+
+    companion object{
+        fun fixture(
+            title: String = "title",
+            content: String = "content",
+            episodeNumber: Int = 1,
+            isDeleted: Boolean = false,
+            authorComment: String = "authorComment",
+            novel: Novel,
+        ) = Episode(
+            title = title,
+            content = content,
+            episodeNumber = episodeNumber,
+            isDeleted = isDeleted,
+            authorComment = authorComment,
+            novel = novel
+        )
+    }
 }

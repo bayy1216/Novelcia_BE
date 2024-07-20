@@ -24,7 +24,7 @@ class NovelReaderImplTest @Autowired constructor(
 ) {
 
     @Test
-    fun getNovelsByCursorOrderByCreatedAt() {
+    fun `최근 생성된 게시글 cursor 페이징이 적상작동한다`() {
         val user = User.fixture()
         userRepository.save(user)
         var novel5Id: Long = 0

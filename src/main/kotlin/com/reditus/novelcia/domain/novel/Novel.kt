@@ -92,7 +92,7 @@ class Novel(
         }
         fun fixture(
             id: Long = 0L,
-            author: User = User.fixture(),
+            author: User,
             title: String = "title",
             description: String = "description",
             thumbnailImageUrl: String? = null,
