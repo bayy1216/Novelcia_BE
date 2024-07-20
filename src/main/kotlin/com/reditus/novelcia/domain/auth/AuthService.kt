@@ -2,8 +2,8 @@ package com.reditus.novelcia.domain.auth
 
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.UserCommand
-import com.reditus.novelcia.domain.user.UserReader
-import com.reditus.novelcia.domain.user.UserWriter
+import com.reditus.novelcia.domain.user.port.UserReader
+import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.global.exception.ElementConflictException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service

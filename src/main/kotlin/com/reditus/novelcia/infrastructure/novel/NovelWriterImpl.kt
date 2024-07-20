@@ -1,7 +1,7 @@
 package com.reditus.novelcia.infrastructure.novel
 
 import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.novel.NovelWriter
+import com.reditus.novelcia.domain.novel.port.NovelWriter
 import com.reditus.novelcia.domain.novel.Tag
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional

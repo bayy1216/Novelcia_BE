@@ -2,7 +2,7 @@ package com.reditus.novelcia.infrastructure.user
 
 import com.reditus.novelcia.domain.PositiveInt
 import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.domain.user.UserWriter
+import com.reditus.novelcia.domain.user.port.UserWriter
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 

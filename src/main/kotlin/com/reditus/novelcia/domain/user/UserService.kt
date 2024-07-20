@@ -2,6 +2,8 @@ package com.reditus.novelcia.domain.user
 
 import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.PositiveInt
+import com.reditus.novelcia.domain.user.port.UserReader
+import com.reditus.novelcia.domain.user.port.UserWriter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

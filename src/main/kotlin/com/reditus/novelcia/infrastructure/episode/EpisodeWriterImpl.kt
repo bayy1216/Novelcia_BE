@@ -1,6 +1,6 @@
 package com.reditus.novelcia.infrastructure.episode
 
-import com.reditus.novelcia.domain.episode.EpisodeWriter
+import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 

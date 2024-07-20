@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain.episode
+package com.reditus.novelcia.domain.episode.port
 
 interface EpisodeWriter {
     fun delete(episodeId: Long)

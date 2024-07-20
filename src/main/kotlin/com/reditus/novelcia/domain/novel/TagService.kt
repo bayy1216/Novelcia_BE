@@ -1,5 +1,7 @@
 package com.reditus.novelcia.domain.novel
 
+import com.reditus.novelcia.domain.novel.port.NovelReader
+import com.reditus.novelcia.domain.novel.port.NovelWriter
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 

@@ -1,7 +1,7 @@
 package com.reditus.novelcia.infrastructure.episode
 
 import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.EpisodeWriter
+import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 

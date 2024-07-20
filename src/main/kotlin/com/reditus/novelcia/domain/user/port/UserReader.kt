@@ -1,4 +1,6 @@
-package com.reditus.novelcia.domain.user
+package com.reditus.novelcia.domain.user.port
+
+import com.reditus.novelcia.domain.user.User
 
 interface UserReader {
     fun getReferenceById(id: Long): User

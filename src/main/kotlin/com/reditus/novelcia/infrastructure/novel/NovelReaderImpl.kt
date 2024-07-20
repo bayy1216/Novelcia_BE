@@ -5,7 +5,7 @@ import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.domain.CursorRequest
 import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.novel.NovelReader
+import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.QNovel.novel
 import com.reditus.novelcia.domain.novel.Tag
 import com.reditus.novelcia.infrastructure.findByIdOrThrow

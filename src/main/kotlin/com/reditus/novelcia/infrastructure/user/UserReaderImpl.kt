@@ -1,7 +1,7 @@
 package com.reditus.novelcia.infrastructure.user
 
 import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.domain.user.UserReader
+import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import org.springframework.stereotype.Repository
 

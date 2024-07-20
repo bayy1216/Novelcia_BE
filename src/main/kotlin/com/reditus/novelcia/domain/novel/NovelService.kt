@@ -1,10 +1,11 @@
 package com.reditus.novelcia.domain.novel
 
 import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.episode.EpisodeWriter
-import com.reditus.novelcia.domain.user.UserReader
+import com.reditus.novelcia.domain.novel.port.NovelReader
+import com.reditus.novelcia.domain.novel.port.NovelWriter
+import com.reditus.novelcia.domain.novel.usecase.NovelDeleteUseCase
+import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
-import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -56,22 +57,5 @@ class NovelService(
             throw NoPermissionException("해당 소설을 삭제할 권한이 없습니다.")
         }
         novelDeleteUseCase(novel)
-    }
-}
-
-@Component
-class NovelDeleteUseCase(
-    private val novelWriter: NovelWriter,
-    private val episodeWriter: EpisodeWriter,
-) {
-    /**
-     * 소설과 소설의 모든 에피소드를 삭제합니다.
-     * soft delete를 통해 삭제마크를 남깁니다.
-     * - episode와 관련된 comment는 삭제하지 않습니다.
-     */
-    @Transactional
-    operator fun invoke(novel: Novel) {
-        novelWriter.delete(novel.id)
-        episodeWriter.deleteAllByNovelId(novel.id)
     }
 }
