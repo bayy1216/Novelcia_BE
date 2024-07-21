@@ -31,7 +31,6 @@ spring: # test profile
   session:
     redis:
       namespace: novelcia
-      flush-mode:
   lifecycle:
     timeout-per-shutdown-phase: 15s
   task:

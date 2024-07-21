@@ -4,8 +4,10 @@ import com.reditus.novelcia.domain.CursorRequest
 import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.novel.NovelQueryService
 import com.reditus.novelcia.domain.novel.NovelService
+import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Novel")
@@ -31,9 +33,10 @@ class NovelController(
     @PostMapping("/api/novels")
     fun createNovel(
         @RequestBody req: NovelReq.Create,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
         novelService.registerNovel(
-            loginUserId = LoginUserId(1),
+            loginUserId = loginUserDetails.loginUserId,
             command = req.toCommand(),
         )
     }
@@ -43,9 +46,10 @@ class NovelController(
     fun updateNovel(
         @PathVariable novelId: Long,
         @RequestBody req: NovelReq.Update,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
         novelService.updateNovel(
-            loginUserId = LoginUserId(1),
+            loginUserId = loginUserDetails.loginUserId,
             novelId = novelId,
             command = req.toCommand(),
         )
@@ -55,9 +59,10 @@ class NovelController(
     @DeleteMapping("/api/novels/{novelId}")
     fun deleteNovel(
         @PathVariable novelId: Long,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
         novelService.deleteNovel(
-            loginUserId = LoginUserId(1),
+            loginUserId = loginUserDetails.loginUserId,
             novelId = novelId,
         )
     }

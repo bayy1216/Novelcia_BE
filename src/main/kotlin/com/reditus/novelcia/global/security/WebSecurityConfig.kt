@@ -5,6 +5,7 @@ import com.reditus.novelcia.global.controller.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
@@ -16,8 +17,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.session.web.http.CookieSerializer
-import org.springframework.session.web.http.DefaultCookieSerializer
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -56,9 +55,17 @@ class WebSecurityConfig(
         http.addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         http.authorizeHttpRequests {
-            it.requestMatchers("/api/test/**").permitAll()
-            it.requestMatchers("/api/auth/**").permitAll()
-            it.requestMatchers("/private/**").hasRole("ADMIN")
+            it.requestMatchers(
+                "/api/test/**",
+                "/api/auth/**",
+            ).permitAll()
+
+            it.requestMatchers(
+                HttpMethod.GET,
+                "/api/tags",
+            ).permitAll()
+
+            it.requestMatchers("/api/admin/**").hasRole("ADMIN")
             it.anyRequest().authenticated()
         }
 

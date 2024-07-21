@@ -1,6 +1,5 @@
 package com.reditus.novelcia.interfaces.user
 
-import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.PositiveInt
 import com.reditus.novelcia.domain.user.UserService
 import com.reditus.novelcia.global.security.LoginUserDetails
@@ -26,9 +25,12 @@ class UserController(
 
     @Operation(summary = "로그인한 사용자 포인트 충전")
     @PostMapping("/api/user/charge")
-    fun chargePoint() {
+    fun chargePoint(
+
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails
+    ) {
         userService.chargePoint(
-            LoginUserId(1),
+            loginUserDetails.loginUserId,
             PositiveInt(1000)
         )
     }
