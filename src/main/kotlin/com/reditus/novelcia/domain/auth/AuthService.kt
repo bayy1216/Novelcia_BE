@@ -2,6 +2,7 @@ package com.reditus.novelcia.domain.auth
 
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.UserCommand
+import com.reditus.novelcia.domain.user.UserModel
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.global.exception.ElementConflictException
@@ -26,5 +27,14 @@ class AuthService(
         )
         val user = User.create(encodedCommand)
         userWriter.save(user)
+    }
+
+    @Transactional(readOnly = true)
+    fun emailSignIn(email: String, password: String): UserModel {
+        val user = userReader.findByEmail(email) ?: throw ElementConflictException("가입되지 않은 이메일입니다.")
+        if(!bCryptPasswordEncoder.matches(password, user.encodedPassword)) {
+            throw ElementConflictException("비밀번호가 일치하지 않습니다.")
+        }
+        return UserModel.from(user)
     }
 }

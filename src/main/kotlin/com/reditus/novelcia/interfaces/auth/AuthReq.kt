@@ -17,4 +17,11 @@ class AuthReq {
             nickname = nickname,
         )
     }
+
+    data class EmailSignIn(
+        @Schema(example = "test@a.c")
+        val email: String,
+        @Schema(example = "test")
+        val password: String,
+    )
 }

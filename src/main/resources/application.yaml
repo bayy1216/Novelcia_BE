@@ -28,6 +28,10 @@ spring: # test profile
     redis: # redis auto-config ?? (RedisProperties ? ???? ??)
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+  session:
+    redis:
+      namespace: novelcia
+      flush-mode:
   lifecycle:
     timeout-per-shutdown-phase: 15s
   task:
@@ -43,6 +47,11 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
 server:
+  servlet:
+    session:
+      cookie:
+        name: NOVELCIA_SESSION
+        max-age: 3600 # 1 hour
   shutdown: graceful
   tomcat:
     connection-timeout: 2s
