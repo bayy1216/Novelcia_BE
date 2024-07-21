@@ -6,13 +6,10 @@ import jakarta.servlet.http.HttpSession
 
 
 fun HttpSession.getLoginUserDetails(): LoginUserDetails? {
-    val userId = this.getAttribute("userId") as Long?
-    val role = this.getAttribute("role") as String?
-    return if (userId != null && role != null) {
-        LoginUserDetails(userId, Role.valueOf(role))
-    } else {
-        null
-    }
+    val userId = this.getAttribute("userId")?.toString()?.toLongOrNull()
+        ?: return null
+    val role = this.getAttribute("role") as String
+    return LoginUserDetails(userId, Role.valueOf(role))
 }
 
 

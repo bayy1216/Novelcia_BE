@@ -5,6 +5,8 @@ import com.reditus.novelcia.global.controller.ApiResponse
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
@@ -133,5 +135,10 @@ class WebSecurityConfig(
                 """.trimIndent()
         )
         return roleHierarchy
+    }
+
+    @Bean
+    fun springSessionDefaultRedisSerializer(): RedisSerializer<Any> {
+        return GenericJackson2JsonRedisSerializer(objectMapper)
     }
 }

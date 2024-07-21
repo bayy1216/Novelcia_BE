@@ -16,9 +16,8 @@ class SessionFilter : OncePerRequestFilter() {
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val session = request.session
-
-        session.getLoginUserDetails()?.let {
+        val session = request.getSession(false) // 세션이 없으면 null 반환
+        session?.getLoginUserDetails()?.let {
             SecurityContextHolder.getContext().authentication = it.toAuthenticationToken()
         }
 
