@@ -14,7 +14,7 @@ class Episode(
     @Column(nullable = false)
     var title: String,
 
-    @Column(nullable = false, length = 16383)
+    @Column(nullable = false, length = 12000)
     var content: String,
 
     @Column(nullable = false)

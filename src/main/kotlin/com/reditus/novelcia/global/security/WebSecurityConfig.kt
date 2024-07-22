@@ -57,15 +57,10 @@ class WebSecurityConfig(
         http.addFilterBefore(sessionFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         http.authorizeHttpRequests {
-            it.requestMatchers(
-                "/api/test/**",
-                "/api/auth/**",
-            ).permitAll()
+            it.requestMatchers("/api/test/**").permitAll()
+            it.requestMatchers("/api/auth/**").permitAll()
 
-            it.requestMatchers(
-                HttpMethod.GET,
-                "/api/tags",
-            ).permitAll()
+            it.requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
 
             it.requestMatchers("/api/admin/**").hasRole("ADMIN")
             it.anyRequest().authenticated()
