@@ -29,13 +29,13 @@ class NovelController(
         return models.map(NovelRes.Meta::from)
     }
 
-    @Operation(summary = "소설 생성")
+    @Operation(summary = "소설 생성", description = "소설 생성 후 ID 반환")
     @PostMapping("/api/novels")
     fun createNovel(
         @RequestBody req: NovelReq.Create,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
-    ) {
-        novelService.registerNovel(
+    ) :Long {
+        return novelService.registerNovel(
             loginUserId = loginUserDetails.loginUserId,
             command = req.toCommand(),
         )

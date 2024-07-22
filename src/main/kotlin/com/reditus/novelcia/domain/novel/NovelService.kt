@@ -17,7 +17,7 @@ class NovelService(
     private val novelDeleteUseCase: NovelDeleteUseCase,
 ) {
     @Transactional
-    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Novel {
+    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long {
         val author = userReader.getReferenceById(loginUserId.value)
         val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
             if(it.size != command.tagNames.size) {
@@ -26,7 +26,8 @@ class NovelService(
             it
         }
         val novel = Novel.create(author, command, tags)
-        return novelWriter.save(novel)
+        novelWriter.save(novel)
+        return novel.id
     }
 
     @Transactional
