@@ -8,7 +8,12 @@ import com.reditus.novelcia.domain.user.User
 import jakarta.persistence.*
 
 @Entity
-@Table(name = "novel_episode")
+@Table(
+    name = "novel_episode",
+    indexes = [
+        Index(name = "idx__novel_id__episode_number", columnList = "novel_id, episode_number"),
+    ]
+)
 class Episode(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -49,6 +54,20 @@ class Episode(
     }
 
     companion object{
+        fun create(
+            novel: Novel,
+            episodeNumber: Int,
+            command: EpisodeCommand.Create,
+        ) = Episode(
+            title = command.title,
+            content = command.content,
+            episodeNumber = episodeNumber,
+            authorComment = command.authorComment,
+            readAuthority = command.readAuthority,
+            isDeleted = false,
+            novel = novel,
+        )
+
         fun fixture(
             title: String = "title",
             content: String = "content",
@@ -67,4 +86,13 @@ class Episode(
             novel = novel
         )
     }
+}
+
+class EpisodeCommand{
+    class Create(
+        val title: String,
+        val content: String,
+        val authorComment: String,
+        val readAuthority: ReadAuthority,
+    )
 }

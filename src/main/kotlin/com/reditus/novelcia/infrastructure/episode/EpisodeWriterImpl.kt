@@ -1,5 +1,6 @@
 package com.reditus.novelcia.infrastructure.episode
 
+import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
@@ -9,6 +10,10 @@ import org.springframework.transaction.annotation.Transactional
 class EpisodeWriterImpl(
     private val episodeRepository: EpisodeRepository
 ) : EpisodeWriter {
+    override fun save(episode: Episode): Episode {
+        return episodeRepository.save(episode)
+    }
+
     override fun delete(episodeId: Long) {
         val affected = episodeRepository.softDeleteById(episodeId)
         if (affected == 0) {

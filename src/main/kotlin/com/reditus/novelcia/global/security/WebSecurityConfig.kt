@@ -62,7 +62,7 @@ class WebSecurityConfig(
 
             it.requestMatchers(HttpMethod.GET, "/api/tags").permitAll()
 
-            it.requestMatchers("/api/admin/**").hasRole("ADMIN")
+//            it.requestMatchers("/api/admin/**").hasRole("ADMIN") TODO  임시로 OPEN
             it.anyRequest().authenticated()
         }
 

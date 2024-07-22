@@ -56,6 +56,10 @@ class Novel(
     val isFree : Boolean
         get() = readAuthority == ReadAuthority.FREE
 
+    fun isAuthor(userId: Long): Boolean{
+        return authorId == userId
+    }
+
     /**
      * 소설 정보 수정 - PUT과 같은 대치의 역할을 한다.
      * - 기존 태그에 없다면 추가한다.
