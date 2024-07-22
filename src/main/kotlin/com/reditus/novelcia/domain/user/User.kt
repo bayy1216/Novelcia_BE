@@ -32,6 +32,12 @@ class User(
     val role: Role,
 ) : BaseTimeEntity() {
 
+    val isAdmin : Boolean
+        get() = role == Role.ADMIN
+
+    val isMemberShipValid : Boolean
+        get() = memberShipExpiredAt.isAfter(LocalDateTime.now())
+
     companion object {
         fun create(command: UserCommand.Create): User {
             require(command.password == null && command.encodedPassword != null)

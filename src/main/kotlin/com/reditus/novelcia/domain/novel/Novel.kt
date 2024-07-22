@@ -53,6 +53,9 @@ class Novel(
     val tags : List<Tag>
         get() = novelAndTags.map { it.tag }
 
+    val isFree : Boolean
+        get() = readAuthority == ReadAuthority.FREE
+
     /**
      * 소설 정보 수정 - PUT과 같은 대치의 역할을 한다.
      * - 기존 태그에 없다면 추가한다.
@@ -94,7 +97,7 @@ class Novel(
                 alarmCount = 0,
                 episodeCount = 0,
                 isDeleted = false,
-                readAuthority = ReadAuthority.ALL,
+                readAuthority = ReadAuthority.FREE,
             ).apply {
                 tags.forEach { addNovelAndTag(it) }
             }
@@ -111,7 +114,7 @@ class Novel(
             alarmCount: Long = 0,
             episodeCount: Long = 0,
             isDeleted: Boolean = false,
-            readAuthority: ReadAuthority = ReadAuthority.ALL,
+            readAuthority: ReadAuthority = ReadAuthority.FREE,
         ) = Novel(
             id = id,
             author = author,
@@ -130,7 +133,9 @@ class Novel(
 }
 
 enum class ReadAuthority {
-    ALL, MEMBER_SHIP, PAYMENT
+    FREE,
+    MEMBER_SHIP,
+    PAYMENT
 }
 
 class NovelCommand {

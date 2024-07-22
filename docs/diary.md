@@ -21,3 +21,10 @@
   - 로그인
   - 로그아웃
   - 내 정보 조회
+
+# 2024-07-22
+- azure Auto Deploy 설정
+- Redis, MySQL 프로덕션 환경 설정
+- Spring-Config-Server 설정
+- API 구현 목록 :
+  - 에피소드 상세 조회(미완)

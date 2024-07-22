@@ -23,4 +23,8 @@ class EpisodeReaderImpl(
     override fun getById(episodeId: Long): Episode {
         return episodeRepository.findByIdOrThrow(episodeId)
     }
+
+    override fun getByIdWithNovel(episodeId: Long): Episode {
+        return episodeRepository.findByIdWithNovel(episodeId) ?: throw NoSuchElementException("Episode not found")
+    }
 }

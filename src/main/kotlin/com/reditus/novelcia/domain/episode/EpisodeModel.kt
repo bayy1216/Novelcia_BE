@@ -1,5 +1,6 @@
 package com.reditus.novelcia.domain.episode
 
+import com.reditus.novelcia.domain.novel.ReadAuthority
 import java.time.LocalDateTime
 
 class EpisodeModel {
@@ -10,6 +11,8 @@ class EpisodeModel {
         val commentsCount: Int,
         val viewsCount: Int,
         val createdAt: LocalDateTime,
+        val readAuthority: ReadAuthority,
+        val isRead: Boolean,
     )
 
     class Main(
