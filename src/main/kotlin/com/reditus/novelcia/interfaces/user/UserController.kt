@@ -26,12 +26,12 @@ class UserController(
     @Operation(summary = "로그인한 사용자 포인트 충전")
     @PostMapping("/api/user/charge")
     fun chargePoint(
-
-        @AuthenticationPrincipal loginUserDetails: LoginUserDetails
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+        point: Int
     ) {
         userService.chargePoint(
             loginUserDetails.loginUserId,
-            PositiveInt(1000)
+            PositiveInt(point)
         )
     }
 }
