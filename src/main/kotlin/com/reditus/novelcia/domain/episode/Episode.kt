@@ -31,6 +31,9 @@ class Episode(
     val novel: Novel,
 ) : BaseTimeEntity() {
 
+    val novelId: Long
+        get() = novel.id
+
     companion object{
         fun fixture(
             title: String = "title",
