@@ -53,6 +53,7 @@ class EpisodeReaderImpl(
                 .on(QEpisodeComment.episodeComment.episode.id.eq(QEpisode.episode.id))
                 .where(
                     QEpisode.episode.novel.id.eq(novelId),
+                    QEpisode.episode.isDeleted.eq(false),
                 )
                 .groupBy(QEpisode.episode.id)
                 .orderBy(
@@ -73,15 +74,21 @@ class EpisodeReaderImpl(
     }
 
     override fun getByIdWithNovel(episodeId: Long): Episode {
-        return episodeRepository.findByIdWithNovel(episodeId) ?: throw NoSuchElementException("Episode not found")
+        val episode =  episodeRepository.findByIdWithNovel(episodeId) ?: throw NoSuchElementException("Episode not found")
+        if(episode.isDeleted){
+            throw NoSuchElementException("Episode not found")
+        }
+        return episode
     }
 
     override fun getLastEpisodeNumberByNovelId(novelId: Long): Int? {
-        val query = jpaQueryFactory.selectFrom(QEpisode.episode)
-            .where(QEpisode.episode.novel.id.eq(novelId))
-            .orderBy(QEpisode.episode.episodeNumber.desc())
-            .fetchFirst()
-        return query?.episodeNumber
+        val query = jpaQueryFactory.select(QEpisode.episode.episodeNumber.max())
+            .from(QEpisode.episode)
+            .where(
+                QEpisode.episode.novel.id.eq(novelId),
+                QEpisode.episode.isDeleted.eq(false),
+            ).fetchOne()
+        return query
     }
 }
 internal data class EpisodeProjection(

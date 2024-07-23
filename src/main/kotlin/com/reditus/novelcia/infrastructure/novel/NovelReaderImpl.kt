@@ -18,7 +18,11 @@ class NovelReaderImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : NovelReader {
     override fun getNovelById(id: Long): Novel {
-        return novelRepository.findByIdOrThrow(id)
+        val novel = novelRepository.findByIdOrThrow(id)
+        if(novel.isDeleted){
+            throw NoSuchElementException()
+        }
+        return novel
     }
 
     override fun getTagsByTagNamesIn(tagNames: List<String>): List<Tag> {
