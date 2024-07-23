@@ -5,11 +5,15 @@ import com.reditus.novelcia.domain.episode.EpisodeModel
 import org.springframework.data.domain.PageRequest
 
 interface EpisodeReader {
-    fun getEpisodeModelsByOffsetPaging(novelId: Long, pageRequest: PageRequest, sort: EpisodePagingSort): List<EpisodeModel.Meta>
+    fun getEpisodeModelsByOffsetPaging(
+        userId: Long,
+        novelId: Long, pageRequest: PageRequest, sort: EpisodePagingSort,
+    ): List<EpisodeModel.Meta>
+
     fun getById(episodeId: Long): Episode
     fun getByIdWithNovel(episodeId: Long): Episode
 
-    fun getLastEpisodeNumberByNovelId(novelId: Long) : Int?
+    fun getLastEpisodeNumberByNovelId(novelId: Long): Int?
 }
 
 enum class EpisodePagingSort {

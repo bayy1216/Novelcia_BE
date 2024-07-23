@@ -25,11 +25,17 @@ class EpisodeController(
     @GetMapping("/api/novels/{novelId}/episodes")
     fun getEpisodesOffsetPaging(
         @PathVariable novelId: Long,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         sort: EpisodePagingSort = EpisodePagingSort.CREATED_AT_DESC,
         page: Int = 0,
         size: Int = 20,
     ): List<EpisodeModel.Meta> {
-        val models = episodeQueryService.getEpisodeModelsByOffsetPaging(novelId, PageRequest.of(page, size), sort)
+        val models = episodeQueryService.getEpisodeModelsByOffsetPaging(
+            loginUserDetails.loginUserId,
+            novelId,
+            PageRequest.of(page, size),
+            sort,
+        )
         return models
     }
 

@@ -22,11 +22,17 @@ class EpisodeQueryService(
      */
     @Transactional(readOnly = true)
     fun getEpisodeModelsByOffsetPaging(
+        userId: LoginUserId,
         novelId: Long,
         pageRequest: PageRequest,
         sort: EpisodePagingSort,
     ): List<EpisodeModel.Meta> {
-        val episodeMetaModels = episodeReader.getEpisodeModelsByOffsetPaging(novelId, pageRequest, sort)
+        val episodeMetaModels = episodeReader.getEpisodeModelsByOffsetPaging(
+            userId.value,
+            novelId,
+            pageRequest,
+            sort,
+        )
         return episodeMetaModels
     }
 
