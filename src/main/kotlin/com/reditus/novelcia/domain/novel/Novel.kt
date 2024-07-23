@@ -45,6 +45,9 @@ class Novel(
 
     @OneToMany(mappedBy = "novel", cascade = [CascadeType.ALL], orphanRemoval = true)
     val novelAndTags: MutableList<NovelAndTag> = mutableListOf(),
+
+    @Version
+    var version: Int = 0, // 변경감지로 인한 벌크연산 lost update 방어
 ) : BaseTimeEntity() {
 
     val authorId: Long

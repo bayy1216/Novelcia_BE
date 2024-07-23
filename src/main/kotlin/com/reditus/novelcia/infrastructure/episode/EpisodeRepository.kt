@@ -8,11 +8,11 @@ import org.springframework.data.repository.query.Param
 
 interface EpisodeRepository: JpaRepository<Episode, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE Episode e SET e.isDeleted = true WHERE e.id = :episodeId")
+    @Query("UPDATE Episode e SET e.isDeleted = true, e.version = e.version + 1 WHERE e.id = :episodeId")
     fun softDeleteById(episodeId: Long): Int
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
-    @Query("UPDATE Episode e SET e.isDeleted = true WHERE e.novel.id = :novelId")
+    @Query("UPDATE Episode e SET e.isDeleted = true, e.version = e.version + 1 WHERE e.novel.id = :novelId")
     fun softDeleteAllByNovelId(novelId: Long): Int
 
     @Query("SELECT e FROM Episode e JOIN FETCH e.novel WHERE e.id = :id AND e.isDeleted = false")

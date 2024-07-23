@@ -39,6 +39,9 @@ class Episode(
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "novel_id", nullable = false)
     val novel: Novel,
+
+    @Version
+    var version: Int = 0, // 변경감지로 인한 벌크연산 lost update 방어
 ) : BaseTimeEntity() {
 
     val novelId: Long
