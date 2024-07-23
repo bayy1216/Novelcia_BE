@@ -22,26 +22,6 @@ class EpisodeReaderImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : EpisodeReader {
 
-    data class EpisodeProjection(
-        val id: Long,
-        val title: String,
-        val episodeNumber: Int,
-        val createdAt: LocalDateTime,
-        val readAuthority: ReadAuthority,
-        val viewsCount: Long,
-        val commentsCount: Long,
-    ) {
-        fun toMetaModel(isRead: Boolean) = EpisodeModel.Meta(
-            id = id,
-            title = title,
-            episodeNumber = episodeNumber,
-            commentsCount = commentsCount.toInt(),
-            viewsCount = viewsCount.toInt(),
-            createdAt = createdAt,
-            readAuthority = readAuthority,
-            isRead = isRead,
-        )
-    }
 
     override fun getEpisodeModelsByOffsetPaging(
         userId: Long,
@@ -60,6 +40,10 @@ class EpisodeReaderImpl(
                     QEpisode.episode.readAuthority,
                     QEpisodeView.episodeView.count().`as`("viewsCount"),
                     QEpisodeComment.episodeComment.count().`as`("commentsCount"),
+                    Expressions.booleanTemplate(
+                        "exists (select 1 from EpisodeView ev where ev.episode.id = {0} and ev.user.id = {1})",
+                        QEpisode.episode.id, userId
+                    ).`as`("isRead")
                 )
             )
                 .from(QEpisode.episode)
@@ -80,18 +64,8 @@ class EpisodeReaderImpl(
                 .offset(pageRequest.offset)
                 .limit(pageRequest.pageSize.toLong())
                 .fetch()
-        val episodeIds = episodeProjections.map { it.id }
-        val readEpisodeIds = jpaQueryFactory.select(QEpisodeView.episodeView.episode.id)
-            .from(QEpisodeView.episodeView)
-            .where(
-                QEpisodeView.episodeView.episode.id.`in`(episodeIds),
-                QEpisodeView.episodeView.user.id.eq(userId)
-            )
-            .fetch()
-        return episodeProjections.map {
-            it.toMetaModel(it.id in readEpisodeIds)
-        }
 
+        return episodeProjections.map(EpisodeProjection::toMetaModel)
     }
 
     override fun getById(episodeId: Long): Episode {
@@ -109,4 +83,25 @@ class EpisodeReaderImpl(
             .fetchFirst()
         return query?.episodeNumber
     }
+}
+internal data class EpisodeProjection(
+    val id: Long,
+    val title: String,
+    val episodeNumber: Int,
+    val createdAt: LocalDateTime,
+    val readAuthority: ReadAuthority,
+    val viewsCount: Long,
+    val commentsCount: Long,
+    val isRead: Boolean,
+) {
+    fun toMetaModel() = EpisodeModel.Meta(
+        id = id,
+        title = title,
+        episodeNumber = episodeNumber,
+        commentsCount = commentsCount.toInt(),
+        viewsCount = viewsCount.toInt(),
+        createdAt = createdAt,
+        readAuthority = readAuthority,
+        isRead = isRead,
+    )
 }
