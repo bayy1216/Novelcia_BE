@@ -11,7 +11,7 @@ import jakarta.persistence.*
 @Table(
     name = "novel_episode",
     indexes = [
-        Index(name = "idx__novel_id__episode_number", columnList = "novel_id, episode_number"),
+        Index(name = "idx__novel_id__is_deleted__episode_number", columnList = "novel_id, is_deleted, episode_number"),
     ]
 )
 class Episode(

@@ -17,5 +17,5 @@ interface EpisodeReader {
 }
 
 enum class EpisodePagingSort {
-    CREATED_AT_DESC, CREATED_AT_ASC
+    EPISODE_NUMBER_DESC, EPISODE_NUMBER_ASC
 }

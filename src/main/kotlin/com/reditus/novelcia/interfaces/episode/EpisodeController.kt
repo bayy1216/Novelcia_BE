@@ -26,7 +26,7 @@ class EpisodeController(
     fun getEpisodesOffsetPaging(
         @PathVariable novelId: Long,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
-        sort: EpisodePagingSort = EpisodePagingSort.CREATED_AT_DESC,
+        sort: EpisodePagingSort = EpisodePagingSort.EPISODE_NUMBER_DESC,
         page: Int = 0,
         size: Int = 20,
     ): List<EpisodeModel.Meta> {

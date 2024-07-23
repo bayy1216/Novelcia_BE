@@ -58,8 +58,8 @@ class EpisodeReaderImpl(
                 .groupBy(QEpisode.episode.id)
                 .orderBy(
                     when (sort) {
-                        EpisodePagingSort.CREATED_AT_DESC -> QEpisode.episode.createdAt.desc()
-                        EpisodePagingSort.CREATED_AT_ASC -> QEpisode.episode.createdAt.asc()
+                        EpisodePagingSort.EPISODE_NUMBER_DESC -> QEpisode.episode.episodeNumber.desc()
+                        EpisodePagingSort.EPISODE_NUMBER_ASC -> QEpisode.episode.episodeNumber.asc()
                     }
                 )
                 .offset(pageRequest.offset)
