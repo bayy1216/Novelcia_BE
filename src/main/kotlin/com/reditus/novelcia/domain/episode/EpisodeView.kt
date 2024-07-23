@@ -7,10 +7,8 @@ import jakarta.persistence.*
 
 @Entity
 @Table(
-    uniqueConstraints = [
-        UniqueConstraint(
-            columnNames = ["novel_id", "episode_id", "user_id"]
-        )
+    indexes = [
+        Index(name = "idx__episode_id__user_id", columnList = "episode_id, user_id"),
     ]
 )
 class EpisodeView(

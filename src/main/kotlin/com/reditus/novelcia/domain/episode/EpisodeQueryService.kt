@@ -2,9 +2,9 @@ package com.reditus.novelcia.domain.episode
 
 import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
+import com.reditus.novelcia.domain.episode.port.EpisodeReadEventProducer
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
 import com.reditus.novelcia.domain.user.port.UserReader
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 class EpisodeQueryService(
     private val userReader: UserReader,
     private val episodeReader: EpisodeReader,
-    private val publisher : ApplicationEventPublisher,
+    private val episodeReadEventProducer: EpisodeReadEventProducer,
 ) {
 
     /**
@@ -47,7 +47,7 @@ class EpisodeQueryService(
             throw IllegalAccessException("해당 에피소드를 읽을 권한이 없습니다.")
         }
         val event = EpisodeReadEvent(novelId = episode.novel.id, episodeId = episode.id, userId = userId.value)
-        publisher.publishEvent(event)
+        episodeReadEventProducer.publish(event)
 
         return EpisodeModel.Main.from(episode)
     }
