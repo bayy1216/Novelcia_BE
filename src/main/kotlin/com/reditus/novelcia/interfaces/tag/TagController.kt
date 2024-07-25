@@ -1,5 +1,6 @@
 package com.reditus.novelcia.interfaces.tag
 
+import com.reditus.novelcia.domain.UpsertResult
 import com.reditus.novelcia.domain.novel.TagModel
 import com.reditus.novelcia.domain.novel.TagService
 import io.swagger.v3.oas.annotations.Operation
@@ -22,8 +23,9 @@ class TagController(
     @PostMapping("/api/admin/tags")
     fun upsertTags(
         @RequestBody req: TagReq.CreateTags,
-    ) {
-        tagService.upsertTags(req.toCommands())
+    ) : UpsertResult<String> {
+        val upsertResult = tagService.upsertTags(req.toCommands())
+        return upsertResult
     }
 
 }

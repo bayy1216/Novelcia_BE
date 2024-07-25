@@ -1,5 +1,6 @@
 package com.reditus.novelcia.domain.novel
 
+import com.reditus.novelcia.domain.UpsertResult
 import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.port.NovelWriter
 import org.springframework.stereotype.Service
@@ -12,7 +13,7 @@ class TagService(
     private val novelWriter: NovelWriter,
 ){
     @Transactional
-    fun upsertTags(commands: List<TagCommand.Upsert>) {
+    fun upsertTags(commands: List<TagCommand.Upsert>): UpsertResult<String> {
         val existTags = novelReader.getTagsByTagNamesIn(commands.map { it.name })
         val newTags = mutableListOf<Tag>()
         commands.forEach { upsertCommand ->
@@ -24,6 +25,11 @@ class TagService(
             }
         }
         novelWriter.saveTags(newTags)
+        return UpsertResult(
+            insertedCount = newTags.size,
+            insertedIds = newTags.map { it.name },
+            updatedCount = existTags.size
+        )
     }
 
     @Transactional(readOnly = true)

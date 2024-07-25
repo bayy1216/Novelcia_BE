@@ -7,10 +7,10 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "novel_tag")
 class Tag(
-    @Id @Column(nullable = false, unique = true)
+    @Id
     val name: String,
 
-    @Column
+    @Column(nullable = false, length = 7, columnDefinition = "CHAR(7)")
     var colorHexCode: String,
 ) : BaseModifiableEntity() {
     fun update(command: TagCommand.Upsert) {
@@ -39,5 +39,11 @@ class TagCommand {
     data class Upsert(
         val name: String,
         val colorHexCode: String,
-    )
+    ){
+        init {
+            require(name.isNotBlank()) { "태그 이름은 필수입니다." }
+            require(colorHexCode.length == 7) { "색상 코드는 7자리여야 합니다." }
+            require(colorHexCode.startsWith("#")) { "색상 코드는 #으로 시작해야 합니다." }
+        }
+    }
 }
