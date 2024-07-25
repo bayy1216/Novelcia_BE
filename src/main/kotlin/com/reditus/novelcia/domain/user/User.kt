@@ -1,7 +1,9 @@
 package com.reditus.novelcia.domain.user
 
 import com.reditus.novelcia.domain.BaseModifiableEntity
+import com.reditus.novelcia.global.util.SelfValidating
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
 import java.time.LocalDateTime
 
 @Entity
@@ -76,11 +78,16 @@ enum class Role {
 
 class UserCommand {
     class Create(
+        @Email(message = "이메일 형식이 아닙니다.")
         val email: String,
         val password: String?,
         val nickname: String,
         val encodedPassword: String? = null,
-    ) {
+    ) : SelfValidating(){
+        init {
+            require(password != null || encodedPassword != null)
+            validateSelf()
+        }
         fun copyWith(encodedPassword: String) = Create(
             email = email,
             password = null,
