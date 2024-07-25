@@ -14,6 +14,10 @@ abstract class BaseTimeEntity{
     @CreatedDate
     @Column(updatable = false, nullable = false)
     lateinit var createdAt: LocalDateTime
+}
+
+@MappedSuperclass
+abstract class BaseModifiableEntity : BaseTimeEntity() {
     @LastModifiedDate
     @Column(nullable = false)
     lateinit var modifiedAt: LocalDateTime

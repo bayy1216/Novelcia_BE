@@ -1,8 +1,8 @@
 package com.reditus.novelcia.domain.novel
 
+import com.reditus.novelcia.domain.BaseModifiableEntity
 import jakarta.persistence.Entity
 
-import com.reditus.novelcia.domain.BaseTimeEntity
 import com.reditus.novelcia.domain.user.User
 import jakarta.persistence.*
 @Entity
@@ -48,7 +48,7 @@ class Novel(
 
     @Version
     var version: Int = 0, // 변경감지로 인한 벌크연산 lost update 방어
-) : BaseTimeEntity() {
+) : BaseModifiableEntity() {
 
     val authorId: Long
         get() = author.id

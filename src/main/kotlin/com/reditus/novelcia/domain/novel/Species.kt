@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel
 
-import com.reditus.novelcia.domain.BaseTimeEntity
+import com.reditus.novelcia.domain.BaseModifiableEntity
 import jakarta.persistence.*
 
 @Entity
@@ -11,6 +11,6 @@ class Species(
 
     @Column(nullable = false)
     var name: String,
-) : BaseTimeEntity() {
+) : BaseModifiableEntity() {
 
 }

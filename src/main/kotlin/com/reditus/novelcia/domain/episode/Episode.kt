@@ -1,7 +1,7 @@
 package com.reditus.novelcia.domain.episode
 
 
-import com.reditus.novelcia.domain.BaseTimeEntity
+import com.reditus.novelcia.domain.BaseModifiableEntity
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.user.User
@@ -42,7 +42,7 @@ class Episode(
 
     @Version
     var version: Int = 0, // 변경감지로 인한 벌크연산 lost update 방어
-) : BaseTimeEntity() {
+) : BaseModifiableEntity() {
 
     val novelId: Long
         get() = novel.id

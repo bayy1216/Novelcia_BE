@@ -1,8 +1,7 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.domain.BaseTimeEntity
+import com.reditus.novelcia.domain.BaseModifiableEntity
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -30,7 +29,7 @@ class User(
 
     @Enumerated(EnumType.STRING)
     val role: Role,
-) : BaseTimeEntity() {
+) : BaseModifiableEntity() {
 
     val isAdmin : Boolean
         get() = role == Role.ADMIN
