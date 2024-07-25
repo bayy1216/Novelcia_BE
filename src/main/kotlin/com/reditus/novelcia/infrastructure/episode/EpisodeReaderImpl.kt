@@ -4,7 +4,7 @@ import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.EpisodeModel
+import com.reditus.novelcia.domain.episode.application.EpisodeModel
 import com.reditus.novelcia.domain.episode.QEpisode
 import com.reditus.novelcia.domain.episode.QEpisodeComment
 import com.reditus.novelcia.domain.episode.QEpisodeView

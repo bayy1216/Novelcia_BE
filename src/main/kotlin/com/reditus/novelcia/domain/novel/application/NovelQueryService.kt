@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain.novel
+package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.CursorRequest
 import com.reditus.novelcia.domain.novel.port.NovelReader

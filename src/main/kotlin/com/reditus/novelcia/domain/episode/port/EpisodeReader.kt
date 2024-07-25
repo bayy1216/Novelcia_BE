@@ -1,7 +1,7 @@
 package com.reditus.novelcia.domain.episode.port
 
 import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.EpisodeModel
+import com.reditus.novelcia.domain.episode.application.EpisodeModel
 import org.springframework.data.domain.PageRequest
 
 interface EpisodeReader {

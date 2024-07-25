@@ -1,6 +1,8 @@
-package com.reditus.novelcia.domain.episode
+package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.episode.Episode
+import com.reditus.novelcia.domain.episode.EpisodeCommand
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
 import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import com.reditus.novelcia.domain.novel.port.NovelReader
@@ -31,7 +33,7 @@ class EpisodeService(
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }
         val lastEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId) ?: 0
-        val episode = Episode.create(novel, lastEpisodeNumber+1, command)
+        val episode = Episode.create(novel, lastEpisodeNumber + 1, command)
         episodeWriter.save(episode)
         return episode.id
     }

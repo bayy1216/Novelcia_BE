@@ -1,6 +1,8 @@
-package com.reditus.novelcia.domain.novel
+package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.UpsertResult
+import com.reditus.novelcia.domain.novel.Tag
+import com.reditus.novelcia.domain.novel.TagCommand
 import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.port.NovelWriter
 import org.springframework.stereotype.Service

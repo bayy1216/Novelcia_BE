@@ -1,6 +1,6 @@
 package com.reditus.novelcia.interfaces.novel
 
-import com.reditus.novelcia.domain.novel.NovelModel
+import com.reditus.novelcia.domain.novel.application.NovelModel
 
 class NovelRes {
     data class Meta(

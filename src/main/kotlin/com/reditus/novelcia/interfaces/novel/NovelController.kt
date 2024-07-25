@@ -1,9 +1,8 @@
 package com.reditus.novelcia.interfaces.novel
 
 import com.reditus.novelcia.domain.CursorRequest
-import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.novel.NovelQueryService
-import com.reditus.novelcia.domain.novel.NovelService
+import com.reditus.novelcia.domain.novel.application.NovelQueryService
+import com.reditus.novelcia.domain.novel.application.NovelService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

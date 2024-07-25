@@ -1,8 +1,8 @@
 package com.reditus.novelcia.interfaces.episode
 
-import com.reditus.novelcia.domain.episode.EpisodeModel
-import com.reditus.novelcia.domain.episode.EpisodeQueryService
-import com.reditus.novelcia.domain.episode.EpisodeService
+import com.reditus.novelcia.domain.episode.application.EpisodeModel
+import com.reditus.novelcia.domain.episode.application.EpisodeQueryService
+import com.reditus.novelcia.domain.episode.application.EpisodeService
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation

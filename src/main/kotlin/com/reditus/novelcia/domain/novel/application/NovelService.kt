@@ -1,6 +1,8 @@
-package com.reditus.novelcia.domain.novel
+package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.novel.Novel
+import com.reditus.novelcia.domain.novel.NovelCommand
 import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.port.NovelWriter
 import com.reditus.novelcia.domain.novel.usecase.NovelDeleteUseCase

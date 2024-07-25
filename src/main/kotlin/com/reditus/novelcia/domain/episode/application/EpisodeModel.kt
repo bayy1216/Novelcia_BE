@@ -1,5 +1,6 @@
-package com.reditus.novelcia.domain.episode
+package com.reditus.novelcia.domain.episode.application
 
+import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import java.time.LocalDateTime
 
@@ -25,7 +26,7 @@ class EpisodeModel {
         val createdAt: LocalDateTime,
     ) {
         companion object {
-            fun from(episode: Episode): EpisodeModel.Main = EpisodeModel.Main(
+            fun from(episode: Episode): Main = Main(
                 id = episode.id,
                 title = episode.title,
                 content = episode.content,

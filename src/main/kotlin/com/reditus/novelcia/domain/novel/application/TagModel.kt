@@ -1,4 +1,6 @@
-package com.reditus.novelcia.domain.novel
+package com.reditus.novelcia.domain.novel.application
+
+import com.reditus.novelcia.domain.novel.Tag
 
 class TagModel(
     val name: String,

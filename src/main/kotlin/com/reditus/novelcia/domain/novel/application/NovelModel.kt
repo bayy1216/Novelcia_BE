@@ -1,5 +1,6 @@
-package com.reditus.novelcia.domain.novel
+package com.reditus.novelcia.domain.novel.application
 
+import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.user.UserModel
 
 class NovelModel {
