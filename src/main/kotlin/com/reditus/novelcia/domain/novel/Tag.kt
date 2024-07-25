@@ -7,17 +7,13 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "novel_tag")
 class Tag(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long = 0L,
-
-    @Column(nullable = false, unique = true)
-    var name: String,
+    @Id @Column(nullable = false, unique = true)
+    val name: String,
 
     @Column
     var colorHexCode: String,
 ) : BaseModifiableEntity() {
     fun update(command: TagCommand.Upsert) {
-        name = command.name
         colorHexCode = command.colorHexCode
     }
 
