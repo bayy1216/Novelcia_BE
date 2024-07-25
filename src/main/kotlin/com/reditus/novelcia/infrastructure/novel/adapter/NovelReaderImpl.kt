@@ -1,4 +1,4 @@
-package com.reditus.novelcia.infrastructure.novel
+package com.reditus.novelcia.infrastructure.novel.adapter
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
@@ -9,6 +9,8 @@ import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.QNovel.novel
 import com.reditus.novelcia.domain.novel.Tag
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
+import com.reditus.novelcia.infrastructure.novel.NovelRepository
+import com.reditus.novelcia.infrastructure.novel.TagRepository
 import org.springframework.stereotype.Repository
 
 @Repository

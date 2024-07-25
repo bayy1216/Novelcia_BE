@@ -1,4 +1,4 @@
-package com.reditus.novelcia.infrastructure.episode
+package com.reditus.novelcia.infrastructure.episode.adapter
 
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
@@ -11,6 +11,7 @@ import com.reditus.novelcia.domain.episode.QEpisodeView
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
 import com.reditus.novelcia.domain.novel.ReadAuthority
+import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository

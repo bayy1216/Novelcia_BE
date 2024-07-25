@@ -1,8 +1,10 @@
-package com.reditus.novelcia.infrastructure.episode
+package com.reditus.novelcia.infrastructure.episode.adapter
 
 import com.reditus.novelcia.domain.episode.EpisodeReadEvent
 import com.reditus.novelcia.domain.episode.EpisodeView
 import com.reditus.novelcia.domain.episode.port.EpisodeReadEventProducer
+import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
+import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
 import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.springframework.scheduling.annotation.Async
