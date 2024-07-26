@@ -23,8 +23,8 @@ class NovelService(
     @Transactional
     fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long {
         val author = userReader.getReferenceById(loginUserId.value)
-        val tags = tagReader.getTagsByTagNamesIn(command.tagNames).also { existingTags ->
-            if (existingTags.size != command.tagNames.size) {
+        val tags = tagReader.getTagsByTagNamesIn(command.tagNames).apply {
+            if (this.size != command.tagNames.size) {
                 throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
             }
         }
@@ -45,8 +45,8 @@ class NovelService(
         }
         val tags = tagReader.getTagsByTagNamesIn(command.tagNames)
             .toSet()
-            .also { existingTags -> // tagNames에 중복이 있거나, 존재하지 않는 태그 이름이 있을 경우
-                if (existingTags.size != command.tagNames.size) {
+            .apply {  // tagNames에 중복이 있거나, 존재하지 않는 태그 이름이 있을 경우
+                if (this.size != command.tagNames.size) {
                     throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
                 }
             }
