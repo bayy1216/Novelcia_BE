@@ -6,8 +6,5 @@ import com.reditus.novelcia.domain.novel.Tag
 
 interface NovelReader {
     fun getNovelById(id: Long): Novel
-    fun getTagsByTagNamesIn(tagNames: List<String>): List<Tag>
-
-    fun getAllTags(): List<Tag>
     fun getNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel>
 }

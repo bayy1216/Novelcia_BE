@@ -2,9 +2,7 @@ package com.reditus.novelcia.infrastructure.novel.adapter
 
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.port.NovelWriter
-import com.reditus.novelcia.domain.novel.Tag
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
-import com.reditus.novelcia.infrastructure.novel.TagRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -12,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional
 class NovelWriterImpl(
     private val novelRepository: NovelRepository,
-    private val tagRepository: TagRepository,
 ) : NovelWriter {
     override fun save(novel: Novel): Novel {
         return novelRepository.save(novel)
@@ -23,13 +20,5 @@ class NovelWriterImpl(
         if (affected == 0) {
             throw NoSuchElementException("해당 소설이 존재하지 않습니다.")
         }
-    }
-
-    override fun saveTag(tag: Tag): Tag {
-        return tagRepository.save(tag)
-    }
-
-    override fun saveTags(tags: List<Tag>): List<Tag> {
-        return tagRepository.saveAll(tags)
     }
 }

@@ -8,6 +8,4 @@ interface NovelWriter {
     
     fun delete(novelId: Long)
 
-    fun saveTag(tag: Tag): Tag
-    fun saveTags(tags: List<Tag>): List<Tag>
 }
