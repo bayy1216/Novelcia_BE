@@ -21,11 +21,10 @@ class NovelService(
     @Transactional
     fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long {
         val author = userReader.getReferenceById(loginUserId.value)
-        val tags = novelReader.getTagsByTagNamesIn(command.tagNames).let {
-            if(it.size != command.tagNames.size) {
+        val tags = novelReader.getTagsByTagNamesIn(command.tagNames).also { existingTags ->
+            if (existingTags.size != command.tagNames.size) {
                 throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
             }
-            it
         }
         val novel = Novel.create(author, command, tags)
         novelWriter.save(novel)
@@ -39,24 +38,23 @@ class NovelService(
         command: NovelCommand.Update,
     ) {
         val novel = novelReader.getNovelById(novelId)
-        if(novel.authorId != loginUserId.value) {
+        if (novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
         }
         val tags = novelReader.getTagsByTagNamesIn(command.tagNames)
             .toSet()
-            .let {
-            if(it.size != command.tagNames.size) {
-                throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
+            .also { existingTags -> // tagNames에 중복이 있거나, 존재하지 않는 태그 이름이 있을 경우
+                if (existingTags.size != command.tagNames.size) {
+                    throw IllegalArgumentException("태그 이름이 잘못되었습니다.")
+                }
             }
-            it
-        }
         novel.update(command, tags)
     }
 
     @Transactional
     fun deleteNovel(loginUserId: LoginUserId, novelId: Long) {
         val novel = novelReader.getNovelById(novelId)
-        if(novel.authorId != loginUserId.value) {
+        if (novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 삭제할 권한이 없습니다.")
         }
         novelDeleteUseCase(novel)

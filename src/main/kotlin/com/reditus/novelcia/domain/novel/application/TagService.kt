@@ -29,13 +29,14 @@ class TagService(
         novelWriter.saveTags(newTags)
         return UpsertResult(
             insertedCount = newTags.size,
-            insertedIds = newTags.map { it.name },
+            insertedIds = newTags.map(Tag::name),
             updatedCount = existTags.size
         )
     }
 
     @Transactional(readOnly = true)
     fun getAllTags(): List<TagModel> {
-        return novelReader.getAllTags().map { TagModel.from(it) }
+        val tags = novelReader.getAllTags()
+        return tags.map(TagModel::from)
     }
 }

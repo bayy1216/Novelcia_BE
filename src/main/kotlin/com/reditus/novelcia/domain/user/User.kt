@@ -53,6 +53,7 @@ class User(
             )
         }
         fun fixture(
+            id: Long = 0L,
             email: String = "test@a.c",
             encodedPassword: String = "encodedPassword",
             nickname: String = "nickname",
@@ -61,6 +62,7 @@ class User(
             isDeleted: Boolean = false,
             role: Role = Role.USER,
         ) = User(
+            id = id,
             email = email,
             encodedPassword = encodedPassword,
             nickname = nickname,

@@ -39,4 +39,21 @@ class NovelTest {
         assertEquals(3, novel.tags.size)
         assertEquals(novel.novelAndTags.map { it.tag.name }.toSet(), setOf(tag1.name, tag3.name, tag4.name))
     }
+
+    @Test
+    fun `isAuthor 메서드가 정상적으로 작동한다`() {
+        // given
+        val user = User.fixture()
+        val novel = Novel.fixture(author = user)
+
+        val notAuthorUser = User.fixture(id = 999L)
+
+        // when
+        val isAuthorOK = novel.isAuthor(user.id)
+        val isAuthorFail = novel.isAuthor(notAuthorUser.id)
+
+        // then
+        assertTrue(isAuthorOK)
+        assertFalse(isAuthorFail)
+    }
 }

@@ -11,6 +11,7 @@ class NovelQueryService(
 ) {
     @Transactional(readOnly = true)
     fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> {
-        return novelReader.getNovelsByCursorOrderByCreatedAt(cursorRequest).map { NovelModel.Main.from(it) }
+        val novels = novelReader.getNovelsByCursorOrderByCreatedAt(cursorRequest)
+        return novels.map(NovelModel.Main::from)
     }
 }
