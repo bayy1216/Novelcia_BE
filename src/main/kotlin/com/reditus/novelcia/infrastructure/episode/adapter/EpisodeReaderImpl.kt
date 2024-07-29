@@ -71,14 +71,26 @@ class EpisodeReaderImpl(
     }
 
     override fun getById(episodeId: Long): Episode {
-        return episodeRepository.findByIdOrThrow(episodeId)
+        val episode = jpaQueryFactory
+            .select(QEpisode.episode)
+            .from(QEpisode.episode)
+            .where(
+                QEpisode.episode.id.eq(episodeId),
+                QEpisode.episode.isDeleted.eq(false),
+            ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
+        return episode
     }
 
     override fun getByIdWithNovel(episodeId: Long): Episode {
-        val episode =  episodeRepository.findByIdWithNovel(episodeId) ?: throw NoSuchElementException("Episode not found")
-        if(episode.isDeleted){
-            throw NoSuchElementException("Episode not found")
-        }
+        val episode = jpaQueryFactory
+            .select(QEpisode.episode)
+            .from(QEpisode.episode)
+            .leftJoin(QEpisode.episode.novel)
+            .on(QEpisode.episode.novel.id.eq(QEpisode.episode.novel.id))
+            .where(
+                QEpisode.episode.id.eq(episodeId),
+                QEpisode.episode.isDeleted.eq(false),
+            ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
         return episode
     }
 
