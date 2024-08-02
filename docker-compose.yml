@@ -16,3 +16,10 @@ services:
     ports:
       - "6379:6379"
     restart: always
+  redis-insight:
+    image: redis/redisinsight
+    ports:
+      - "5540:5540"
+    restart: always
+    volumes:
+      - ./redis-insight-data:/data
