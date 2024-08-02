@@ -31,7 +31,7 @@ class FakeDataConfig {
         novelService: NovelService,
         novelRepository: NovelRepository
     ) : CommandLineRunner = CommandLineRunner {
-        if(env.activeProfiles.isNotEmpty()){
+        if(!env.activeProfiles.contains("fake")){
             return@CommandLineRunner
         }
         `태그 생성`(tagRepository)
