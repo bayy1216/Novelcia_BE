@@ -2,7 +2,7 @@ package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.novel.ReadAuthority
-import com.reditus.novelcia.global.util.TxContext
+import com.reditus.novelcia.global.util.TxScope
 import java.time.LocalDateTime
 
 class EpisodeModel {
@@ -27,7 +27,7 @@ class EpisodeModel {
         val createdAt: LocalDateTime,
     ) {
         companion object {
-            fun from(episode: Episode): TxContext.() -> Main = {
+            fun from(episode: Episode): TxScope.() -> Main = {
                 Main(
                     id = episode.id,
                     title = episode.title,

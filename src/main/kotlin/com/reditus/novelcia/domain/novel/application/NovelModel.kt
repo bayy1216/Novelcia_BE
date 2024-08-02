@@ -2,7 +2,7 @@ package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.user.UserModel
-import com.reditus.novelcia.global.util.TxContext
+import com.reditus.novelcia.global.util.TxScope
 
 class NovelModel {
     data class Main(
@@ -18,7 +18,7 @@ class NovelModel {
         val episodeCount: Long,
     ) {
         companion object {
-            fun from(novel: Novel): TxContext.() -> Main = {
+            fun from(novel: Novel): TxScope.() -> Main = {
                 Main(
                     id = novel.id,
                     author = UserModel.from(novel.author)(this),

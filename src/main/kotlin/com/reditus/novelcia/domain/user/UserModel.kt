@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.global.util.TxContext
+import com.reditus.novelcia.global.util.TxScope
 import java.time.LocalDateTime
 
 class UserModel(
@@ -12,7 +12,7 @@ class UserModel(
     val role: Role,
 ) {
     companion object {
-        fun from(user: User): TxContext.() -> UserModel = {
+        fun from(user: User): TxScope.() -> UserModel = {
             UserModel(
                 id = user.id,
                 email = user.email,
