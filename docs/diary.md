@@ -60,3 +60,11 @@
 - UPSERT를 INSERT ... ON DUPLICATE KEY UPDATE로 처리하는건 어떨까
   - `INSERT ... ON DUPLICATE KEY UPDATE`는 중복된 데이터가 있을 경우, UPDATE 쿼리를 실행한다.
   - 활용방안 : 읽자별 읽기 통계, Upsert 로직, 
+
+# 2024-08-02 금
+- redis-insight를 통한 redis 모니터링(redis 공식문서에서 확인)
+- redis 세션은 계속 세션 갱신을 한다.
+  - HttpSessionIdResolver를 통해 로직 커스텀이 가능
+  - 세션쿠기가 아닌 X-Auth-Token을 사용하여 세션 요청을 다르게 할 수 있다.
+- 개발환경에서 CommandLineRunner를 통해 초기 데이터를 삽입 로직 작성
+- 스프링 @Transactional AOP를 코틀린 DSL로 변경하는 작업을 수행
