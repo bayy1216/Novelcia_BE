@@ -6,9 +6,10 @@ import com.reditus.novelcia.domain.user.UserModel
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.global.exception.ElementConflictException
+import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.global.util.transactional
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AuthService(
@@ -17,9 +18,8 @@ class AuthService(
     private val bCryptPasswordEncoder: BCryptPasswordEncoder,
 ) {
 
-    @Transactional
-    fun emailSignup(command: UserCommand.Create) {
-        if(userReader.existsByEmail(command.email)) {
+    fun emailSignup(command: UserCommand.Create) = transactional {
+        if (userReader.existsByEmail(command.email)) {
             throw ElementConflictException("이미 가입된 이메일입니다.")
         }
         val encodedCommand = command.copyWith(
@@ -29,12 +29,11 @@ class AuthService(
         userWriter.save(user)
     }
 
-    @Transactional(readOnly = true)
-    fun emailSignIn(email: String, password: String): UserModel {
+    fun emailSignIn(email: String, password: String): UserModel = readOnly {
         val user = userReader.findByEmail(email) ?: throw ElementConflictException("가입되지 않은 이메일입니다.")
-        if(!bCryptPasswordEncoder.matches(password, user.encodedPassword)) {
+        if (!bCryptPasswordEncoder.matches(password, user.encodedPassword)) {
             throw ElementConflictException("비밀번호가 일치하지 않습니다.")
         }
-        return UserModel.from(user)
+        UserModel.from(user)(this)
     }
 }

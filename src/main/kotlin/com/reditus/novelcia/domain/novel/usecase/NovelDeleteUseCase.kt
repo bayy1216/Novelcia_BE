@@ -3,8 +3,8 @@ package com.reditus.novelcia.domain.novel.usecase
 import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.port.NovelWriter
+import com.reditus.novelcia.global.util.transactional
 import org.springframework.stereotype.Component
-import org.springframework.transaction.annotation.Transactional
 
 @Component
 class NovelDeleteUseCase(
@@ -16,8 +16,7 @@ class NovelDeleteUseCase(
      * soft delete를 통해 삭제마크를 남깁니다.
      * - episode와 관련된 comment는 삭제하지 않습니다.
      */
-    @Transactional
-    operator fun invoke(novel: Novel) {
+    operator fun invoke(novel: Novel) = transactional{
         novelWriter.delete(novel.id)
         episodeWriter.deleteAllByNovelId(novel.id)
     }

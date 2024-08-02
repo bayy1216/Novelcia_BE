@@ -2,6 +2,7 @@ package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.user.UserModel
+import com.reditus.novelcia.global.util.TxContext
 
 class NovelModel {
     data class Main(
@@ -15,20 +16,22 @@ class NovelModel {
         val favoriteCount: Long,
         val alarmCount: Long,
         val episodeCount: Long,
-    ){
-        companion object{
-            fun from(novel: Novel) = Main(
-                id = novel.id,
-                author = UserModel.from(novel.author),
-                title = novel.title,
-                description = novel.description,
-                thumbnailImageUrl = novel.thumbnailImageUrl,
-                viewCount = novel.viewCount,
-                likeCount = novel.likeCount,
-                favoriteCount = novel.favoriteCount,
-                alarmCount = novel.alarmCount,
-                episodeCount = novel.episodeCount,
-            )
+    ) {
+        companion object {
+            fun from(novel: Novel): TxContext.() -> Main = {
+                Main(
+                    id = novel.id,
+                    author = UserModel.from(novel.author)(this),
+                    title = novel.title,
+                    description = novel.description,
+                    thumbnailImageUrl = novel.thumbnailImageUrl,
+                    viewCount = novel.viewCount,
+                    likeCount = novel.likeCount,
+                    favoriteCount = novel.favoriteCount,
+                    alarmCount = novel.alarmCount,
+                    episodeCount = novel.episodeCount,
+                )
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ import com.reditus.novelcia.domain.novel.port.TagReader
 import com.reditus.novelcia.domain.novel.usecase.NovelDeleteUseCase
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
+import com.reditus.novelcia.global.util.transactional
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -20,8 +21,8 @@ class NovelService(
     private val novelWriter: NovelWriter,
     private val novelDeleteUseCase: NovelDeleteUseCase,
 ) {
-    @Transactional
-    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long {
+
+    fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long = transactional {
         val author = userReader.getReferenceById(loginUserId.value)
         val tags = tagReader.getTagsByTagNamesIn(command.tagNames).apply {
             if (this.size != command.tagNames.size) {
@@ -30,15 +31,15 @@ class NovelService(
         }
         val novel = Novel.create(author, command, tags)
         novelWriter.save(novel)
-        return novel.id
+        return@transactional novel.id
     }
 
-    @Transactional
+
     fun updateNovel(
         loginUserId: LoginUserId,
         novelId: Long,
         command: NovelCommand.Update,
-    ) {
+    ) = transactional {
         val novel = novelReader.getNovelById(novelId)
         if (novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
@@ -53,8 +54,7 @@ class NovelService(
         novel.update(command, tags)
     }
 
-    @Transactional
-    fun deleteNovel(loginUserId: LoginUserId, novelId: Long) {
+    fun deleteNovel(loginUserId: LoginUserId, novelId: Long) = transactional {
         val novel = novelReader.getNovelById(novelId)
         if (novel.authorId != loginUserId.value) {
             throw NoPermissionException("해당 소설을 삭제할 권한이 없습니다.")

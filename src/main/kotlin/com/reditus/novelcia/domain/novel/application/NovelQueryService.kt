@@ -2,16 +2,16 @@ package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.CursorRequest
 import com.reditus.novelcia.domain.novel.port.NovelReader
+import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class NovelQueryService(
     private val novelReader: NovelReader,
 ) {
-    @Transactional(readOnly = true)
-    fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> {
+
+    fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> = readOnly {
         val novels = novelReader.getNovelsByCursorOrderByCreatedAt(cursorRequest)
-        return novels.map(NovelModel.Main::from)
+        return@readOnly novels.map { NovelModel.Main.from(it)(this) }
     }
 }
