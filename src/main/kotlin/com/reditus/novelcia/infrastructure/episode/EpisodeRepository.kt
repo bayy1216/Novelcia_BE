@@ -14,7 +14,4 @@ interface EpisodeRepository: JpaRepository<Episode, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Episode e SET e.isDeleted = true, e.version = e.version + 1 WHERE e.novel.id = :novelId")
     fun softDeleteAllByNovelId(novelId: Long): Int
-
-    @Query("SELECT e FROM Episode e JOIN FETCH e.novel WHERE e.id = :id AND e.isDeleted = false")
-    fun findByIdWithNovel(@Param("id") id: Long): Episode?
 }
