@@ -40,4 +40,33 @@ class EpisodeModel {
             }
         }
     }
+
+    // TODO 좋아요, 즐겨찾기 여부 추가
+    class Detail(
+        val id: Long,
+        val title: String,
+        val content: String,
+        val episodeNumber: Int,
+        val authorComment: String,
+        val createdAt: LocalDateTime,
+        val isLiked: Boolean,
+        val novelId: Long,
+        val isFavoriteNovel: Boolean,
+    ) {
+        companion object {
+            fun from(episode: Episode, isLiked: Boolean, isFavorite: Boolean): TxScope.() -> Detail = {
+                Detail(
+                    id = episode.id,
+                    title = episode.title,
+                    content = episode.content,
+                    episodeNumber = episode.episodeNumber,
+                    authorComment = episode.authorComment,
+                    novelId = episode.novelId,
+                    createdAt = episode.createdAt,
+                    isLiked = isLiked,
+                    isFavoriteNovel = isFavorite,
+                )
+            }
+        }
+    }
 }
