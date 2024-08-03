@@ -9,11 +9,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @Tag(name = "Episodes")
 @RestController
@@ -63,6 +59,57 @@ class EpisodeController(
             userId = loginUserDetails.loginUserId,
             novelId = novelId,
             command = command,
+        )
+    }
+
+    @Operation(summary = "에피소드 수정 PATCH", description = "수정할 필드만 전달")
+    @PatchMapping("/api/novels/episodes/{episodeId}")
+    fun updateEpisode(
+        @PathVariable episodeId: Long,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+        @RequestBody req: EpisodeReq.Patch,
+    ) {
+        val command = req.toCommand()
+        episodeService.patchEpisode(
+            userId = loginUserDetails.loginUserId,
+            episodeId = episodeId,
+            command = command,
+        )
+    }
+
+    @Operation(summary = "에피소드 삭제")
+    @DeleteMapping("/api/novels/episodes/{episodeId}")
+    fun deleteEpisode(
+        @PathVariable episodeId: Long,
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+    ) {
+        episodeService.deleteEpisode(
+            userId = loginUserDetails.loginUserId,
+            episodeId = episodeId,
+        )
+    }
+
+    @Operation(summary = "에피소드 좋아요")
+    @PostMapping("/api/episodes/{episodeId}/like")
+    fun likeEpisode(
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+        @PathVariable episodeId: Long,
+    ) {
+        episodeService.likeEpisode(
+            userId = loginUserDetails.loginUserId,
+            episodeId = episodeId,
+        )
+    }
+
+    @Operation(summary = "에피소드 좋아요 취소")
+    @PostMapping("/api/episodes/{episodeId}/unlike")
+    fun unlikeEpisode(
+        @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+        @PathVariable episodeId: Long,
+    ) {
+        episodeService.unlikeEpisode(
+            userId = loginUserDetails.loginUserId,
+            episodeId = episodeId,
         )
     }
 }

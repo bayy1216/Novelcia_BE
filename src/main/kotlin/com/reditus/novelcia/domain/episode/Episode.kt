@@ -98,4 +98,11 @@ class EpisodeCommand{
         val authorComment: String,
         val readAuthority: ReadAuthority,
     )
+
+    class Patch(
+        val title: String?,
+        val content: String?,
+        val authorComment: String?,
+        val readAuthority: ReadAuthority?,
+    )
 }

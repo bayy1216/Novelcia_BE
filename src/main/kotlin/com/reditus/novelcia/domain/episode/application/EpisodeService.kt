@@ -37,11 +37,32 @@ class EpisodeService(
         return@transactional episode.id
     }
 
-    fun updateEpisode() {
+    fun patchEpisode(
+        userId: LoginUserId,
+        episodeId: Long,
+        command: EpisodeCommand.Patch,
+    ) {
 
     }
 
-    fun deleteEpisode() {
+    fun deleteEpisode(
+        userId: LoginUserId,
+        episodeId: Long,
+    ) {
+
+    }
+
+    fun likeEpisode(
+        userId: LoginUserId,
+        episodeId: Long,
+    ) {
+
+    }
+
+    fun unlikeEpisode(
+        userId: LoginUserId,
+        episodeId: Long,
+    ) {
 
     }
 }

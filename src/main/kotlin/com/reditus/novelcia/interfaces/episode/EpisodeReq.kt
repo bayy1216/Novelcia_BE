@@ -17,4 +17,18 @@ class EpisodeReq {
             readAuthority = readAuthority
         )
     }
+
+    data class Patch(
+        val title: String?,
+        val content: String?,
+        val authorComment: String?,
+        val readAuthority: ReadAuthority?,
+    ){
+        fun toCommand() = EpisodeCommand.Patch(
+            title = title,
+            content = content,
+            authorComment = authorComment,
+            readAuthority = readAuthority
+        )
+    }
 }
