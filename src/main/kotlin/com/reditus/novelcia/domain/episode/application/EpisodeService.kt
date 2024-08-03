@@ -41,15 +41,23 @@ class EpisodeService(
         userId: LoginUserId,
         episodeId: Long,
         command: EpisodeCommand.Patch,
-    ) {
-
+    ) = transactional {
+        val episode = episodeReader.getByIdWithNovel(episodeId)
+        if (!episode.canEdit(userId.value)) {
+            throw NoPermissionException("해당 에피소드를 수정할 권한이 없습니다.")
+        }
+        episode.patch(command)
     }
 
     fun deleteEpisode(
         userId: LoginUserId,
         episodeId: Long,
-    ) {
-
+    ) = transactional {
+        val episode = episodeReader.getByIdWithNovel(episodeId)
+        if (!episode.canEdit(userId.value)) {
+            throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
+        }
+        episodeWriter.delete(episode.id)
     }
 
     fun likeEpisode(

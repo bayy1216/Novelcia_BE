@@ -56,6 +56,17 @@ class Episode(
         return false
     }
 
+    fun canEdit(value: Long): Boolean {
+        return novel.isAuthor(value)
+    }
+
+    fun patch(command: EpisodeCommand.Patch) {
+        command.title?.let { title = it }
+        command.content?.let { content = it }
+        command.authorComment?.let { authorComment = it }
+        command.readAuthority?.let { readAuthority = it }
+    }
+
     companion object{
         fun create(
             novel: Novel,
