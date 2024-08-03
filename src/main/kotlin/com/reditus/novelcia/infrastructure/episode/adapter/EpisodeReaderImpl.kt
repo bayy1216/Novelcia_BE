@@ -103,6 +103,10 @@ class EpisodeReaderImpl(
             ).fetchOne()
         return query
     }
+
+    override fun getReferenceById(id: Long): Episode {
+        return episodeRepository.getReferenceById(id)
+    }
 }
 internal data class EpisodeProjection(
     val id: Long,

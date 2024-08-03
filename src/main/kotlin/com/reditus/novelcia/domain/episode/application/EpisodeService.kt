@@ -3,9 +3,12 @@ package com.reditus.novelcia.domain.episode.application
 import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.EpisodeCommand
+import com.reditus.novelcia.domain.episode.EpisodeLike
+import com.reditus.novelcia.domain.episode.port.EpisodeLikeWriter
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
 import com.reditus.novelcia.domain.episode.port.EpisodeWriter
 import com.reditus.novelcia.domain.novel.port.NovelReader
+import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
 import org.springframework.stereotype.Service
@@ -15,6 +18,8 @@ class EpisodeService(
     private val novelReader: NovelReader,
     private val episodeReader: EpisodeReader,
     private val episodeWriter: EpisodeWriter,
+    private val userReader: UserReader,
+    private val episodeLikeWriter: EpisodeLikeWriter,
 ) {
 
     /**
@@ -63,14 +68,17 @@ class EpisodeService(
     fun likeEpisode(
         userId: LoginUserId,
         episodeId: Long,
-    ) {
-
+    ) = transactional {
+        val episode = episodeReader.getReferenceById(episodeId)
+        val user = userReader.getReferenceById(userId.value)
+        val episodeLike = EpisodeLike.create(episode, user)
+        episodeLikeWriter.save(episodeLike)
     }
 
     fun unlikeEpisode(
         userId: LoginUserId,
         episodeId: Long,
-    ) {
-
+    ) = transactional {
+        episodeLikeWriter.deleteByEpisodeIdAndUserId(episodeId, userId.value)
     }
 }

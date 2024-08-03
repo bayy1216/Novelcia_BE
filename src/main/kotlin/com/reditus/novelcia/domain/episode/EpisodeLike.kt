@@ -25,4 +25,12 @@ class EpisodeLike(
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 ) : BaseTimeEntity() {
+    companion object {
+        fun create(episode: Episode, user: User): EpisodeLike {
+            return EpisodeLike(
+                episode = episode,
+                user = user
+            )
+        }
+    }
 }

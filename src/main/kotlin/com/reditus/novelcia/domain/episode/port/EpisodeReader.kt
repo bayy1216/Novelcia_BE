@@ -14,6 +14,8 @@ interface EpisodeReader {
     fun getByIdWithNovel(episodeId: Long): Episode
 
     fun getLastEpisodeNumberByNovelId(novelId: Long): Int?
+
+    fun getReferenceById(id: Long): Episode
 }
 
 enum class EpisodePagingSort {
