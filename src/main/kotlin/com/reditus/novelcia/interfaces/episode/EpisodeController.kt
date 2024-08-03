@@ -8,6 +8,7 @@ import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.PageRequest
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
@@ -48,6 +49,7 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 생성", description = "에피소드 생성 후 ID 반환")
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/novels/{novelId}/episodes")
     fun createEpisode(
         @PathVariable novelId: Long,
@@ -63,6 +65,7 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 수정 PATCH", description = "수정할 필드만 전달")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PatchMapping("/api/novels/episodes/{episodeId}")
     fun updateEpisode(
         @PathVariable episodeId: Long,
@@ -78,6 +81,7 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 삭제")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/novels/episodes/{episodeId}")
     fun deleteEpisode(
         @PathVariable episodeId: Long,
@@ -90,6 +94,7 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 좋아요")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/api/episodes/{episodeId}/like")
     fun likeEpisode(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
@@ -102,6 +107,7 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 좋아요 취소")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PostMapping("/api/episodes/{episodeId}/unlike")
     fun unlikeEpisode(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
