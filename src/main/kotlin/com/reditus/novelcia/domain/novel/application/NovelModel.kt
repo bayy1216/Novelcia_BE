@@ -1,6 +1,7 @@
 package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.novel.Novel
+import com.reditus.novelcia.domain.novel.Species
 import com.reditus.novelcia.domain.user.UserModel
 import com.reditus.novelcia.global.util.TxScope
 
@@ -34,4 +35,23 @@ class NovelModel {
             }
         }
     }
+
+    data class UserFavorite(
+        val id: Long,
+        val author: UserModel,
+        val title: String,
+        val thumbnailImageUrl: String?,
+        val viewCount: Long,
+        val likeCount: Long,
+        val favoriteCount: Long,
+        val episodeCount: Long,
+
+        val species: List<SpeciesModel>,
+        val tags: List<TagModel>,
+
+        val userLastReadEpisodeId: Long?,
+        val userNextEpisodeId: Long?,
+    ) {
+    }
+
 }
