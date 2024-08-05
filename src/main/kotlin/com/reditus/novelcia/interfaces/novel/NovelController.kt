@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Novel")
+@Tag(name = "Novel", description = "소설")
 @RestController
 class NovelController(
     private val novelService: NovelService,

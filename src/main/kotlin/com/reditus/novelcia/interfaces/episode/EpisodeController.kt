@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
-@Tag(name = "Episodes")
+@Tag(name = "Episodes", description = "에피소드")
 @RestController
 class EpisodeController(
     private val episodeService: EpisodeService,

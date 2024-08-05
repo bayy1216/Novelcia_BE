@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "Tag")
+@Tag(name = "Tag", description = "태그")
 @RestController
 class TagController(
     private val tagService: TagService,
