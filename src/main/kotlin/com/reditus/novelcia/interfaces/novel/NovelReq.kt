@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.media.ArraySchema
 import io.swagger.v3.oas.annotations.media.Schema
 
 class NovelReq {
-    @Schema(name = "NovelReq.Create")
     data class Create(
         val title: String,
         val description: String,
@@ -24,7 +23,6 @@ class NovelReq {
         )
     }
 
-    @Schema(name = "NovelReq.Update")
     data class Update(
         val title: String,
         val description: String,
