@@ -41,7 +41,7 @@ class NovelService(
         command: NovelCommand.Update,
     ) = transactional {
         val novel = novelReader.getNovelById(novelId)
-        if (novel.authorId != loginUserId.value) {
+        if (!novel.isAuthor(loginUserId.value)) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
         }
         val tags = tagReader.getTagsByTagNamesIn(command.tagNames)
@@ -56,7 +56,7 @@ class NovelService(
 
     fun deleteNovel(loginUserId: LoginUserId, novelId: Long) = transactional {
         val novel = novelReader.getNovelById(novelId)
-        if (novel.authorId != loginUserId.value) {
+        if (!novel.isAuthor(loginUserId.value)) {
             throw NoPermissionException("해당 소설을 삭제할 권한이 없습니다.")
         }
         novelDeleteUseCase(novel)
