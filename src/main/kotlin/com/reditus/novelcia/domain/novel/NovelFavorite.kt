@@ -27,4 +27,12 @@ class NovelFavorite(
     val user: User,
 ) : BaseTimeEntity(
 ) {
+    companion object{
+        fun create(
+            novel: Novel,
+            user: User,
+        ): NovelFavorite{
+            return NovelFavorite(novel = novel, user = user)
+        }
+    }
 }
