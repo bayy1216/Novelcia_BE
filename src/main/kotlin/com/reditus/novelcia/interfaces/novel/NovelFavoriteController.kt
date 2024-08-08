@@ -7,6 +7,7 @@ import com.reditus.novelcia.domain.novel.application.NovelModel
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -21,7 +22,7 @@ class NovelFavoriteController(
     @PostMapping("/api/novels/favorite")
     fun getFavoriteNovels(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
-        offsetRequest: OffsetRequest,
+        @ParameterObject offsetRequest: OffsetRequest,
     ) : OffsetResponse<NovelModel.UserFavorite> {
         return novelFavoriteService.getFavoriteNovels(
             loginUserDetails.loginUserId,
