@@ -6,6 +6,8 @@ import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.user.User
+import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
+import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
 import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.junit.jupiter.api.Test
@@ -24,6 +26,7 @@ class EpisodeQueryServiceTest @Autowired constructor(
     private val userRepository: UserRepository,
     private val novelRepository: NovelRepository,
     private val threadPoolTaskExecutor: ThreadPoolTaskExecutor,
+    private val episodeRepository: EpisodeRepository,
 ) {
 
     @Test
@@ -43,10 +46,15 @@ class EpisodeQueryServiceTest @Autowired constructor(
                 readAuthority = ReadAuthority.FREE,
             )
         )
+        val episode = episodeRepository.findByIdOrThrow(episodeId)
 
         // when
         repeat(5) {
-            episodeQueryService.getEpisodeDetail(episodeId, LoginUserId(user.id))
+            episodeQueryService.getEpisodeDetail(
+                novel.id,
+                episode.episodeNumber,
+                LoginUserId(user.id)
+            )
         }
 
         // Async 작업이 끝날때까지 대기

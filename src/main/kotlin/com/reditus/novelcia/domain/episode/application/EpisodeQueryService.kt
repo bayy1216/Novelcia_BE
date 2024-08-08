@@ -40,10 +40,11 @@ class EpisodeQueryService(
 
 
     fun getEpisodeDetail(
-        episodeId: Long,
+        novelId: Long,
+        episodeNumber: Int,
         userId: LoginUserId,
     ): EpisodeModel.Main = readOnly {
-        val episode = episodeReader.getByIdWithNovel(episodeId)
+        val episode = episodeReader.getByEpisodeNumberAndNovelIdWithNovel(episodeNumber=episodeNumber, novelId=novelId)
         val user = userReader.getById(userId.value)
         if (!episode.canRead(user)) {
             throw IllegalAccessException("해당 에피소드를 읽을 권한이 없습니다.")

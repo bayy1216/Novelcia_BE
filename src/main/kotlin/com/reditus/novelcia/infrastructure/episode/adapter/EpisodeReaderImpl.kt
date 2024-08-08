@@ -85,13 +85,24 @@ class EpisodeReaderImpl(
         val episode = jpaQueryFactory
             .select(QEpisode.episode)
             .from(QEpisode.episode)
-            .leftJoin(QEpisode.episode.novel)
-            .on(QEpisode.episode.novel.id.eq(QEpisode.episode.novel.id))
+            .innerJoin(QEpisode.episode.novel).fetchJoin()
             .where(
                 QEpisode.episode.id.eq(episodeId),
                 QEpisode.episode.isDeleted.eq(false),
             ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
         return episode
+    }
+
+    override fun getByEpisodeNumberAndNovelIdWithNovel(novelId: Long, episodeNumber: Int): Episode {
+        return jpaQueryFactory
+            .select(QEpisode.episode)
+            .from(QEpisode.episode)
+            .innerJoin(QEpisode.episode.novel).fetchJoin()
+            .where(
+                QEpisode.episode.novel.id.eq(novelId),
+                QEpisode.episode.episodeNumber.eq(episodeNumber),
+                QEpisode.episode.isDeleted.eq(false),
+            ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
     }
 
     override fun getLastEpisodeNumberByNovelId(novelId: Long): Int? {

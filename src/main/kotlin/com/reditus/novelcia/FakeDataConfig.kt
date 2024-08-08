@@ -5,7 +5,8 @@ import com.reditus.novelcia.domain.auth.AuthService
 import com.reditus.novelcia.domain.episode.EpisodeCommand
  import com.reditus.novelcia.domain.episode.application.EpisodeQueryService
  import com.reditus.novelcia.domain.episode.application.EpisodeService
-import com.reditus.novelcia.domain.novel.Novel
+ import com.reditus.novelcia.domain.episode.port.EpisodeReader
+ import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.NovelCommand
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.novel.Tag
@@ -13,7 +14,9 @@ import com.reditus.novelcia.domain.novel.Tag
  import com.reditus.novelcia.domain.novel.application.NovelService
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.UserCommand
-import com.reditus.novelcia.infrastructure.novel.NovelRepository
+ import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
+ import com.reditus.novelcia.infrastructure.findByIdOrThrow
+ import com.reditus.novelcia.infrastructure.novel.NovelRepository
 import com.reditus.novelcia.infrastructure.novel.TagRepository
 import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.springframework.boot.CommandLineRunner
@@ -36,6 +39,7 @@ class FakeDataConfig {
         novelRepository: NovelRepository,
         episodeQueryService: EpisodeQueryService,
         novelFavoriteService: NovelFavoriteService,
+        episodeRepository: EpisodeRepository,
     ) : CommandLineRunner = CommandLineRunner {
         `태그 생성`(tagRepository)
 
@@ -49,7 +53,8 @@ class FakeDataConfig {
 
 
         novelFavoriteService.addFavoriteNovel(LoginUserId(user.id), novel.id)
-        episodeQueryService.getEpisodeDetail(newId, LoginUserId(user.id))
+        val episode = episodeRepository.findByIdOrThrow(newId)
+        episodeQueryService.getEpisodeDetail(novel.id,episode.episodeNumber, LoginUserId(user.id))
 
     }
 

@@ -12,6 +12,7 @@ interface EpisodeReader {
 
     fun getById(episodeId: Long): Episode
     fun getByIdWithNovel(episodeId: Long): Episode
+    fun getByEpisodeNumberAndNovelIdWithNovel(novelId: Long, episodeNumber: Int): Episode
 
     fun getLastEpisodeNumberByNovelId(novelId: Long): Int?
 

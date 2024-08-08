@@ -37,13 +37,15 @@ class EpisodeController(
     }
 
     @Operation(summary = "에피소드 상세 조회")
-    @GetMapping("/api/episodes/{episodeId}")
+    @GetMapping("/api/novels/{novelId}/episodes/{episodeNumber}")
     fun getEpisodeDetail(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
-        @PathVariable episodeId: Long,
+        @PathVariable novelId: Long,
+        @PathVariable episodeNumber: Int,
     ): EpisodeModel.Main {
         return episodeQueryService.getEpisodeDetail(
-            episodeId = episodeId,
+            novelId = novelId,
+            episodeNumber = episodeNumber,
             userId = loginUserDetails.loginUserId,
         )
     }
