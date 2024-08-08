@@ -23,4 +23,9 @@ class NovelAndTag(
     @JoinColumn(name = "tag_id", nullable = false)
     val tag: Tag,
 ) : BaseTimeEntity() {
+    companion object {
+        fun create(novel: Novel, tag: Tag): NovelAndTag {
+            return NovelAndTag(novel = novel, tag = tag)
+        }
+    }
 }

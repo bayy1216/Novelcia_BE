@@ -85,6 +85,7 @@ class FakeDataConfig {
             description = "소설1 설명",
             tagNames = listOf("태그1", "태그2"),
             thumbnailImageUrl = null,
+            speciesNames = listOf(),
         )
         novelService.registerNovel(LoginUserId(user!!.id), novelCommand)
     }

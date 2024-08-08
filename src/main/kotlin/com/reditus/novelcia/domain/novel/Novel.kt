@@ -5,6 +5,7 @@ import jakarta.persistence.Entity
 
 import com.reditus.novelcia.domain.user.User
 import jakarta.persistence.*
+
 @Entity
 class Novel(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,6 +47,9 @@ class Novel(
     @OneToMany(mappedBy = "novel", cascade = [CascadeType.ALL], orphanRemoval = true)
     val novelAndTags: MutableList<NovelAndTag> = mutableListOf(),
 
+    @OneToMany(mappedBy = "novel", cascade = [CascadeType.ALL], orphanRemoval = true)
+    val novelAndSpeciesList: MutableList<NovelAndSpecies> = mutableListOf(),
+
     @Version
     var version: Int = 0, // 변경감지로 인한 벌크연산 lost update 방어
 ) : BaseModifiableEntity() {
@@ -53,13 +57,16 @@ class Novel(
     val authorId: Long
         get() = author.id
 
-    val tags : List<Tag>
+    val tags: List<Tag>
         get() = novelAndTags.map { it.tag }
 
-    val isFree : Boolean
+    val speciesList: List<Species>
+        get() = novelAndSpeciesList.map { it.species }
+
+    val isFree: Boolean
         get() = readAuthority == ReadAuthority.FREE
 
-    fun isAuthor(userId: Long): Boolean{
+    fun isAuthor(userId: Long): Boolean {
         return authorId == userId
     }
 
@@ -69,7 +76,11 @@ class Novel(
      * - update 인자의 태그가 기존 태그에 없다면 추가한다
      * - update 인자의 태그가 기존 태그에 있다면 기존 태그에서 제거한다
      */
-    fun update(command: NovelCommand.Update, updateTagsSet: Set<Tag>) {
+    fun update(
+        command: NovelCommand.Update,
+        updateTagsSet: Set<Tag>,
+        updateSpeciesSet: Set<Species>,
+    ) {
         title = command.title
         description = command.description
         thumbnailImageUrl = command.thumbnailImageUrl
@@ -80,19 +91,40 @@ class Novel(
         val toRemoveTags = currentTagsSet.minus(updateTagsSet)
 
         toAddTags.forEach { addNovelAndTag(it) }
-        toRemoveTags.forEach { removeTag->
+        toRemoveTags.forEach { removeTag ->
             val novelAndTag = novelAndTags.find { it.tag == removeTag }
             novelAndTags.remove(novelAndTag)
+        }
+
+        val currentSpeciesSet = speciesList.toSet()
+
+        val toAddSpecies = updateSpeciesSet.minus(currentSpeciesSet)
+        val toRemoveSpecies = currentSpeciesSet.minus(updateSpeciesSet)
+
+        toAddSpecies.forEach { addNovelAndSpecies(it) }
+        toRemoveSpecies.forEach { removeSpecies ->
+            val novelAndSpecies = novelAndSpeciesList.find { it.species == removeSpecies }
+            novelAndSpeciesList.remove(novelAndSpecies)
         }
     }
 
     fun addNovelAndTag(tag: Tag) {
-        val newNovelAndTag = NovelAndTag(novel = this, tag = tag)
+        val newNovelAndTag = NovelAndTag.create(novel = this, tag = tag)
         novelAndTags.add(newNovelAndTag)
     }
 
-    companion object{
-        fun create(author: User, command: NovelCommand.Create, tags: List<Tag>): Novel {
+    fun addNovelAndSpecies(species: Species) {
+        val newNovelAndSpecies = NovelAndSpecies(novel = this, species = species)
+        novelAndSpeciesList.add(newNovelAndSpecies)
+    }
+
+    companion object {
+        fun create(
+            author: User,
+            command: NovelCommand.Create,
+            tags: List<Tag>,
+            speciesList : List<Species>,
+        ): Novel {
             return Novel(
                 author = author,
                 title = command.title,
@@ -107,8 +139,10 @@ class Novel(
                 readAuthority = ReadAuthority.FREE,
             ).apply {
                 tags.forEach { addNovelAndTag(it) }
+                speciesList.forEach { addNovelAndSpecies(it) }
             }
         }
+
         fun fixture(
             id: Long = 0L,
             author: User,
@@ -151,6 +185,7 @@ class NovelCommand {
         val description: String,
         val thumbnailImageUrl: String?,
         val tagNames: List<String>,
+        val speciesNames: List<String>,
     )
 
     class Update(
@@ -158,5 +193,6 @@ class NovelCommand {
         val description: String,
         val thumbnailImageUrl: String?,
         val tagNames: List<String>,
+        val speciesNames: List<String>,
     )
 }

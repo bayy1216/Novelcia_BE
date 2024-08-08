@@ -14,12 +14,14 @@ class NovelReq {
             schema = Schema(example = "태그1"),
         )
         val tagNames: List<String>,
+        val speciesNames: List<String>,
     ) {
         fun toCommand() = NovelCommand.Create(
             title = title,
             description = description,
             thumbnailImageUrl = thumbnailImageUrl,
             tagNames = tagNames,
+            speciesNames = speciesNames,
         )
     }
 
@@ -32,12 +34,14 @@ class NovelReq {
             schema = Schema(example = "태그1"),
         )
         val tagNames: List<String>,
+        val speciesNames: List<String>,
     ) {
         fun toCommand() = NovelCommand.Update(
             title = title,
             description = description,
             thumbnailImageUrl = thumbnailImageUrl,
             tagNames = tagNames,
+            speciesNames = speciesNames,
         )
     }
 }

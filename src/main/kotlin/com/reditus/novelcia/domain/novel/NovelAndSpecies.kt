@@ -25,5 +25,9 @@ class NovelAndSpecies(
     @JoinColumn(name = "novel_species_id", nullable = false)
     val species: Species,
 ) : BaseTimeEntity() {
-
+    companion object {
+        fun create(novel: Novel, species: Species): NovelAndSpecies {
+            return NovelAndSpecies(novel = novel, species = species)
+        }
+    }
 }

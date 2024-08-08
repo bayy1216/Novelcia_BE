@@ -24,12 +24,13 @@ class NovelTest {
             title = "수정된 제목",
             description = "수정된 설명",
             thumbnailImageUrl = "수정된 이미지",
-            tagNames = listOf(tag1.name, tag3.name, tag4.name)
+            tagNames = listOf(tag1.name, tag3.name, tag4.name),
+            speciesNames = listOf()
         )
         val commandTags: Set<Tag> = setOf(tag1,tag3, tag4)
 
         // when
-        novel.update(command, commandTags)
+        novel.update(command, commandTags, setOf())
 
         // then (PUT 연산에 의해서 tag2는 삭제되고, tag3, tag4가 추가되어,
         // 결국 novel에는 tag1, tag3, tag4만 남아있어야 한다)
