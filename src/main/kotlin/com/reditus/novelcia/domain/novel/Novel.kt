@@ -85,27 +85,24 @@ class Novel(
         description = command.description
         thumbnailImageUrl = command.thumbnailImageUrl
 
-        val currentTagsSet = tags.toSet()
+        updateEntitiesByPutCommand(
+            currentSet = tags.toSet(),
+            updateSet = updateTagsSet,
+            addAction = { addNovelAndTag(it) },
+            removeAction = { removeTag ->
+                novelAndTags.find { it.tag == removeTag }?.let { novelAndTags.remove(it) }
+            }
+        )
 
-        val toAddTags = updateTagsSet.minus(currentTagsSet)
-        val toRemoveTags = currentTagsSet.minus(updateTagsSet)
-
-        toAddTags.forEach { addNovelAndTag(it) }
-        toRemoveTags.forEach { removeTag ->
-            val novelAndTag = novelAndTags.find { it.tag == removeTag }
-            novelAndTags.remove(novelAndTag)
-        }
-
-        val currentSpeciesSet = speciesList.toSet()
-
-        val toAddSpecies = updateSpeciesSet.minus(currentSpeciesSet)
-        val toRemoveSpecies = currentSpeciesSet.minus(updateSpeciesSet)
-
-        toAddSpecies.forEach { addNovelAndSpecies(it) }
-        toRemoveSpecies.forEach { removeSpecies ->
-            val novelAndSpecies = novelAndSpeciesList.find { it.species == removeSpecies }
-            novelAndSpeciesList.remove(novelAndSpecies)
-        }
+        updateEntitiesByPutCommand(
+            currentSet = speciesList.toSet(),
+            updateSet = updateSpeciesSet,
+            addAction = { addNovelAndSpecies(it) },
+            removeAction = { removeSpecies ->
+                novelAndSpeciesList
+                    .find { it.species == removeSpecies }?.let { novelAndSpeciesList.remove(it) }
+            }
+        )
     }
 
     fun addNovelAndTag(tag: Tag) {
@@ -118,12 +115,31 @@ class Novel(
         novelAndSpeciesList.add(newNovelAndSpecies)
     }
 
+
+    /**
+     * updateSet에 있는 항목을 추가하고, currentSet에 있는 항목을 제거한다.
+     * - currentSet - updateSet = 제거할 항목
+     * - updateSet - currentSet = 추가할 항목
+     */
+    private fun <T> updateEntitiesByPutCommand(
+        currentSet: Set<T>,
+        updateSet: Set<T>,
+        addAction: (T) -> Unit,
+        removeAction: (T) -> Unit,
+    ) {
+        val toAdd = updateSet.minus(currentSet)
+        val toRemove = currentSet.minus(updateSet)
+
+        toAdd.forEach { addAction(it) }
+        toRemove.forEach { removeAction(it) }
+    }
+
     companion object {
         fun create(
             author: User,
             command: NovelCommand.Create,
             tags: List<Tag>,
-            speciesList : List<Species>,
+            speciesList: List<Species>,
         ): Novel {
             return Novel(
                 author = author,
