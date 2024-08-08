@@ -71,6 +71,8 @@ class Episode(
     }
 
     companion object{
+        const val INITIAL_EPISODE_NUMBER = 1
+
         fun create(
             novel: Novel,
             episodeNumber: Int,

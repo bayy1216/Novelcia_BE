@@ -36,8 +36,14 @@ class EpisodeService(
         if (!novel.isAuthor(userId.value)) {
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }
-        val lastEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId) ?: 0
-        val episode = Episode.create(novel, lastEpisodeNumber + 1, command)
+        val lastEpisodeNumber: Int? = episodeReader.getLastEpisodeNumberByNovelId(novelId)
+        val episodeNumber = if (lastEpisodeNumber == null) {
+            Episode.INITIAL_EPISODE_NUMBER
+        } else {
+            lastEpisodeNumber + 1
+        }
+
+        val episode = Episode.create(novel, episodeNumber, command)
         episodeWriter.save(episode)
         return@transactional episode.id
     }

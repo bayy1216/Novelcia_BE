@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.domain.OffsetRequest
+import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.QEpisode
 import com.reditus.novelcia.domain.episode.QEpisodeView
 import com.reditus.novelcia.domain.novel.*
@@ -12,6 +13,7 @@ import com.reditus.novelcia.domain.novel.application.SpeciesModel
 import com.reditus.novelcia.domain.novel.application.TagModel
 import com.reditus.novelcia.domain.novel.port.NovelFavoriteReader
 import com.reditus.novelcia.domain.user.UserModel
+import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
@@ -25,8 +27,9 @@ class NovelFavoriteReaderImpl(
     /**
      * 1. count 쿼리로 novelFavorite 개수 조회
      * 2. novelFavorite 페이징 조회 쿼리 - novel, author fetch join
-     * 3. novelAndTag, novelAndSpecies 페이징 조회 쿼리 - tag, species fetch join
+     * 3. novelAndTag, novelAndSpecies in절 조회 쿼리 - tag, species fetch join
      * 4. episodeView 테이블을 이용하여 마지막으로 본 에피소드 조회
+     * 5. novel in절로 최대 에피소드 번호 조회
      */
     override fun getUserFavoriteNovelPage(
         userId: Long,
@@ -113,30 +116,56 @@ class NovelFavoriteReaderImpl(
             .fetch()
 
 
-        val novelModels = novelFavorites.map {
-
-            NovelModel.UserFavorite(
-                id = it.novel.id,
-                author = UserModel.from(it.novel.author)(),
-                title = it.novel.title,
-                thumbnailImageUrl = it.novel.thumbnailImageUrl,
-                viewCount = it.novel.viewCount,
-                likeCount = it.novel.likeCount,
-                favoriteCount = it.novel.favoriteCount,
-                episodeCount = it.novel.episodeCount,
-                species = novelSpeciesMap[it.novel.id]?.map { species -> SpeciesModel.from(species)() }
-                    ?: emptyList(),
-                tags = novelTagMap[it.novel.id]?.map { tag -> TagModel.from(tag)() } ?: emptyList(),
-                userLastReadEpisodeNumber = lastTimeViewEpisode
-                    .find { query -> query.novelId == it.novel.id }?.lastReadEpisodeNumber
-                    ?: 1,
-                maxEpisodeNumber = maxEpisodeNumbers
-                    .find { query -> query.novelId == it.novel.id }!!.maxEpisodeNumber,
-            )
-        }
+        val novelModels = novelFavorites.toModel(
+            novelSpeciesMap= novelSpeciesMap,
+            novelTagMap = novelTagMap,
+            lastTimeViewEpisode= lastTimeViewEpisode,
+            maxEpisodeNumbers= maxEpisodeNumbers,
+        )()
 
         return@readOnly PageImpl(novelModels, Pageable.ofSize(offsetRequest.size), count ?: 0L)
     }
+}
+fun List<NovelFavorite>.toModel(
+    novelSpeciesMap: Map<Long, List<Species>>,
+    novelTagMap: Map<Long, List<Tag>>,
+    lastTimeViewEpisode: List<EpisodeLastViewQuery>,
+    maxEpisodeNumbers: List<EpisodeMaxNumberQuery>,
+): TxScope.()->List<NovelModel.UserFavorite> = {
+    map {
+        it.toModel(
+            novelSpeciesMap,
+            novelTagMap,
+            lastTimeViewEpisode,
+            maxEpisodeNumbers,
+        )()
+    }
+}
+
+fun NovelFavorite.toModel(
+    novelSpeciesMap: Map<Long, List<Species>>,
+    novelTagMap: Map<Long, List<Tag>>,
+    lastTimeViewEpisode: List<EpisodeLastViewQuery>,
+    maxEpisodeNumbers: List<EpisodeMaxNumberQuery>,
+): TxScope.()->NovelModel.UserFavorite = {
+    NovelModel.UserFavorite(
+        id = novel.id,
+        author = UserModel.from(novel.author)(),
+        title = novel.title,
+        thumbnailImageUrl = novel.thumbnailImageUrl,
+        viewCount = novel.viewCount,
+        likeCount = novel.likeCount,
+        favoriteCount = novel.favoriteCount,
+        episodeCount = novel.episodeCount,
+        species = novelSpeciesMap[novel.id]?.map { species -> SpeciesModel.from(species)() }
+            ?: emptyList(),
+        tags = novelTagMap[novel.id]?.map { tag -> TagModel.from(tag)() } ?: emptyList(),
+        userLastReadEpisodeNumber = lastTimeViewEpisode
+            .find { query -> query.novelId == novel.id }?.lastReadEpisodeNumber
+            ?: Episode.INITIAL_EPISODE_NUMBER,
+        maxEpisodeNumber = maxEpisodeNumbers
+            .find { query -> query.novelId == novel.id }!!.maxEpisodeNumber,
+    )
 }
 
 data class EpisodeLastViewQuery(
