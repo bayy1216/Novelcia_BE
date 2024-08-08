@@ -18,13 +18,16 @@ class NovelFavoriteService(
     private val novelReader: NovelReader,
     private val novelFavoriteReader: NovelFavoriteReader,
     private val novelFavoriteWriter: NovelFavoriteWriter,
-
-    ) {
+) {
     fun getFavoriteNovels(
         loginUserId: LoginUserId,
         offsetRequest: OffsetRequest,
-    ) : OffsetResponse<NovelModel.UserFavorite> = readOnly {
-        throw NotImplementedError()
+    ): OffsetResponse<NovelModel.UserFavorite> = readOnly {
+        val page = novelFavoriteReader.getUserFavoriteNovelPage(loginUserId.value, offsetRequest)
+        return@readOnly OffsetResponse(
+            data = page.content,
+            totalElements = page.totalElements,
+        )
     }
 
     fun addFavoriteNovel(

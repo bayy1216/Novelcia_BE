@@ -1,7 +1,6 @@
 package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.novel.Species
 import com.reditus.novelcia.domain.user.UserModel
 import com.reditus.novelcia.global.util.TxScope
 
@@ -49,9 +48,8 @@ class NovelModel {
         val species: List<SpeciesModel>,
         val tags: List<TagModel>,
 
-        val userLastReadEpisodeId: Long?,
-        val userNextEpisodeId: Long?,
-    ) {
-    }
+        val userLastReadEpisodeNumber: Int,
+        val maxEpisodeNumber: Int,
+    )
 
 }

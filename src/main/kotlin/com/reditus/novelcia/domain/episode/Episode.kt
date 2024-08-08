@@ -10,6 +10,9 @@ import jakarta.persistence.*
 @Entity
 @Table(
     name = "novel_episode",
+    uniqueConstraints = [
+        UniqueConstraint(name = "uk__novel_id__episode_number", columnNames = ["novel_id", "episode_number"]),
+    ],
     indexes = [
         Index(name = "idx__novel_id__is_deleted__episode_number", columnList = "novel_id, is_deleted, episode_number"),
     ]
