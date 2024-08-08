@@ -3,12 +3,14 @@ package com.reditus.novelcia
  import com.reditus.novelcia.domain.LoginUserId
 import com.reditus.novelcia.domain.auth.AuthService
 import com.reditus.novelcia.domain.episode.EpisodeCommand
-import com.reditus.novelcia.domain.episode.application.EpisodeService
+ import com.reditus.novelcia.domain.episode.application.EpisodeQueryService
+ import com.reditus.novelcia.domain.episode.application.EpisodeService
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.NovelCommand
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.novel.Tag
-import com.reditus.novelcia.domain.novel.application.NovelService
+ import com.reditus.novelcia.domain.novel.application.NovelFavoriteService
+ import com.reditus.novelcia.domain.novel.application.NovelService
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.UserCommand
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
@@ -17,10 +19,12 @@ import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.env.Environment
+ import org.springframework.context.annotation.Profile
+ import org.springframework.core.env.Environment
 
 @Configuration
 class FakeDataConfig {
+    @Profile("fake")
     @Bean
     fun `테스트용 더미데이터 생성`(
         env: Environment,
@@ -29,11 +33,10 @@ class FakeDataConfig {
         authService: AuthService,
         episodeService: EpisodeService,
         novelService: NovelService,
-        novelRepository: NovelRepository
+        novelRepository: NovelRepository,
+        episodeQueryService: EpisodeQueryService,
+        novelFavoriteService: NovelFavoriteService,
     ) : CommandLineRunner = CommandLineRunner {
-        if(!env.activeProfiles.contains("fake")){
-            return@CommandLineRunner
-        }
         `태그 생성`(tagRepository)
 
         `회원 가입`(authService)
@@ -42,22 +45,26 @@ class FakeDataConfig {
         `novel 생성`(novelService, user)
 
         val novel = novelRepository.findAll().first()
-        `episode 생성`(episodeService, user, novel)
+        val newId = createEpisode(episodeService, user, novel)
+
+
+        novelFavoriteService.addFavoriteNovel(LoginUserId(user.id), novel.id)
+        episodeQueryService.getEpisodeDetail(newId, LoginUserId(user.id))
 
     }
 
-    private fun `episode 생성`(
+    private fun createEpisode(
         episodeService: EpisodeService,
         user: User,
         novel: Novel,
-    ) {
+    ) :Long {
         val episodeCommand = EpisodeCommand.Create(
             title = "에피소드1",
             content = "에피소드1 내용",
             authorComment = "에피소드1 작가의 말",
             readAuthority = ReadAuthority.FREE
         )
-        episodeService.createEpisode(
+        return episodeService.createEpisode(
             LoginUserId(user.id),
             novel.id,
             episodeCommand
