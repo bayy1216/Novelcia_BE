@@ -1,8 +1,10 @@
 package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.episode.port.EpisodeCommentReader
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
+import com.reditus.novelcia.domain.episode.port.EpisodeViewReader
 import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Service
@@ -13,6 +15,8 @@ class NovelQueryService(
     private val novelReader: NovelReader,
     private val episodeReader: EpisodeReader,
     private val episodeLikeReader: EpisodeLikeReader,
+    private val episodeViewReader: EpisodeViewReader,
+    private val episodeCommentReader: EpisodeCommentReader,
 ) {
 
     fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> = readOnly {
@@ -25,15 +29,21 @@ class NovelQueryService(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
+        val likesAll = episodeLikeReader.findAllByEpisodeIds(episodesAll.map { it.id })
+        val viewsAll = episodeViewReader.getAllByEpisodeIds(episodesAll.map { it.id })
+        val commentsAll = episodeCommentReader.getAllByEpisodeIds(episodesAll.map { it.id })
+
         val novelAndScore = episodesAll.map {
 
-            val likes = episodeLikeReader.countByEpisodeId(it.id).toInt()
+            val likes = likesAll.filter { like -> like.episode.id == it.id }.size
+            val views = viewsAll.filter { view -> view.episode.id == it.id }.size
+            val comments = commentsAll.filter { comment -> comment.episode.id == it.id }.size
 
 
             val score = calcScoreByEpisode(
-                views = 0,
-                likes = likes,
-                comments = 0,
+                viewsCount = views,
+                likesCount = likes,
+                commentsCount = comments,
                 daysSincePosted = LocalDate.now().compareTo(it.createdAt.toLocalDate()),
             )
             return@map it.novel to score
@@ -49,9 +59,9 @@ class NovelQueryService(
 
 
 fun calcScoreByEpisode(
-    views: Int,
-    likes: Int,
-    comments: Int,
+    viewsCount: Int,
+    likesCount: Int,
+    commentsCount: Int,
     daysSincePosted: Int,
     globalAvg: Double = 3.5,//TODO FIX
     a: Int = 1,
@@ -61,10 +71,10 @@ fun calcScoreByEpisode(
     m: Int = 50,
 ): Double {
     val decay = Math.pow(decayFactor, daysSincePosted.toDouble())
-    val weightedScore = (a * views + b * likes + c * comments) * decay
+    val weightedScore = (a * viewsCount + b * likesCount + c * commentsCount) * decay
 
-    val totalVotes = views + likes + comments +1
-    val individualAvg = (views + 2 * likes + 3 * comments) / totalVotes
+    val totalVotes = viewsCount + likesCount + commentsCount +1
+    val individualAvg = (viewsCount + 2 * likesCount + 3 * commentsCount) / totalVotes
     val bayesianScore = (totalVotes / (totalVotes + m)) * individualAvg + (m / (totalVotes + m)) * globalAvg
 
     val combinedScore = weightedScore + bayesianScore

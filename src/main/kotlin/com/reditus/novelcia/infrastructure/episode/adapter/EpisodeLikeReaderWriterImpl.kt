@@ -1,6 +1,8 @@
 package com.reditus.novelcia.infrastructure.episode.adapter
 
+import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.domain.episode.EpisodeLike
+import com.reditus.novelcia.domain.episode.QEpisodeLike
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeWriter
 import com.reditus.novelcia.infrastructure.episode.EpisodeLikeRepository
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 class EpisodeLikeReaderWriterImpl(
+    private val jpaQueryFactory: JPAQueryFactory,
     private val episodeLikeRepository: EpisodeLikeRepository,
 ) : EpisodeLikeWriter, EpisodeLikeReader {
     override fun save(episodeLike: EpisodeLike): EpisodeLike {
@@ -27,5 +30,12 @@ class EpisodeLikeReaderWriterImpl(
 
     override fun countByEpisodeId(episodeId: Long): Long {
         return episodeLikeRepository.countByEpisodeId(episodeId)
+    }
+
+    override fun findAllByEpisodeIds(episodeIds: List<Long>): List<EpisodeLike> {
+        return jpaQueryFactory
+            .selectFrom(QEpisodeLike.episodeLike)
+            .where(QEpisodeLike.episodeLike.episode.id.`in`(episodeIds))
+            .fetch()
     }
 }
