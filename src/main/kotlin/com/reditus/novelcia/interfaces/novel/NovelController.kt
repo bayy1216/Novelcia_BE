@@ -17,7 +17,7 @@ class NovelController(
     private val novelQueryService: NovelQueryService,
 ) {
 
-    @Operation(summary = "소설 cursor 조회")
+    @Operation(summary = "소설 생성일 최근 날짜순 cursor 조회")
     @GetMapping("/api/novels")
     fun getNovels(
         @RequestParam cursorId: Long?,
@@ -25,6 +25,19 @@ class NovelController(
     ): List<NovelRes.Meta> {
         val models = novelQueryService.getNovelModelsByCursor(
             CursorRequest(cursorId, size)
+        )
+        return models.map(NovelRes.Meta::from)
+    }
+
+    @Operation(summary = "소설 최근 N일 랭킹 조회")
+    @GetMapping("/api/novels/ranking")
+    fun getNovelRanking(
+        @RequestParam days: Int = 1,
+        @RequestParam size: Int = 20,
+    ): List<NovelRes.Meta> {
+        val models = novelQueryService.getNovelModelsByRanking(
+            days = days,
+            size = size,
         )
         return models.map(NovelRes.Meta::from)
     }
