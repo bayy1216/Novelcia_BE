@@ -59,12 +59,8 @@ class EpisodeQueryService(
         val event = EpisodeReadEvent(novelId = episode.novel.id, episodeId = episode.id, userId = userId.value)
         episodeReadEventProducer.publish(event)
 
-        val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episode.id, userId = userId.value)
-        val novelFavorite: NovelFavorite? =
-            novelFavoriteReader.findByUserIdAndNovelId(userId = userId.value, novelId = novelId)
-        val maxEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId = novelId)!!
 
-
+        val (episodeLike, novelFavorite, maxEpisodeNumber) = getMetaDateFromEpisode(novelId, episode.id, userId.value)
 
         return@readOnly  EpisodeModel.Detail.from(
             episode,
@@ -72,5 +68,13 @@ class EpisodeQueryService(
             novelFavorite != null,
             maxEpisodeNumber,
         )()
+    }
+
+    private fun getMetaDateFromEpisode(novelId:Long, episodeId: Long, userId: Long)= readOnly {
+        val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episodeId, userId = userId)
+        val novelFavorite: NovelFavorite? =
+            novelFavoriteReader.findByUserIdAndNovelId(userId = userId, novelId = novelId)
+        val maxEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId = novelId)!!
+        return@readOnly Triple(episodeLike, novelFavorite, maxEpisodeNumber)
     }
 }
