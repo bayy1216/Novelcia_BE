@@ -37,6 +37,10 @@ class NovelReaderImpl(
         return query
     }
 
+    override fun getNovelsByIdsIn(ids: List<Long>): List<Novel> {
+        return novelRepository.findAllById(ids)
+    }
+
     private fun cursorWhereIdEqExpression(cursorRequest: CursorRequest): BooleanExpression? {
         if(cursorRequest.cursorId == null){
             return null

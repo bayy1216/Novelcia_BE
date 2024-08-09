@@ -15,6 +15,7 @@ import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Repository
@@ -117,6 +118,18 @@ class EpisodeReaderImpl(
 
     override fun getReferenceById(id: Long): Episode {
         return episodeRepository.getReferenceById(id)
+    }
+
+    override fun getEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode> {
+        return jpaQueryFactory.select(QEpisode.episode)
+            .from(QEpisode.episode)
+            .where(
+                QEpisode.episode.createdAt.between(
+                    startDate.atStartOfDay(),
+                    endDate.atStartOfDay().plusDays(1)
+                ),
+                QEpisode.episode.isDeleted.eq(false),
+            ).fetch()
     }
 }
 internal data class EpisodeProjection(

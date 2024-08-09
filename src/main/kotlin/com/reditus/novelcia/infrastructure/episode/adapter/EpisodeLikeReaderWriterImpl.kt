@@ -24,4 +24,8 @@ class EpisodeLikeReaderWriterImpl(
     override fun findByEpisodeIdAndUserId(episodeId: Long, userId: Long): EpisodeLike? {
         return episodeLikeRepository.findByEpisodeIdAndUserId(episodeId, userId)
     }
+
+    override fun countByEpisodeId(episodeId: Long): Long {
+        return episodeLikeRepository.countByEpisodeId(episodeId)
+    }
 }

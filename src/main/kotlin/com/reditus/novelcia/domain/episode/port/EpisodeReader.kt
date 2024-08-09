@@ -3,6 +3,7 @@ package com.reditus.novelcia.domain.episode.port
 import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.application.EpisodeModel
 import org.springframework.data.domain.PageRequest
+import java.time.LocalDate
 
 interface EpisodeReader {
     fun getEpisodeModelsByOffsetPaging(
@@ -17,6 +18,8 @@ interface EpisodeReader {
     fun getLastEpisodeNumberByNovelId(novelId: Long): Int?
 
     fun getReferenceById(id: Long): Episode
+
+    fun getEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode>
 }
 
 enum class EpisodePagingSort {

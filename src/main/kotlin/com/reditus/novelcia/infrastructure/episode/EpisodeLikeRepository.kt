@@ -11,4 +11,6 @@ interface EpisodeLikeRepository : JpaRepository<EpisodeLike, Long> {
     fun deleteByEpisodeIdAndUserId(episodeId: Long, userId: Long): Int
 
     fun findByEpisodeIdAndUserId(episodeId: Long, userId: Long): EpisodeLike?
+
+    fun countByEpisodeId(episodeId: Long): Long
 }
