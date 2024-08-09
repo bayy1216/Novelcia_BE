@@ -49,12 +49,19 @@ class EpisodeModel {
         val episodeNumber: Int,
         val authorComment: String,
         val createdAt: LocalDateTime,
-        val isLiked: Boolean,
+        //
         val novelId: Long,
+        val isLiked: Boolean,
         val isFavoriteNovel: Boolean,
+        val maxEpisodeNumber: Int,
     ) {
         companion object {
-            fun from(episode: Episode, isLiked: Boolean, isFavorite: Boolean): TxScope.() -> Detail = {
+            fun from(
+                episode: Episode,
+                isLiked: Boolean,
+                isFavorite: Boolean,
+                maxEpisodeNumber: Int,
+            ): TxScope.() -> Detail = {
                 Detail(
                     id = episode.id,
                     title = episode.title,
@@ -65,6 +72,7 @@ class EpisodeModel {
                     createdAt = episode.createdAt,
                     isLiked = isLiked,
                     isFavoriteNovel = isFavorite,
+                    maxEpisodeNumber = maxEpisodeNumber,
                 )
             }
         }

@@ -15,6 +15,7 @@ import com.reditus.novelcia.domain.novel.port.NovelFavoriteReader
 import com.reditus.novelcia.domain.user.UserModel
 import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.infrastructure.novel.NovelFavoriteRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageImpl
 import org.springframework.data.domain.Pageable
@@ -23,7 +24,12 @@ import org.springframework.stereotype.Repository
 @Repository
 class NovelFavoriteReaderImpl(
     private val jpaQueryFactory: JPAQueryFactory,
+    private val novelFavoriteRepository: NovelFavoriteRepository,
 ) : NovelFavoriteReader {
+    override fun findByUserIdAndNovelId(userId: Long, novelId: Long): NovelFavorite? {
+        return novelFavoriteRepository.findByUserIdAndNovelId(userId, novelId)
+    }
+
     /**
      * 1. count 쿼리로 novelFavorite 개수 조회
      * 2. novelFavorite 페이징 조회 쿼리 - novel, author fetch join

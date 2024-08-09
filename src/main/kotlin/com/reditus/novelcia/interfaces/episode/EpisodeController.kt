@@ -42,7 +42,7 @@ class EpisodeController(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         @PathVariable novelId: Long,
         @PathVariable episodeNumber: Int,
-    ): EpisodeModel.Main {
+    ): EpisodeModel.Detail {
         return episodeQueryService.getEpisodeDetail(
             novelId = novelId,
             episodeNumber = episodeNumber,

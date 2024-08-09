@@ -1,10 +1,15 @@
 package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.episode.Episode
+import com.reditus.novelcia.domain.episode.EpisodeLike
 import com.reditus.novelcia.domain.episode.EpisodeReadEvent
+import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.domain.episode.port.EpisodeReadEventProducer
 import com.reditus.novelcia.domain.episode.port.EpisodeReader
+import com.reditus.novelcia.domain.novel.NovelFavorite
+import com.reditus.novelcia.domain.novel.port.NovelFavoriteReader
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.data.domain.PageRequest
@@ -16,6 +21,8 @@ class EpisodeQueryService(
     private val userReader: UserReader,
     private val episodeReader: EpisodeReader,
     private val episodeReadEventProducer: EpisodeReadEventProducer,
+    private val episodeLikeReader: EpisodeLikeReader,
+    private val novelFavoriteReader: NovelFavoriteReader,
 ) {
 
     /**
@@ -43,7 +50,7 @@ class EpisodeQueryService(
         novelId: Long,
         episodeNumber: Int,
         userId: LoginUserId,
-    ): EpisodeModel.Main = readOnly {
+    ): EpisodeModel.Detail = readOnly {
         val episode = episodeReader.getByEpisodeNumberAndNovelIdWithNovel(episodeNumber=episodeNumber, novelId=novelId)
         val user = userReader.getById(userId.value)
         if (!episode.canRead(user)) {
@@ -52,6 +59,18 @@ class EpisodeQueryService(
         val event = EpisodeReadEvent(novelId = episode.novel.id, episodeId = episode.id, userId = userId.value)
         episodeReadEventProducer.publish(event)
 
-        return@readOnly EpisodeModel.Main.from(episode)(this)
+        val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episode.id, userId = userId.value)
+        val novelFavorite: NovelFavorite? =
+            novelFavoriteReader.findByUserIdAndNovelId(userId = userId.value, novelId = novelId)
+        val maxEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId = novelId)!!
+
+
+
+        return@readOnly  EpisodeModel.Detail.from(
+            episode,
+            episodeLike != null,
+            novelFavorite != null,
+            maxEpisodeNumber,
+        )()
     }
 }
