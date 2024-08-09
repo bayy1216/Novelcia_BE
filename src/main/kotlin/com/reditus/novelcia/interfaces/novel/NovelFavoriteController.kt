@@ -18,8 +18,8 @@ class NovelFavoriteController(
     private val novelFavoriteService: NovelFavoriteService,
 ) {
 
-    @Operation(summary = "소설 선호작 목록 조회")
-    @PostMapping("/api/novels/favorite")
+    @Operation(summary = "소설 선호작 목록 페이징 조회")
+    @GetMapping("/api/novels/favorite")
     fun getFavoriteNovels(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         @ParameterObject offsetRequest: OffsetRequest,
