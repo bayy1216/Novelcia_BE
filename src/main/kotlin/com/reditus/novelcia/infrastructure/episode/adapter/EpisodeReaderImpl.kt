@@ -106,7 +106,7 @@ class EpisodeReaderImpl(
             ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
     }
 
-    override fun getLastEpisodeNumberByNovelId(novelId: Long): Int? {
+    override fun findLastEpisodeNumberByNovelId(novelId: Long): Int? {
         val query = jpaQueryFactory.select(QEpisode.episode.episodeNumber.max())
             .from(QEpisode.episode)
             .where(
@@ -120,7 +120,7 @@ class EpisodeReaderImpl(
         return episodeRepository.getReferenceById(id)
     }
 
-    override fun getEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode> {
+    override fun findEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode> {
         return jpaQueryFactory.select(QEpisode.episode)
             .from(QEpisode.episode)
             .where(

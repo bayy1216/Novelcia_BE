@@ -4,7 +4,7 @@ import com.reditus.novelcia.domain.episode.EpisodeComment
 import java.time.LocalDate
 
 interface EpisodeCommentReader {
-    fun getAllByDaysBetweenCreatedAt(
+    fun findAllByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeComment>

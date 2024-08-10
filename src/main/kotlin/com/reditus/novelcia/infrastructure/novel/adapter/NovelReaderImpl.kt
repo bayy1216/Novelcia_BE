@@ -24,7 +24,7 @@ class NovelReaderImpl(
         return novel
     }
 
-    override fun getNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel> {
+    override fun findNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel> {
         val query = jpaQueryFactory
             .select(novel).from(novel)
             .where(
@@ -37,7 +37,7 @@ class NovelReaderImpl(
         return query
     }
 
-    override fun getNovelsByIdsIn(ids: List<Long>): List<Novel> {
+    override fun findNovelsByIdsIn(ids: List<Long>): List<Novel> {
         return novelRepository.findAllById(ids)
     }
 

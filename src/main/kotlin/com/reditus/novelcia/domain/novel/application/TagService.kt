@@ -16,7 +16,7 @@ class TagService(
     private val tagWriter: TagWriter,
 ) {
     fun upsertTags(commands: List<TagCommand.Upsert>): UpsertResult<String> = transactional {
-        val existTags = tagReader.getTagsByTagNamesIn(commands.map { it.name })
+        val existTags = tagReader.findTagsByTagNamesIn(commands.map { it.name })
         val newTags = mutableListOf<Tag>()
         commands.forEach { upsertCommand ->
             val exitsTag = existTags.find { tag -> tag.name == upsertCommand.name }
@@ -35,7 +35,7 @@ class TagService(
     }
 
     fun getAllTags(): List<TagModel> = readOnly {
-        val tags = tagReader.getAllTags()
+        val tags = tagReader.findAllTags()
         return@readOnly tags.map { TagModel.from(it)(this) }
     }
 }

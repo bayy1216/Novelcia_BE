@@ -1,8 +1,6 @@
 package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.EpisodeLike
 import com.reditus.novelcia.domain.episode.EpisodeReadEvent
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
@@ -14,7 +12,6 @@ import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class EpisodeQueryService(
@@ -74,7 +71,7 @@ class EpisodeQueryService(
         val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episodeId, userId = userId)
         val novelFavorite: NovelFavorite? =
             novelFavoriteReader.findByUserIdAndNovelId(userId = userId, novelId = novelId)
-        val maxEpisodeNumber = episodeReader.getLastEpisodeNumberByNovelId(novelId = novelId)!!
+        val maxEpisodeNumber = episodeReader.findLastEpisodeNumberByNovelId(novelId = novelId)!!
         return@readOnly Triple(episodeLike, novelFavorite, maxEpisodeNumber)
     }
 }

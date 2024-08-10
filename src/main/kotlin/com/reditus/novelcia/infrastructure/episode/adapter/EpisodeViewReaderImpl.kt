@@ -11,7 +11,7 @@ import java.time.LocalDate
 class EpisodeViewReaderImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : EpisodeViewReader {
-    override fun getAllByDaysBetweenCreatedAt(
+    override fun findAllByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeView> {

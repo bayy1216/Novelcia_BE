@@ -42,10 +42,10 @@ class NovelReaderImplTest @Autowired constructor(
             size = 10
         )
         val novels =
-            novelReaderImpl.getNovelsByCursorOrderByCreatedAt(cursorRequest)
+            novelReaderImpl.findNovelsByCursorOrderByCreatedAt(cursorRequest)
         assertEquals(4, novels.size) // 1, 2, 3, 4가 오래전이라 나와야함
 
-        val novels2 = novelReaderImpl.getNovelsByCursorOrderByCreatedAt(
+        val novels2 = novelReaderImpl.findNovelsByCursorOrderByCreatedAt(
             CursorRequest(
                 size = 10,
             )

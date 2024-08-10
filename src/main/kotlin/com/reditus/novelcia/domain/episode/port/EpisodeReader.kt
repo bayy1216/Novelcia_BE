@@ -15,11 +15,11 @@ interface EpisodeReader {
     fun getByIdWithNovel(episodeId: Long): Episode
     fun getByEpisodeNumberAndNovelIdWithNovel(novelId: Long, episodeNumber: Int): Episode
 
-    fun getLastEpisodeNumberByNovelId(novelId: Long): Int?
+    fun findLastEpisodeNumberByNovelId(novelId: Long): Int?
 
     fun getReferenceById(id: Long): Episode
 
-    fun getEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode>
+    fun findEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode>
 }
 
 enum class EpisodePagingSort {

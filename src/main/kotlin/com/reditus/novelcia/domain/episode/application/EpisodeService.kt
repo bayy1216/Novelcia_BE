@@ -36,7 +36,7 @@ class EpisodeService(
         if (!novel.isAuthor(userId.value)) {
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }
-        val lastEpisodeNumber: Int? = episodeReader.getLastEpisodeNumberByNovelId(novelId)
+        val lastEpisodeNumber: Int? = episodeReader.findLastEpisodeNumberByNovelId(novelId)
         val episodeNumber = if (lastEpisodeNumber == null) {
             Episode.INITIAL_EPISODE_NUMBER
         } else {

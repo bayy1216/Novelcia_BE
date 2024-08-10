@@ -15,12 +15,12 @@ class SpeciesService(
     private val speciesWriter: SpeciesWriter,
 ) {
     fun getAllSpecies(): List<SpeciesModel> = readOnly {
-        val species = speciesReader.getSpeciesAll()
+        val species = speciesReader.findSpeciesAll()
         return@readOnly species.map { SpeciesModel.from(it)() }
     }
 
     fun upsertSpecies(commands: List<SpeciesCommand.Upsert>): UpsertResult<Long> = transactional {
-        val existingSpeciesList = speciesReader.getSpeciesByNamesIn(commands.map { it.name })
+        val existingSpeciesList = speciesReader.findSpeciesByNamesIn(commands.map { it.name })
         val newSpecies = mutableListOf<Species>()
         commands.forEach { upsertCommand ->
             val existingSpecies = existingSpeciesList.find { it.name == upsertCommand.name }

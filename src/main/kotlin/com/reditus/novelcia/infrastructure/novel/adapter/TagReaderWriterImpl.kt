@@ -11,11 +11,11 @@ import org.springframework.stereotype.Repository
 class TagReaderWriterImpl(
     private val tagRepository: TagRepository,
 ) : TagReader, TagWriter {
-    override fun getTagsByTagNamesIn(tagNames: List<String>): List<Tag> {
+    override fun findTagsByTagNamesIn(tagNames: List<String>): List<Tag> {
         return tagRepository.findAllByNameIn(tagNames)
     }
 
-    override fun getAllTags(): List<Tag> {
+    override fun findAllTags(): List<Tag> {
         return tagRepository.findAll()
     }
 

@@ -24,7 +24,7 @@ class NovelQueryService(
 ) {
 
     fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> = readOnly {
-        val novels = novelReader.getNovelsByCursorOrderByCreatedAt(cursorRequest)
+        val novels = novelReader.findNovelsByCursorOrderByCreatedAt(cursorRequest)
         return@readOnly novels.map { NovelModel.Main.from(it)(this) }
     }
 
@@ -53,7 +53,7 @@ class NovelQueryService(
         }
         val scoresByGroupNovel = novelAndScore.groupBy({ it.first }, { it.second })
 
-        val novels = novelReader.getNovelsByIdsIn(scoresByGroupNovel.keys.map { it.id })
+        val novels = novelReader.findNovelsByIdsIn(scoresByGroupNovel.keys.map { it.id })
 
 
         return@readOnly novels.map { NovelModel.Main.from(it)() }
@@ -61,7 +61,7 @@ class NovelQueryService(
 
 
     private fun getScoringMetaByLocalDate(days: Int): ScoringMetaData = readOnly {
-        val episodesAll = episodeReader.getEpisodesDaysBetweenByCreatedAt(
+        val episodesAll = episodeReader.findEpisodesDaysBetweenByCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
@@ -69,11 +69,11 @@ class NovelQueryService(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val viewsAll = episodeViewReader.getAllByDaysBetweenCreatedAt(
+        val viewsAll = episodeViewReader.findAllByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val commentsAll = episodeCommentReader.getAllByDaysBetweenCreatedAt(
+        val commentsAll = episodeCommentReader.findAllByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )

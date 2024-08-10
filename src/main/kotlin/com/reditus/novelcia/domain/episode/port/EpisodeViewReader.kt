@@ -4,7 +4,7 @@ import com.reditus.novelcia.domain.episode.EpisodeView
 import java.time.LocalDate
 
 interface EpisodeViewReader {
-    fun getAllByDaysBetweenCreatedAt(
+    fun findAllByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeView>

@@ -12,7 +12,7 @@ class EpisodeCommentReaderImpl(
     private val jpaQueryFactory: JPAQueryFactory,
 ) : EpisodeCommentReader {
 
-    override fun getAllByDaysBetweenCreatedAt(
+    override fun findAllByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeComment> {

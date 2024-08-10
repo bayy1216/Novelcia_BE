@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository
 class SpeciesReaderWriterImpl(
     private val speciesRepository: SpeciesRepository,
 ) : SpeciesReader, SpeciesWriter {
-    override fun getSpeciesAll(): List<Species> {
+    override fun findSpeciesAll(): List<Species> {
         return speciesRepository.findAll()
     }
 
-    override fun getSpeciesByNamesIn(names: List<String>): List<Species> {
+    override fun findSpeciesByNamesIn(names: List<String>): List<Species> {
         return speciesRepository.findByNameIn(names)
     }
 
