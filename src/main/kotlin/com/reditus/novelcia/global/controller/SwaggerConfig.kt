@@ -1,40 +1,37 @@
 package com.reditus.novelcia.global.controller
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition
-import io.swagger.v3.oas.annotations.servers.Server
-import io.swagger.v3.oas.models.Components
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
-import io.swagger.v3.oas.models.security.SecurityRequirement
-import io.swagger.v3.oas.models.security.SecurityScheme
+import io.swagger.v3.oas.models.servers.Server
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
 
-@OpenAPIDefinition(
-    servers = [
-        Server(url = "http://localhost:8080", description = "Local Server"),
-        Server(url = "https://c2c.reditus.site", description = "Prod Server")
-    ]
-)
+
 @Configuration
 class SwaggerConfig {
     @Bean
-    fun openAPI(): OpenAPI = OpenAPI()
-        .components(components())
+    fun openAPI(
+        server: Server,
+    ): OpenAPI = OpenAPI()
         .info(apiInfo())
-        .addSecurityItem(SecurityRequirement().addList("bearer-key"))
-
-    private fun components() = Components()
-        .addSecuritySchemes("bearer-key", bearerJwtSecurityScheme())
-
-    private fun bearerJwtSecurityScheme() = SecurityScheme()
-        .type(SecurityScheme.Type.HTTP)
-        .scheme("bearer")
-        .bearerFormat("JWT")
-        .description("JWT 인증을 위한 토큰을 입력하세요. (예: Bearer {token}에서 token만 입력)")
+        .servers(listOf(server))
 
     private fun apiInfo() = Info()
-        .title("ProfileGen API")
+        .title("Novelcia API")
         .description("api 문서입니다.")
         .version("0.0.1")
+
+    @Bean
+    fun getLocalServer(): Server = Server()
+        .url("http://localhost:8080")
+        .description("Local Server")
+
+    @Bean
+    @Primary
+    @Profile("prod") // prod 환경에서만 사용되어 Primary가 활성화 됨
+    fun getProdServer(): Server = Server()
+        .url("https://c2c.reditus.site")
+        .description("Production Server")
 }
