@@ -6,6 +6,8 @@ import com.reditus.novelcia.domain.PositiveInt
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.global.util.transactional
+import org.springframework.dao.DataAccessException
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 
 @Service
@@ -29,8 +31,16 @@ class UserService(
         userId: LoginUserId,
         point: PositiveInt, idempotencyKey: String,
     ) = transactional {
-        idempotencyEventStore.save(idempotencyKey) // 멱등성 체크, 삽입 실패시 FAIL
+        val key = idempotencyKey.generateIdempotencyKey(userId.value)
+        try{
+            idempotencyEventStore.save(key) // 멱등성 체크, 삽입 실패시 FAIL early return
+        }catch (e: DataAccessException){
+            throw IllegalStateException("이미 처리된 요청입니다.")
+        }
+
 
         userWriter.chargePoint(userId = userId.value, point = point)
     }
 }
+
+fun String.generateIdempotencyKey(userId: Long): String = "$userId:$this"

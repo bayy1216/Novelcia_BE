@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
@@ -26,7 +27,7 @@ class UserController(
         userService.getUserModelById(loginUserDetails.loginUserId.value)
 
     @Operation(summary = "로그인한 사용자 포인트 충전")
-    @PostMapping("/api/user/charge")
+    @PatchMapping("/api/user/charge")
     fun chargePoint(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         //멱등키

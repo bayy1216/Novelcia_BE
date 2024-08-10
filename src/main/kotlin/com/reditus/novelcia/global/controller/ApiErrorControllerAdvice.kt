@@ -24,7 +24,7 @@ class ApiErrorControllerAdvice {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun illegalStateException(e: IllegalStateException): ApiResponse<Unit> {
         log.error("IllegalStateException", e)
         return ApiResponse.fail(

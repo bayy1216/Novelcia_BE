@@ -11,5 +11,6 @@ class IdempotencyEventStoreImpl(
 ) : IdempotencyEventStore {
     override fun save(idempotencyKey: String) {
         em.persist(IdempotencyEvent(idempotencyKey))
+        em.flush()
     }
 }
