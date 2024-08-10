@@ -10,6 +10,7 @@ import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.global.util.newTransaction
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
+import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.infrastructure.novel.NovelRepository
 import com.reditus.novelcia.infrastructure.user.UserRepository
@@ -19,13 +20,14 @@ import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.test.annotation.Rollback
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
+import kotlin.test.AfterTest
 
 @SpringBootTest
-@Transactional
 class EpisodeQueryServiceTest @Autowired constructor(
     private val episodeService: EpisodeService,
     private val episodeQueryService: EpisodeQueryService,
@@ -33,18 +35,23 @@ class EpisodeQueryServiceTest @Autowired constructor(
     private val novelRepository: NovelRepository,
     private val threadPoolTaskExecutor: ThreadPoolTaskExecutor,
     private val episodeRepository: EpisodeRepository,
+    private val episodeViewRepository: EpisodeViewRepository,
 ) {
 
+    @AfterTest
+    fun cleanUp() {
+        episodeViewRepository.deleteAllInBatch()
+        episodeRepository.deleteAllInBatch()
+        novelRepository.deleteAllInBatch()
+        userRepository.deleteAllInBatch()
+    }
+
     @Test
-    @Rollback
     fun `에피소드 상세조회를 n번 할시, EpisodeModel_Meta의 조회수가 정상적으로 n만큼 증가한다`(){
         // given
-        lateinit var user: User
-        lateinit var novel: Novel
-        lateinit var episode: Episode
-        newTransaction {
-            user = userRepository.save(User.fixture())
-            novel = novelRepository.save(Novel.fixture(
+
+            val user = userRepository.save(User.fixture())
+            val novel = novelRepository.save(Novel.fixture(
                 author = user,
             ))
             val episodeId = episodeService.createEpisode(
@@ -57,8 +64,8 @@ class EpisodeQueryServiceTest @Autowired constructor(
                     readAuthority = ReadAuthority.FREE,
                 )
             )
-            episode = episodeRepository.findByIdOrThrow(episodeId)
-        }
+            val episode = episodeRepository.findByIdOrThrow(episodeId)
+
 
         // when
         repeat(5) {
@@ -85,6 +92,5 @@ class EpisodeQueryServiceTest @Autowired constructor(
         val episodeMetaModel: EpisodeModel.Meta = episodePaging.first()
 
         assertEquals(episodeMetaModel.viewsCount, 5)
-
     }
 }
