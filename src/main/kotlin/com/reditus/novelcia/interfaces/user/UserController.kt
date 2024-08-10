@@ -4,10 +4,12 @@ import com.reditus.novelcia.domain.PositiveInt
 import com.reditus.novelcia.domain.user.UserService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 
 
@@ -27,11 +29,14 @@ class UserController(
     @PostMapping("/api/user/charge")
     fun chargePoint(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
+        //멱등키
+        @RequestHeader("Idempotency-Key") idempotencyKey: String,
         point: Int
     ) {
         userService.chargePoint(
             loginUserDetails.loginUserId,
-            PositiveInt(point)
+            PositiveInt(point),
+            idempotencyKey
         )
     }
 }
