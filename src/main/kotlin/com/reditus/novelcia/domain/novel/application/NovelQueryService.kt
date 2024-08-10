@@ -28,7 +28,7 @@ class NovelQueryService(
         return@readOnly novels.map { NovelModel.Main.from(it)(this) }
     }
 
-    fun getNovelModelsByRanking(days: Int, size: Int): List<NovelModel.Main> = readOnly {
+    fun getNovelModelsByRanking(days: Int, size: Int, page: Int): List<NovelModel.Main> = readOnly {
 
         val scoringMetaData = getScoringMetaByLocalDate(days)
         val (episodesAll, likesAll, viewsAll, commentsAll) = scoringMetaData
@@ -53,7 +53,8 @@ class NovelQueryService(
         }
         val scoresByGroupNovel = novelAndScore.groupBy({ it.first }, { it.second })
 
-        val novels = novelReader.findNovelsByIdsIn(scoresByGroupNovel.keys.map { it.id })
+        val novelIds = scoresByGroupNovel.keys.map { it.id }.subList(page * size, (page + 1) * size)
+        val novels = novelReader.findNovelsByIdsIn(novelIds)
 
 
         return@readOnly novels.map { NovelModel.Main.from(it)() }

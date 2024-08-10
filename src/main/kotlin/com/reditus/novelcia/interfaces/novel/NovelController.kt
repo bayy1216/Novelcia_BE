@@ -34,10 +34,12 @@ class NovelController(
     fun getNovelRanking(
         @RequestParam days: Int = 1,
         @RequestParam size: Int = 20,
+        @RequestParam page: Int = 0,
     ): List<NovelRes.Meta> {
         val models = novelQueryService.getNovelModelsByRanking(
             days = days,
             size = size,
+            page = page,
         )
         return models.map(NovelRes.Meta::from)
     }
