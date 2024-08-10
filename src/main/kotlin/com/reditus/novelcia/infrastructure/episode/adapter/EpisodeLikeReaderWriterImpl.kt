@@ -7,6 +7,7 @@ import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeWriter
 import com.reditus.novelcia.infrastructure.episode.EpisodeLikeRepository
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 class EpisodeLikeReaderWriterImpl(
@@ -32,10 +33,18 @@ class EpisodeLikeReaderWriterImpl(
         return episodeLikeRepository.countByEpisodeId(episodeId)
     }
 
-    override fun findAllByEpisodeIds(episodeIds: List<Long>): List<EpisodeLike> {
+    override fun findAllByDaysBetweenCreatedAt(
+        startDate: LocalDate,
+        endDate: LocalDate,
+    ): List<EpisodeLike> {
         return jpaQueryFactory
             .selectFrom(QEpisodeLike.episodeLike)
-            .where(QEpisodeLike.episodeLike.episode.id.`in`(episodeIds))
+            .where(
+                QEpisodeLike.episodeLike.createdAt.between(
+                    startDate.atStartOfDay(),
+                    endDate.plusDays(1).atStartOfDay()
+                )
+            )
             .fetch()
     }
 }
