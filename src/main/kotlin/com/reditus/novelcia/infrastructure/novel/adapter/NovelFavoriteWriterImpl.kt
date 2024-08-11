@@ -15,7 +15,7 @@ class NovelFavoriteWriterImpl(
 
     override fun deleteByUserIdAndNovelId(userId: Long, novelId: Long) {
         val affected = novelFavoriteRepository.deleteByNovelIdAndUserId(novelId, userId)
-        if (affected == 0L) {
+        if (affected == 0) {
             throw NoSuchElementException("해당 선호작이 존재하지 않습니다.")
         }
     }
