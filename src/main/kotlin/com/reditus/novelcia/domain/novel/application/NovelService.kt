@@ -32,7 +32,7 @@ class NovelService(
         }
         val speciesList = speciesReader.findSpeciesByNamesIn(command.speciesNames).apply {
             if (this.size != command.speciesNames.size) {
-                throw IllegalArgumentException("종 이름이 잘못되었습니다.")
+                throw IllegalArgumentException("분류 이름이 잘못되었습니다.")
             }
         }
         val novel = Novel.create(author, command, tags, speciesList)
@@ -61,7 +61,7 @@ class NovelService(
             .toSet()
             .apply {  // speciesNames에 중복이 있거나, 존재하지 않는 종 이름이 있을 경우
                 if (this.size != command.speciesNames.size) {
-                    throw IllegalArgumentException("종 이름이 잘못되었습니다.")
+                    throw IllegalArgumentException("분류 이름이 잘못되었습니다.")
                 }
             }
         novel.update(command, tags, speciesList)
