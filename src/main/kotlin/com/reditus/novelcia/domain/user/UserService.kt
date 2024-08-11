@@ -34,7 +34,7 @@ class UserService(
         val key = idempotencyKey.generateIdempotencyKey(userId.value)
         try{
             idempotencyEventStore.save(key) // 멱등성 체크, 삽입 실패시 FAIL early return
-        }catch (e: DataAccessException){
+        }catch (e: DataIntegrityViolationException){
             throw IllegalStateException("이미 처리된 요청입니다.")
         }
 
