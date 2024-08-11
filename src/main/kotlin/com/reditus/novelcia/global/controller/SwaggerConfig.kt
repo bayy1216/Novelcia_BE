@@ -3,6 +3,7 @@ package com.reditus.novelcia.global.controller
 import io.swagger.v3.oas.models.OpenAPI
 import io.swagger.v3.oas.models.info.Info
 import io.swagger.v3.oas.models.servers.Server
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -31,7 +32,10 @@ class SwaggerConfig {
     @Bean
     @Primary
     @Profile("prod") // prod 환경에서만 사용되어 Primary가 활성화 됨
-    fun getProdServer(): Server = Server()
-        .url("https://c2c.reditus.site")
+    fun getProdServer(
+        @Value("\${prod-url}")
+        prodUrl: String,
+    ): Server = Server()
+        .url(prodUrl)
         .description("Production Server")
 }
