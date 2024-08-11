@@ -61,18 +61,24 @@ class NovelFavoriteReaderImpl(
 
         val novelTags = jpaQueryFactory
             .select(QNovelAndTag.novelAndTag)
-            .from(QNovelAndTag.novelAndTag, QNovelFavorite.novelFavorite)
-            .join(QNovelAndTag.novelAndTag.tag, QTag.tag).fetchJoin()
-            .join(QNovelAndTag.novelAndTag.novel, QNovel.novel).fetchJoin()
-            .where(QNovelFavorite.novelFavorite.novel.id.`in`(novelIds))
+            .from(QNovelAndTag.novelAndTag)
+            .join(QNovelFavorite.novelFavorite)
+            .on(
+                QNovelAndTag.novelAndTag.novel.id.eq(QNovelFavorite.novelFavorite.novel.id),
+                QNovelFavorite.novelFavorite.novel.id.`in`(novelIds)
+            )
+            .innerJoin(QNovelAndTag.novelAndTag.tag, QTag.tag).fetchJoin()
             .fetch()
 
         val novelSpecies = jpaQueryFactory
             .select(QNovelAndSpecies.novelAndSpecies)
-            .from(QNovelAndSpecies.novelAndSpecies, QNovelFavorite.novelFavorite)
-            .join(QNovelAndSpecies.novelAndSpecies.species).fetchJoin()
-            .join(QNovelAndSpecies.novelAndSpecies.novel, QNovel.novel).fetchJoin()
-            .where(QNovelFavorite.novelFavorite.novel.id.`in`(novelIds))
+            .from(QNovelAndSpecies.novelAndSpecies)
+            .join(QNovelFavorite.novelFavorite)
+            .on(
+                QNovelAndSpecies.novelAndSpecies.novel.id.eq(QNovelFavorite.novelFavorite.novel.id),
+                QNovelFavorite.novelFavorite.novel.id.`in`(novelIds)
+            )
+            .innerJoin(QNovelAndSpecies.novelAndSpecies.species).fetchJoin()
             .fetch()
 
         val novelTagMap = novelTags
@@ -122,29 +128,16 @@ class NovelFavoriteReaderImpl(
             .fetch()
 
 
-        val novelModels = novelFavorites.toModel(
-            novelSpeciesMap= novelSpeciesMap,
-            novelTagMap = novelTagMap,
-            lastTimeViewEpisode= lastTimeViewEpisode,
-            maxEpisodeNumbers= maxEpisodeNumbers,
-        )()
+        val novelModels = novelFavorites.map {
+            it.toModel(
+                novelSpeciesMap,
+                novelTagMap,
+                lastTimeViewEpisode,
+                maxEpisodeNumbers,
+            )()
+        }
 
         return@readOnly PageImpl(novelModels, Pageable.ofSize(offsetRequest.size), count ?: 0L)
-    }
-}
-fun List<NovelFavorite>.toModel(
-    novelSpeciesMap: Map<Long, List<Species>>,
-    novelTagMap: Map<Long, List<Tag>>,
-    lastTimeViewEpisode: List<EpisodeLastViewQuery>,
-    maxEpisodeNumbers: List<EpisodeMaxNumberQuery>,
-): TxScope.()->List<NovelModel.UserFavorite> = {
-    map {
-        it.toModel(
-            novelSpeciesMap,
-            novelTagMap,
-            lastTimeViewEpisode,
-            maxEpisodeNumbers,
-        )()
     }
 }
 
@@ -170,7 +163,8 @@ fun NovelFavorite.toModel(
             .find { query -> query.novelId == novel.id }?.lastReadEpisodeNumber
             ?: Episode.INITIAL_EPISODE_NUMBER,
         maxEpisodeNumber = maxEpisodeNumbers
-            .find { query -> query.novelId == novel.id }!!.maxEpisodeNumber,
+            .find { query -> query.novelId == novel.id }?.maxEpisodeNumber
+            ?: Episode.INITIAL_EPISODE_NUMBER,
     )
 }
 
