@@ -3,6 +3,7 @@ package com.reditus.novelcia.infrastructure
 import jakarta.persistence.EntityManager
 import jakarta.persistence.EntityManagerFactory
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationContextAware
 import org.springframework.data.jpa.repository.JpaRepository
@@ -35,10 +36,11 @@ class BatchRepositoryImpl<T, ID>(
 
 @Component
 class BatchExecutor(
-    private val entityManagerFactory: EntityManagerFactory
+    private val entityManagerFactory: EntityManagerFactory,
+    @Value("\${spring.jpa.properties.hibernate.jdbc.batch_size}")
+    private val batchSize: Int,
 ) {
-//    @Value("\${spring.jpa.properties.hibernate.jdbc.batch_size}")
-    private val batchSize = 30
+
 
     fun <T> saveInBatch(entities: List<T>) {
         val entityManager = entityManagerFactory.createEntityManager()

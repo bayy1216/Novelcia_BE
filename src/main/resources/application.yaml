@@ -16,6 +16,9 @@ spring: # test profile
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
     properties:
       hibernate:
+        order_inserts: true
+        jdbc:
+          batch_size: 30
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
   sql.init.mode: never
@@ -67,6 +70,21 @@ spring: # local profile
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      data-source-properties:
+        cachePrepStmts: true
+        prepStmtCacheSize: 250
+        prepStmtCacheSqlLimit: 2048
+        useServerPrepStmts: true
+        userLocalSessionState: true
+        rewriteBatchedStatements: true
+        cacheResultSetMetadata: true
+        cacheServerConfiguration: true
+        elideSetAutoCommits: true
+        maintainTimeStats: false
+#        profileSQL: true
+#        logger: Slf4JLogger
+#        maxQuerySizeToLog: 999999
   jpa:
     hibernate:
       ddl-auto: update
