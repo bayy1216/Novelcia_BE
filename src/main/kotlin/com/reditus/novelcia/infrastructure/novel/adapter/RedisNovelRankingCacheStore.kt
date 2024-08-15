@@ -44,6 +44,8 @@ class RedisNovelRankingCacheStore(
         }.toSet()
 
         redisTemplate.opsForZSet().add(key, dataToAdd)
+        // 1시간 10분후 만료(방어 코드)
+        redisTemplate.expire(key, 70 * 60, java.util.concurrent.TimeUnit.SECONDS)
     }
 
     private fun getRankingKey(days: Int): String {
