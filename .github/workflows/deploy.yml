@@ -74,11 +74,16 @@ jobs:
           key: ${{ secrets.KEY }}
           port: 22
           script: |
-            docker rm -f $(docker ps -qa --filter "name=novelcia-api") # 기존 spring 서버만 잡아서 중지합니다.
+            docker service update --image ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }} \
+            --update-parallelism 1 \
+            --update-order stop-first \
+            --update-delay 30s \
+            --update-failure-action rollback \
+            novelcia-api
+            yes | docker container prune # 사용하지 않는 도커 컨테이너들을 제거합니다.
             yes | docker image prune -a # 사용하지 않는 도커 이미지들을 제거합니다.
-            
-            docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod \
-            --name novelcia-api \
-            --network=novelcia \
-            -e CONFIG_SERVER=http://novelcia-config:8888 \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
+#            docker run -d -p 8080:8080 -e SPRING_PROFILES_ACTIVE=prod \
+#            --name novelcia-api \
+#            --network=novelcia \
+#            -e CONFIG_SERVER=http://novelcia-config:8888 \
+#            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
