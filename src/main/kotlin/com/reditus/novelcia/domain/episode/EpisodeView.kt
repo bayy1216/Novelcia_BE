@@ -27,4 +27,11 @@ class EpisodeView(
     @JoinColumn(name = "user_id", nullable = false)
     val user: User,
 ) : BaseTimeEntity() {
+
+    val novelId: Long
+        get() = novel.id
+    val userId: Long
+        get() = user.id
+    val episodeId: Long
+        get() = episode.id
 }
