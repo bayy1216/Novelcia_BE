@@ -7,6 +7,8 @@ import com.reditus.novelcia.domain.novel.usecase.NovelAndScore
 import com.reditus.novelcia.domain.novel.usecase.NovelScoringUseCase
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Service
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 @Service
 class NovelQueryService(
@@ -32,24 +34,37 @@ class NovelQueryService(
         val cache: List<NovelAndScore>? =
             novelRankingCacheStore.getNovelIdRankingByPage(days = days, size = size, page = page)
 
-        return readOnly {
-            val novelIds = if (cache != null) {
-                cache.map { it.novelId }
-            } else {
-                // 캐시가 없는 경우 전체 스코어링을 계산
-                val scoresByOrder = novelScoringUseCase(days = days)
-                // 계산 결과 전체 캐시 저장
-                novelRankingCacheStore.saveNovelIdAndScoresAll(days, scoresByOrder)
-                // 페이징 ID 추출
-                scoresByOrder.map { it.novelId }.subList(
-                    page * size,
-                    minOf((page + 1) * size, scoresByOrder.size)
-                )
+        if(cache != null){ // 캐시가 존재하면 캐시를 반환 early return
+            return readOnly {
+                val novels = novelReader.findNovelsByIdsIn(cache.map { it.novelId })
+                return@readOnly novels.map { NovelModel.Main.from(it)() }
             }
-            // ID로 novel DB 조회
-            val novels = novelReader.findNovelsByIdsIn(novelIds)
-            return@readOnly novels.map { NovelModel.Main.from(it)() }
         }
+
+        // 스케줄링 노드의 실패로 인해 캐시가 없는경우(방어로직)
+        // 혹은 최근 기간동안 event가 하나도 없어서 스코어링 novel 이 없는 경우
+        // -> 실시간으로 스코어링을 조회하여 캐시를 저장한다.
+        // API 서버간의 분산락은 사용하지 않는다 (복잡성을 줄이기 위해)
+        return cacheUpdateLock.withLock {
+            log.warn("NovelScoringUseCase trigger by cache miss (days: $days)")
+            val scoresByOrder = novelScoringUseCase(days = days) // TX BLOCK
+            if(scoresByOrder.isEmpty()){ // 스코어링 결과가 없으면 early return
+                return@withLock emptyList()
+            }
+
+            novelRankingCacheStore.saveNovelIdAndScoresAll(days, scoresByOrder) // 캐시 저장
+            val novelIds = scoresByOrder.map { it.novelId }
+            return@withLock readOnly { // 소설 DB 조회, // TX BLOCK
+                val novels = novelReader.findNovelsByIdsIn(novelIds)
+                return@readOnly novels.map { NovelModel.Main.from(it)() }
+            }
+        }
+
+    }
+
+    companion object{
+        private val cacheUpdateLock = ReentrantLock()
+        private val log = org.slf4j.LoggerFactory.getLogger(this::class.java)
     }
 
 

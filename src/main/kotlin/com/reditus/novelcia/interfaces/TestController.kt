@@ -10,6 +10,7 @@ class TestController(
 ) {
     @GetMapping("/api/test/health")
     fun profileHealth(): String {
-        return "UP ${environment.activeProfiles.joinToString()}"
+        val hostName = environment.getProperty("HOSTNAME")
+        return "UP ${environment.activeProfiles.joinToString()}:$hostName"
     }
 }
