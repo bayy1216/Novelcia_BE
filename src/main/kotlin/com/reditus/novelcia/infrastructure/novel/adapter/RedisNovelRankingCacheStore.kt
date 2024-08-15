@@ -42,6 +42,7 @@ class RedisNovelRankingCacheStore(
         val dataToAdd = novelAndScores.map {
             ZSetOperations.TypedTuple.of(it.novelId.toString(), it.score)
         }.toSet()
+        if(dataToAdd.isEmpty()) return
 
         redisTemplate.opsForZSet().add(key, dataToAdd)
         // 1시간 10분후 만료(방어 코드)
