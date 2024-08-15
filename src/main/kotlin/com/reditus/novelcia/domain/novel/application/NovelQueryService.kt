@@ -13,6 +13,7 @@ import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Service
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @Service
 class NovelQueryService(
@@ -30,30 +31,58 @@ class NovelQueryService(
 
     fun getNovelModelsByRanking(days: Int, size: Int, page: Int): List<NovelModel.Main> = readOnly {
 
-        val scoringMetaData = getScoringMetaByLocalDate(days)
-        val (episodesAll, likesAll, viewsAll, commentsAll) = scoringMetaData
-        val episodeIdSetTotal = scoringMetaData.totalEpisodeIds()
+        val (episodesAll, likesAll, viewsAll, commentsAll, novelIdSetTotal) = getScoringMetaByLocalDate(days)
+
+        val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수
+
+        val globalAverageViews = viewsAll.groupBy { it.user.id }.size.toDouble() // 전체의 조회수의 평균 점수
+        val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수
+        val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
+        // 정규화 상수 (C 값) (전체 에피소드에서 평가가 이루어진 총 평가수)
+
+        val novelIdAndScorePair = novelIdSetTotal.map { novelId ->
+            val episodes = episodesAll.filter { episode -> episode.novelId == novelId }
+            val likes = likesAll.filter { like -> like.episode.novelId == novelId }
+            val views = viewsAll.filter { view -> view.novel.id == novelId }
+            val comments = commentsAll.filter { comment -> comment.episode.novelId == novelId }
+
+            // 시간 가중치 계산
+            val timeDecay = if (episodes.isNotEmpty()) {
+                val lastEpisode = episodes.maxByOrNull { it.createdAt }!!
+                1.0 / (ChronoUnit.DAYS.between(lastEpisode.createdAt.toLocalDate(), LocalDate.now()).toDouble())
+            } else {
+                1.0 / (days*2).toDouble() // 새로운 에피소드가 없는 경우의 기본 시간 가중치
+            }
+
+            // 각 항목의 합산 값 계산
+            val likesCount = likes.size
+            val viewsCount = views.size
+            val commentsCount = comments.size
+
+            val likesRatingSum = 1 * likes.groupBy { it.user.id }.size //sum(평가수*점수) 좋아요를 누른 유니크 유저의 수
+            val viewsRatingSum = 1 * views.groupBy { it.user.id }.size //sum(평가수*점수) 조회수의 유니크 유저의 수
+            val commentsRatingSum = 1 * comments.groupBy { it.user.id }.size //sum(평가수*점수) 댓글을 단 유니크 유저의 수
 
 
 
-        val novelAndScore = episodesAll.map {
+            // Bayesian Average 계산
+            val likesScore = calculateBayesianAverage(likesRatingSum, likesCount, globalAverageLikes, regularizationFactor)
+            val viewsScore = calculateBayesianAverage(viewsRatingSum, viewsCount, globalAverageViews, regularizationFactor)
+            val commentsScore = calculateBayesianAverage(commentsRatingSum, commentsCount, globalAverageComments, regularizationFactor)
 
-            val likes = likesAll.filter { like -> like.episode.id == it.id }.size
-            val views = viewsAll.filter { view -> view.episode.id == it.id }.size
-            val comments = commentsAll.filter { comment -> comment.episode.id == it.id }.size
+            // 최종 스코어 계산 (예시: 각 점수의 가중합)
+            val finalScore = (likesScore * 0.3 + viewsScore * 0.5 + commentsScore * 0.2) * timeDecay
 
-
-            val score = calcScoreByEpisode(
-                viewsCount = views,
-                likesCount = likes,
-                commentsCount = comments,
-                daysSincePosted = LocalDate.now().compareTo(it.createdAt.toLocalDate()),
-            )
-            return@map it.novel to score
+            novelId to finalScore
         }
-        val scoresByGroupNovel = novelAndScore.groupBy({ it.first }, { it.second })
 
-        val novelIds = scoresByGroupNovel.keys.map { it.id }.subList(page * size, (page + 1) * size)
+        val scoresByOrder = novelIdAndScorePair.sortedByDescending { it.second }
+
+
+        val novelIds = scoresByOrder.map { it.first }.subList(
+            page * size,
+            minOf((page + 1) * size, scoresByOrder.size)
+        )
         val novels = novelReader.findNovelsByIdsIn(novelIds)
 
 
@@ -99,37 +128,36 @@ internal class ScoringMetaData(
     operator fun component2() = likes
     operator fun component3() = views
     operator fun component4() = comments
+    operator fun component5() = totalNovelIds()
 
-    fun totalEpisodeIds(): Set<Long>{
-        val episodeId = episodes.map { it.id }.toSet()
-        val likesEpisodeIds = likes.map { it.episode.id }.toSet()
-        val viewsEpisodeIds = views.map { it.episode.id }.toSet()
-        val commentsEpisodeIds = comments.map { it.episode.id }.toSet()
-        return episodeId + likesEpisodeIds + viewsEpisodeIds + commentsEpisodeIds
+    private fun totalNovelIds(): Set<Long> {
+        val novelIds = episodes.map { it.novelId }.toSet()
+        val likesNovelIds = likes.map { it.episode.novelId }.toSet()
+        val viewsNovelIds = views.map { it.novelId }.toSet()
+        val commentsNovelIds = comments.map { it.episode.novelId }.toSet()
+        return novelIds + likesNovelIds + viewsNovelIds + commentsNovelIds
     }
 }
 
-
-fun calcScoreByEpisode(
-    viewsCount: Int,
-    likesCount: Int,
-    commentsCount: Int,
-    daysSincePosted: Int,
-    globalAvg: Double = 3.5,//TODO FIX
-    a: Int = 1,
-    b: Int = 2,
-    c: Int = 3,
-    decayFactor: Double = 0.85,
-    m: Int = 50,
+/** Bayesian Average 계산 함수
+ * Bayesian Average는 평가 수가 적을 때, 전체 평균에 가까운 값을 가지도록 하는 방법이다.
+ * 이를 통해 평가 수가 적은 경우에도 전체 평균에 가까운 값을 가지도록 한다.
+ * (극단적인 예로, 평가 수가 1개이고 점수가 5점인 경우, 전체 평균이 3점이라면 3점으로 계산되게 된다.)
+ * (같은 유저가 여러 번 평가를 한 경우, ratingSum으로 인해 걸러지는 효과도 있다.)
+ * @param ratingSum: (특정 평가수*특정 점수)의 합
+ * @param ratingCount: 평가 횟수(특정 평가수의 총 합)
+ * @param globalAverage: 전체 평균 점수
+ * @param regularizationFactor: 전체에서 평가가 이루어진 총 평가수
+ */
+fun calculateBayesianAverage(
+    ratingSum: Int,
+    ratingCount: Int,
+    globalAverage: Double,
+    regularizationFactor: Int,
 ): Double {
-    val decay = Math.pow(decayFactor, daysSincePosted.toDouble())
-    val weightedScore = (a * viewsCount + b * likesCount + c * commentsCount) * decay
-
-    val totalVotes = viewsCount + likesCount + commentsCount + 1
-    val individualAvg = (viewsCount + 2 * likesCount + 3 * commentsCount) / totalVotes
-    val bayesianScore = (totalVotes / (totalVotes + m)) * individualAvg + (m / (totalVotes + m)) * globalAvg
-
-    val combinedScore = weightedScore + bayesianScore
-    return combinedScore
+    return (ratingSum + regularizationFactor * globalAverage) / (ratingCount + regularizationFactor)
 }
+
+
+
 
