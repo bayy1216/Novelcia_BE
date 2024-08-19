@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners

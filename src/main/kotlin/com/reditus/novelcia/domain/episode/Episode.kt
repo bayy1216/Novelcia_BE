@@ -1,7 +1,7 @@
 package com.reditus.novelcia.domain.episode
 
 
-import com.reditus.novelcia.domain.BaseModifiableEntity
+import com.reditus.novelcia.domain.common.BaseModifiableEntity
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.user.User

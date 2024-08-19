@@ -1,7 +1,7 @@
 package com.reditus.novelcia.domain.novel
 
 
-import com.reditus.novelcia.domain.BaseModifiableEntity
+import com.reditus.novelcia.domain.common.BaseModifiableEntity
 import jakarta.persistence.*
 
 @Entity

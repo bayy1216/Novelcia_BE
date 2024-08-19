@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
 /**
  * Upsert 결과를 클라이언트에게 반환하기 위한 DTO 클래스

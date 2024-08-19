@@ -1,7 +1,7 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
-class CursorRequest(
-    val cursorId: Long? = null,
+class OffsetRequest(
+    val page: Int = 0,
     val size: Int = 20,
 ) {
     init {

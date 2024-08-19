@@ -1,15 +1,13 @@
 package com.reditus.novelcia.interfaces.user
 
-import com.reditus.novelcia.domain.PositiveInt
+import com.reditus.novelcia.domain.common.PositiveInt
 import com.reditus.novelcia.domain.user.UserService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
-import io.swagger.v3.oas.annotations.headers.Header
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RestController
 

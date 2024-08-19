@@ -1,14 +1,11 @@
 package com.reditus.novelcia.domain.episode.application
 
-import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.episode.Episode
+import com.reditus.novelcia.domain.common.LoginUserId
 import com.reditus.novelcia.domain.episode.EpisodeCommand
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.global.util.newTransaction
-import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
 import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
@@ -20,10 +17,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
-import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
-import org.springframework.test.annotation.Rollback
-import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.TimeUnit
 import kotlin.test.AfterTest
 

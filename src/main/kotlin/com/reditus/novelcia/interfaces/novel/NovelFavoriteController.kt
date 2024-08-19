@@ -1,7 +1,7 @@
 package com.reditus.novelcia.interfaces.novel
 
-import com.reditus.novelcia.domain.OffsetRequest
-import com.reditus.novelcia.domain.OffsetResponse
+import com.reditus.novelcia.domain.common.OffsetRequest
+import com.reditus.novelcia.domain.common.OffsetResponse
 import com.reditus.novelcia.domain.novel.application.NovelFavoriteService
 import com.reditus.novelcia.domain.novel.application.NovelModel
 import com.reditus.novelcia.global.security.LoginUserDetails

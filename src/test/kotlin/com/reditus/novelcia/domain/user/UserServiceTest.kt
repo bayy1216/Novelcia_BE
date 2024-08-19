@@ -1,7 +1,7 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.PositiveInt
+import com.reditus.novelcia.domain.common.LoginUserId
+import com.reditus.novelcia.domain.common.PositiveInt
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.junit.jupiter.api.AfterEach

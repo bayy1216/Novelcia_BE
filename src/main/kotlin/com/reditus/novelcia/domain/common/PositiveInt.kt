@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
 /**
  * 유효성 검사를 통과한 양수를 나타내는 값 클래스

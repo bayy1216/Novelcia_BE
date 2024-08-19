@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.episode.application
 
-import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.common.LoginUserId
 import com.reditus.novelcia.domain.episode.EpisodeReadEvent
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort

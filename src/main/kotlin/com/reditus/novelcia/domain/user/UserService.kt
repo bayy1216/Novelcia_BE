@@ -1,12 +1,11 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.domain.IdempotencyEventStore
-import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.PositiveInt
+import com.reditus.novelcia.domain.common.IdempotencyEventStore
+import com.reditus.novelcia.domain.common.LoginUserId
+import com.reditus.novelcia.domain.common.PositiveInt
 import com.reditus.novelcia.domain.user.port.UserReader
 import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.global.util.transactional
-import org.springframework.dao.DataAccessException
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 

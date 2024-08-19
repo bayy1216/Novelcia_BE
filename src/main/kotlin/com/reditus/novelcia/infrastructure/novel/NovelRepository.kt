@@ -11,4 +11,8 @@ interface NovelRepository : JpaRepository<Novel, Long> {
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Novel n SET n.isDeleted = true, n.version = n.version + 1 WHERE n.id = :novelId")
     fun softDelete(@Param("novelId")novelId: Long) : Int
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("UPDATE Novel n SET n.viewCount = n.viewCount + :count WHERE n.id = :novelId")
+    fun addViewCount(@Param("novelId")novelId: Long, @Param("count")count: Int) : Int
 }

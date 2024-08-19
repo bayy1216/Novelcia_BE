@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

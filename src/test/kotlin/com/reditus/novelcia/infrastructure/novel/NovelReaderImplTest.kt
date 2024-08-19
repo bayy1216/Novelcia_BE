@@ -1,6 +1,6 @@
 package com.reditus.novelcia.infrastructure.novel
 
-import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.infrastructure.novel.adapter.NovelReaderImpl

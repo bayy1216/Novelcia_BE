@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel.port
 
-import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.Novel
 
 interface NovelReader {

@@ -1,6 +1,6 @@
 package com.reditus.novelcia.interfaces.species
 
-import com.reditus.novelcia.domain.UpsertResult
+import com.reditus.novelcia.domain.common.UpsertResult
 import com.reditus.novelcia.domain.novel.application.SpeciesModel
 import com.reditus.novelcia.domain.novel.application.SpeciesService
 import io.swagger.v3.oas.annotations.Operation

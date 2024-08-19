@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel.application
 
-import com.reditus.novelcia.domain.UpsertResult
+import com.reditus.novelcia.domain.common.UpsertResult
 import com.reditus.novelcia.domain.novel.Tag
 import com.reditus.novelcia.domain.novel.TagCommand
 import com.reditus.novelcia.domain.novel.port.TagReader

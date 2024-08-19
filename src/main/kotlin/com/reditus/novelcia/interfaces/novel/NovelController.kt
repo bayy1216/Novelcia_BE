@@ -1,6 +1,6 @@
 package com.reditus.novelcia.interfaces.novel
 
-import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.application.NovelQueryService
 import com.reditus.novelcia.domain.novel.application.NovelService
 import com.reditus.novelcia.global.security.LoginUserDetails

@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel
 
-import com.reditus.novelcia.domain.BaseTimeEntity
+import com.reditus.novelcia.domain.common.BaseTimeEntity
 import com.reditus.novelcia.domain.user.User
 import jakarta.persistence.*
 

@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel.application
 
-import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.port.NovelRankingCacheStore
 import com.reditus.novelcia.domain.novel.port.NovelReader
 import com.reditus.novelcia.domain.novel.usecase.NovelAndScore

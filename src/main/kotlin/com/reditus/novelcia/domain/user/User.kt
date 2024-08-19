@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.domain.BaseModifiableEntity
+import com.reditus.novelcia.domain.common.BaseModifiableEntity
 import com.reditus.novelcia.global.util.SelfValidating
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email

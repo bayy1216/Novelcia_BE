@@ -1,8 +1,8 @@
 package com.reditus.novelcia.domain.novel.application
 
-import com.reditus.novelcia.domain.LoginUserId
-import com.reditus.novelcia.domain.OffsetRequest
-import com.reditus.novelcia.domain.OffsetResponse
+import com.reditus.novelcia.domain.common.LoginUserId
+import com.reditus.novelcia.domain.common.OffsetRequest
+import com.reditus.novelcia.domain.common.OffsetResponse
 import com.reditus.novelcia.domain.novel.NovelFavorite
 import com.reditus.novelcia.domain.novel.port.NovelFavoriteReader
 import com.reditus.novelcia.domain.novel.port.NovelFavoriteWriter

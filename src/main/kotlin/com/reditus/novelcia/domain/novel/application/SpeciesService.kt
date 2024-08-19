@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel.application
 
-import com.reditus.novelcia.domain.UpsertResult
+import com.reditus.novelcia.domain.common.UpsertResult
 import com.reditus.novelcia.domain.novel.Species
 import com.reditus.novelcia.domain.novel.SpeciesCommand
 import com.reditus.novelcia.domain.novel.port.SpeciesReader

@@ -1,6 +1,6 @@
 package com.reditus.novelcia.infrastructure.user.adapter
 
-import com.reditus.novelcia.domain.PositiveInt
+import com.reditus.novelcia.domain.common.PositiveInt
 import com.reditus.novelcia.domain.user.User
 import com.reditus.novelcia.domain.user.port.UserWriter
 import com.reditus.novelcia.infrastructure.user.UserRepository

@@ -1,4 +1,4 @@
-package com.reditus.novelcia.domain
+package com.reditus.novelcia.domain.common
 
 class OffsetResponse<T>(
     val data: List<T>,

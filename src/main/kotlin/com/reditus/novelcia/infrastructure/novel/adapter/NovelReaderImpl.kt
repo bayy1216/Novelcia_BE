@@ -3,7 +3,7 @@ package com.reditus.novelcia.infrastructure.novel.adapter
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.reditus.novelcia.domain.CursorRequest
+import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.QNovel.novel
 import com.reditus.novelcia.domain.novel.port.NovelReader

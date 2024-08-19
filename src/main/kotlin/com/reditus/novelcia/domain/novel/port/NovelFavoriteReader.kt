@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.novel.port
 
-import com.reditus.novelcia.domain.OffsetRequest
+import com.reditus.novelcia.domain.common.OffsetRequest
 import com.reditus.novelcia.domain.novel.NovelFavorite
 import com.reditus.novelcia.domain.novel.application.NovelModel
 import org.springframework.data.domain.Page

@@ -1,7 +1,7 @@
 package com.reditus.novelcia.infrastructure
 
-import com.reditus.novelcia.domain.IdempotencyEvent
-import com.reditus.novelcia.domain.IdempotencyEventStore
+import com.reditus.novelcia.domain.common.IdempotencyEvent
+import com.reditus.novelcia.domain.common.IdempotencyEventStore
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
 

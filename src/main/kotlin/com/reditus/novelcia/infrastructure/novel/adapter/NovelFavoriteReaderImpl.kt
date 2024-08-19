@@ -3,7 +3,7 @@ package com.reditus.novelcia.infrastructure.novel.adapter
 import com.querydsl.core.types.Projections
 import com.querydsl.jpa.JPAExpressions
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.reditus.novelcia.domain.OffsetRequest
+import com.reditus.novelcia.domain.common.OffsetRequest
 import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.QEpisode
 import com.reditus.novelcia.domain.episode.QEpisodeView

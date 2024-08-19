@@ -1,6 +1,6 @@
 package com.reditus.novelcia.interfaces.tag
 
-import com.reditus.novelcia.domain.UpsertResult
+import com.reditus.novelcia.domain.common.UpsertResult
 import com.reditus.novelcia.domain.novel.application.TagModel
 import com.reditus.novelcia.domain.novel.application.TagService
 import io.swagger.v3.oas.annotations.Operation

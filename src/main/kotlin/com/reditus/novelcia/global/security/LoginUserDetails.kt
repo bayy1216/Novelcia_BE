@@ -1,6 +1,6 @@
 package com.reditus.novelcia.global.security
 
-import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.common.LoginUserId
 import com.reditus.novelcia.domain.user.Role
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority

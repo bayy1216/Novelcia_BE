@@ -1,11 +1,10 @@
 package com.reditus.novelcia
 
- import com.reditus.novelcia.domain.LoginUserId
+ import com.reditus.novelcia.domain.common.LoginUserId
 import com.reditus.novelcia.domain.auth.AuthService
 import com.reditus.novelcia.domain.episode.EpisodeCommand
  import com.reditus.novelcia.domain.episode.application.EpisodeQueryService
  import com.reditus.novelcia.domain.episode.application.EpisodeService
- import com.reditus.novelcia.domain.episode.port.EpisodeReader
  import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.NovelCommand
 import com.reditus.novelcia.domain.novel.ReadAuthority

@@ -1,6 +1,6 @@
 package com.reditus.novelcia.domain.episode.application
 
-import com.reditus.novelcia.domain.LoginUserId
+import com.reditus.novelcia.domain.common.LoginUserId
 import com.reditus.novelcia.domain.episode.Episode
 import com.reditus.novelcia.domain.episode.EpisodeCommand
 import com.reditus.novelcia.domain.episode.EpisodeLike
