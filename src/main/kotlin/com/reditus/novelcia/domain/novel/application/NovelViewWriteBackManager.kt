@@ -5,59 +5,53 @@ import com.reditus.novelcia.domain.common.WriteBackManager
 import com.reditus.novelcia.domain.episode.EpisodeView
 import com.reditus.novelcia.domain.novel.port.NovelWriter
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 
 @Component
 class NovelViewWriteBackManager(
-    @Value("\${novel.write-back.flush-interval-millis:1000}")
-    override val flushIntervalMillis: Long,
-    @Value("\${novel.write-back.flush-size:100}")
+    @Value("\${write-back.flush-size.novel:100}")
     override val flushSize: Int,
     private val novelWriter: NovelWriter,
 ) : WriteBackManager<EpisodeView> {
     /**
-     * 1. `entity`를 `writeBackList`에 추가한다.
-     * 2. `writeBackList`의 크기가 `flushSize`보다 크거나 같으면 `flush`를 호출한다.
+     * 1. `entity`를 `writeBackNovelIdCountMap`에 추가한다.
+     * 2. 해당 `novelId`의 count가 `flushSize`를 넘으면 `flush`를 호출한다.
+     *
+     * `synchronized block`이 있으므로 `Async`로 처리한다.
      */
+    @Async
     override fun save(entity: EpisodeView) {
         val shouldFlush: Boolean
-        synchronized(writeBackList) {
-            lastSaveMillis = System.currentTimeMillis()
-            writeBackList.add(entity)
-            shouldFlush = writeBackList.size >= flushSize
+        synchronized(writeBackNovelIdCountMap) {
+            val count = writeBackNovelIdCountMap.getOrDefault(entity.novelId, 0) + 1
+            writeBackNovelIdCountMap[entity.novelId] = count
+
+            shouldFlush = count >= flushSize
         }
-        if(shouldFlush) {
-            flush(force = true)
+        if (shouldFlush) {
+            flush()
         }
     }
 
     /**
-     * 1. flush 조건을 확인한다. force는 통과, 그 이외에는 시간 확인
-     * 2. `writeBackList`에 lock를 걸고 novelId별고 count를 DB에 저장한다.
+     * 1. lock 내부에서 방어적복사로 `writeBackNovelIdCountMap`을 복사한다.
+     * 2. 복사 후, lock이 해제되고 snapshot을 이용해 `novelWriter.addViewCount`를 호출한다.
      */
-    override fun flush(force: Boolean) {
-        if(!checkFlush(force)) {
-            return
+    override fun flush() {
+        val writeMapSnapshot = synchronized(writeBackNovelIdCountMap) {
+            writeBackNovelIdCountMap.toMap().also { writeBackNovelIdCountMap.clear() }
         }
 
-        lastFlushMillis =  System.currentTimeMillis()
-        synchronized(writeBackList) {
-            val novelIdAndCount = writeBackList.groupingBy { it.novelId }.eachCount()
-            novelIdAndCount.forEach { (novelId, count) ->
-                novelWriter.addViewCount(novelId, PositiveInt(count))
-            }
-            writeBackList.clear()
+        writeMapSnapshot.forEach { (novelId, count) ->
+            novelWriter.addViewCount(novelId, PositiveInt(count))
         }
     }
 
-    private fun checkFlush(force: Boolean) :Boolean =
-        force || lastFlushMillis + flushIntervalMillis > System.currentTimeMillis()
 
     companion object {
-        val writeBackList = mutableListOf<EpisodeView>()
-        var lastFlushMillis: Long = System.currentTimeMillis()
-        var lastSaveMillis: Long = System.currentTimeMillis()
+        val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
     }
 
 }
