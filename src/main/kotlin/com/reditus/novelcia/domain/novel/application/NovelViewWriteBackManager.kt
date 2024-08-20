@@ -4,11 +4,19 @@ import com.reditus.novelcia.domain.common.PositiveInt
 import com.reditus.novelcia.domain.common.WriteBackManager
 import com.reditus.novelcia.domain.episode.EpisodeView
 import com.reditus.novelcia.domain.novel.port.NovelWriter
+import com.reditus.novelcia.global.util.executeAsync
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 
+/**
+ * `EpisodeView`의 조회수를 `NovelWriter`를 통해 `flushSize`만큼 쌓아두었다가 `flush`를 호출하는 클래스
+ * - save : 비동기로 작동하며, novelId를 key로 조회수를 쌓아둔다.
+ *   해당 key에 대한 조회수가 `flushSize`를 넘으면 `flush`를 호출한다.
+ * - flush : 조회수를 `NovelWriter`를 통해 저장하고, `writeBackNovelIdCountMap`을 비운다.
+ *   스케줄러와 같은 방법으로 주기적으로 호출되어야 한다.
+ */
 @Component
 class NovelViewWriteBackManager(
     @Value("\${write-back.flush-size.novel:100}")
@@ -21,8 +29,7 @@ class NovelViewWriteBackManager(
      *
      * `synchronized block`이 있으므로 `Async`로 처리한다.
      */
-    @Async
-    override fun save(entity: EpisodeView) {
+    override fun save(entity: EpisodeView) = executeAsync {
         val shouldFlush: Boolean
         synchronized(writeBackNovelIdCountMap) {
             val count = writeBackNovelIdCountMap.getOrDefault(entity.novelId, 0) + 1
@@ -40,6 +47,9 @@ class NovelViewWriteBackManager(
      * 2. 복사 후, lock이 해제되고 snapshot을 이용해 `novelWriter.addViewCount`를 호출한다.
      */
     override fun flush() {
+        if(writeBackNovelIdCountMap.isEmpty()) return // 비어있으면 early return
+
+        log.info("NovelViewWriteBackManager flush triggered")
         val writeMapSnapshot = synchronized(writeBackNovelIdCountMap) {
             writeBackNovelIdCountMap.toMap().also { writeBackNovelIdCountMap.clear() }
         }
@@ -52,6 +62,7 @@ class NovelViewWriteBackManager(
 
     companion object {
         val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
+        val log = LoggerFactory.getLogger(this::class.java)
     }
 
 }
