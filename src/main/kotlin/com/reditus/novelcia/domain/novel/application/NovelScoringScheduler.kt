@@ -1,4 +1,4 @@
-package com.reditus.novelcia.interfaces.novel
+package com.reditus.novelcia.domain.novel.application
 
 import com.reditus.novelcia.domain.novel.port.NovelRankingCacheStore
 import com.reditus.novelcia.domain.novel.usecase.NovelScoringUseCase

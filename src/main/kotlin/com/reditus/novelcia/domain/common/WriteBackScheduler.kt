@@ -1,6 +1,5 @@
-package com.reditus.novelcia.interfaces
+package com.reditus.novelcia.domain.common
 
-import com.reditus.novelcia.domain.common.WriteBackManager
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -11,7 +10,7 @@ class WriteBackScheduler(
     @Scheduled(fixedRate = 1000)
     fun scheduleFlush() {
         writeBackManagers.forEach {
-            it.flush(force = false)
+            it.flush()
         }
     }
 
