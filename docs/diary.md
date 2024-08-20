@@ -98,3 +98,9 @@
 # 2024-08-15 목
 - 랭킹 로직 구현, usecase로 분리
 - 랭킹 redis 캐시로 저장
+
+# 2024-08-16 ~ 08-20
+- 캐시 로직 구현
+- 스코어링 로직
+- WriteBack Manager
+- Async Executor
