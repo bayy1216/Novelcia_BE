@@ -3,30 +3,33 @@ package com.reditus.novelcia.global.util
 import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
+interface AsyncTaskExecutor {
+    operator fun invoke(function: ()-> Unit)
+}
 
 @Component
-class AsyncTaskExecutor {
+class SpringAsyncTaskExecutor: AsyncTaskExecutor {
     @Async
-    operator fun invoke(function: ()-> Unit) {
+    override operator fun invoke(function: ()-> Unit) {
         return function()
     }
 }
 
 @Component
 class AsyncHelper(
-    private val asyncTaskExecutor: AsyncTaskExecutor
+    private val _asyncTaskExecutor: AsyncTaskExecutor
 ) {
     init {
-        _asyncTaskExecutor = asyncTaskExecutor
+        asyncTaskExecutor = _asyncTaskExecutor
     }
     companion object{
-        lateinit var _asyncTaskExecutor: AsyncTaskExecutor
-        fun  executeAsync(function: ()-> Unit) {
-            return _asyncTaskExecutor(function)
-        }
+        lateinit var asyncTaskExecutor: AsyncTaskExecutor
     }
 }
 
-fun executeAsync(function: ()-> Unit) {
-    return AsyncHelper.executeAsync(function)
+fun executeAsync(
+    asyncExecutor: AsyncTaskExecutor = AsyncHelper.asyncTaskExecutor,
+    function: ()-> Unit
+) {
+    asyncExecutor(function)
 }
