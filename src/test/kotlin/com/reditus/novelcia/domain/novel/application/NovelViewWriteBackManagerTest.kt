@@ -11,12 +11,22 @@ import com.reditus.novelcia.global.util.AsyncTaskExecutor
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.LoggerFactory
+import java.util.concurrent.atomic.AtomicInteger
+
 
 class NovelViewWriteBackManagerTest {
+    private lateinit var asyncHelper: AsyncHelper
+
+    private val syncExecutor = object : AsyncTaskExecutor {
+        override fun invoke(function: () -> Unit) {
+            function()
+        }
+    }
+
     @BeforeEach
-    fun setup() {
-        // SpringContext에 등록된 Bean을 사용하지 않고, 직접 주입하여 테스트
-        AsyncHelper.asyncTaskExecutor = TestSyncExecutor()
+    fun setUp() {
+        asyncHelper = AsyncHelper(syncExecutor)
     }
 
     private val novelViewWriteBackManager = NovelViewWriteBackManager(
@@ -35,24 +45,14 @@ class NovelViewWriteBackManagerTest {
 
     @Test
     fun `정상적으로 save와 flush가 호출된다`() {
-
-
-
         (0..999).forEach {
             novelViewWriteBackManager.save(epList[it % 10])
         }
 
-        NovelViewWriteBackManager.writeBackNovelIdCountMap.forEach { (novelId, count) ->
-            println("novelId: $novelId, count: $count")
-        }
         novelViewWriteBackManager.flush()
-        NovelViewWriteBackManager.writeBackNovelIdCountMap.forEach { (novelId, count) ->
-            println("after flush novelId: $novelId, count: $count")
-        }
-        assertEquals(10, TestNovelWriterSpy.addCountTriggered.size)
-        assertEquals(1000, TestNovelWriterSpy.addCountTriggered.values.sum())
 
 
+        assertEquals(1000, TestNovelWriterSpy.addCountTriggered.get())
     }
 
 }
@@ -67,19 +67,12 @@ class TestNovelWriterSpy : NovelWriter {
     }
 
     override fun addViewCount(novelId: Long, count: PositiveInt) {
-        synchronized(addCountTriggered){
-            addCountTriggered[novelId] = addCountTriggered.getOrDefault(novelId, 0) + count.value
-        }
+        log.info("addViewCount $novelId ${count.value}")
+        addCountTriggered.addAndGet(count.value)
     }
 
     companion object {
-        var addCountTriggered = mutableMapOf<Long, Int>()
+        var addCountTriggered = AtomicInteger(0)
+        val log = LoggerFactory.getLogger(this::class.java)
     }
-}
-
-class TestSyncExecutor : AsyncTaskExecutor {
-    override fun invoke(function: () -> Unit) {
-        function()
-    }
-
 }

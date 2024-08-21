@@ -6,6 +6,8 @@ import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
 import com.reditus.novelcia.domain.novel.Novel
 import com.reditus.novelcia.domain.novel.ReadAuthority
 import com.reditus.novelcia.domain.user.User
+import com.reditus.novelcia.global.util.AsyncHelper
+import com.reditus.novelcia.global.util.AsyncTaskExecutor
 import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
 import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
 import com.reditus.novelcia.infrastructure.findByIdOrThrow
@@ -14,6 +16,7 @@ import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
@@ -31,6 +34,17 @@ class EpisodeQueryServiceTest @Autowired constructor(
     private val episodeRepository: EpisodeRepository,
     private val episodeViewRepository: EpisodeViewRepository,
 ) {
+    private lateinit var asyncHelper: AsyncHelper
+
+    private val syncExecutor = object : AsyncTaskExecutor {
+        override fun invoke(function: () -> Unit) {
+            function()
+        }
+    }
+    @BeforeEach
+    fun setUp() {
+        asyncHelper = AsyncHelper(syncExecutor)
+    }
 
     @AfterTest
     fun cleanUp() {
