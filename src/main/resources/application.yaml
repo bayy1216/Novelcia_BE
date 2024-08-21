@@ -69,7 +69,7 @@ spring: # local profile
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
@@ -77,7 +77,7 @@ spring: # local profile
   sql.init.mode: never
   h2.console.enabled: false
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: false
     fail-on-missing-locations: true
     baseline-version: 1
