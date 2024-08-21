@@ -20,10 +20,11 @@ class AsyncHelper(
     private val _asyncTaskExecutor: AsyncTaskExecutor
 ) {
     init {
-        asyncTaskExecutor = _asyncTaskExecutor
+        asyncTaskExecutorInit = _asyncTaskExecutor
     }
     companion object{
-        lateinit var asyncTaskExecutor: AsyncTaskExecutor
+        private lateinit var asyncTaskExecutorInit: AsyncTaskExecutor
+        val asyncTaskExecutor by lazy { asyncTaskExecutorInit }
     }
 }
 

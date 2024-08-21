@@ -69,10 +69,10 @@ class SpringTxManager : TxManager, TxScope {
  */
 @Component
 class Tx(
-    private val springTxManager: SpringTxManager,
+    private val _txManager: TxManager,
 ) {
     init {
-        _txManager = springTxManager
+        _txManagerInit = _txManager
     }
 
     /**
@@ -80,8 +80,8 @@ class Tx(
      * `by lazy`를 사용하여 val 객체를 노출시킨다.
      */
     companion object {
-        private lateinit var _txManager: TxManager
-        val txManager: TxManager by lazy { _txManager }
+        private lateinit var _txManagerInit: TxManager
+        val txManager: TxManager by lazy { _txManagerInit }
     }
 }
 
