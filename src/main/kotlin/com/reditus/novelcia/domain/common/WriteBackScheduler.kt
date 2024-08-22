@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 class WriteBackScheduler(
     private val writeBackManagers : List<WriteBackManager<*>>
 ) {
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRateString = "\${write-back.scheduler.interval:3000}")
     fun scheduleFlush() {
         writeBackManagers.forEach {
             it.flush()
