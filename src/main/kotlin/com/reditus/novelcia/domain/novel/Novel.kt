@@ -36,7 +36,7 @@ class Novel(
     var alarmCount: Long,
 
     @Column(nullable = false)
-    var episodeCount: Long,
+    var episodeCount: Int,
 
     @Column(nullable = false)
     var isDeleted: Boolean,
@@ -176,7 +176,7 @@ class Novel(
             likeCount: Long = 0,
             favoriteCount: Long = 0,
             alarmCount: Long = 0,
-            episodeCount: Long = 0,
+            episodeCount: Int = 0,
             isDeleted: Boolean = false,
             readAuthority: ReadAuthority = ReadAuthority.FREE,
         ) = Novel(

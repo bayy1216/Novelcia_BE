@@ -1,0 +1,2 @@
+ALTER TABLE novel
+    MODIFY COLUMN episode_count INT NOT NULL;

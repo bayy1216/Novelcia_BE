@@ -9,7 +9,7 @@ class NovelRes {
         val title: String,
         val thumbnailImageUrl: String?,
         val favoriteCount: Long,
-        val episodeCount: Long,
+        val episodeCount: Int,
     ){
         companion object{
             fun from(novel: NovelModel.Main) = Meta(

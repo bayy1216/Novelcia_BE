@@ -15,7 +15,7 @@ class NovelModel {
         val likeCount: Long,
         val favoriteCount: Long,
         val alarmCount: Long,
-        val episodeCount: Long,
+        val episodeCount: Int,
     ) {
         companion object {
             fun from(novel: Novel): TxScope.() -> Main = {
@@ -43,7 +43,7 @@ class NovelModel {
         val viewCount: Long,
         val likeCount: Long,
         val favoriteCount: Long,
-        val episodeCount: Long,
+        val episodeCount: Int,
 
         val species: List<SpeciesModel>,
         val tags: List<TagModel>,
