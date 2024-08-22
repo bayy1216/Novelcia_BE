@@ -45,6 +45,7 @@ class EpisodeService(
 
         val episode = Episode.create(novel, episodeNumber, command)
         episodeWriter.save(episode)
+        novel.addEpisodeCount()
         return@transactional episode.id
     }
 
@@ -69,6 +70,7 @@ class EpisodeService(
             throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
         }
         episodeWriter.delete(episode.id)
+        episode.novel.subtractEpisodeCount()
     }
 
     fun likeEpisode(

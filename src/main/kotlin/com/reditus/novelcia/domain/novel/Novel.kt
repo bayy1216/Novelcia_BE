@@ -134,6 +134,13 @@ class Novel(
         toRemove.forEach { removeAction(it) }
     }
 
+    fun addEpisodeCount() {
+        episodeCount++
+    }
+    fun subtractEpisodeCount() {
+        episodeCount--
+    }
+
     companion object {
         fun create(
             author: User,
