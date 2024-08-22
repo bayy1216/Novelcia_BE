@@ -23,6 +23,8 @@ class NovelViewWriteBackManager(
     override val flushSize: Int,
     private val novelWriter: NovelWriter,
 ) : WriteBackManager<EpisodeView> {
+    private val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
+
     /**
      * 1. `entity`를 `writeBackNovelIdCountMap`에 추가한다.
      * 2. 해당 `novelId`의 count가 `flushSize`를 넘으면 `flush`를 호출한다.
@@ -47,7 +49,7 @@ class NovelViewWriteBackManager(
      * 2. 복사 후, lock이 해제되고 snapshot을 이용해 `novelWriter.addViewCount`를 호출한다.
      */
     override fun flush() {
-        if(writeBackNovelIdCountMap.isEmpty()) return // 비어있으면 early return
+        if (writeBackNovelIdCountMap.isEmpty()) return // 비어있으면 early return
 
         log.info("NovelViewWriteBackManager flush triggered")
         val writeMapSnapshot = synchronized(writeBackNovelIdCountMap) {
@@ -61,7 +63,6 @@ class NovelViewWriteBackManager(
 
 
     companion object {
-        val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
         val log = LoggerFactory.getLogger(this::class.java)
     }
 
