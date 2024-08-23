@@ -3,7 +3,7 @@ package com.reditus.novelcia.domain.novel.application
 import com.reditus.novelcia.domain.common.CursorRequest
 import com.reditus.novelcia.domain.novel.port.NovelRankingCacheStore
 import com.reditus.novelcia.domain.novel.port.NovelReader
-import com.reditus.novelcia.domain.novel.usecase.NovelAndScore
+import com.reditus.novelcia.domain.novel.usecase.NovelIdAndScore
 import com.reditus.novelcia.domain.novel.usecase.NovelScoringUseCase
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Service
@@ -31,7 +31,7 @@ class NovelQueryService(
      * 2. `novelIds`를 통해 소설을 조회한다.
      */
     fun getNovelModelsByRanking(days: Int, size: Int, page: Int): List<NovelModel.Main> {
-        val cache: List<NovelAndScore>? =
+        val cache: List<NovelIdAndScore>? =
             novelRankingCacheStore.getNovelIdRankingByPage(days = days, size = size, page = page)
 
         if (cache != null) { // 캐시가 존재하면 캐시를 반환 early return
@@ -52,7 +52,7 @@ class NovelQueryService(
                     val novelIds = it.map { novelAndScore -> novelAndScore.novelId }
                     return@withLock readOnly {
                         val novels = novelReader.findNovelsByIdsIn(novelIds)
-                        return@readOnly novels.map { NovelModel.Main.from(it)() }
+                        return@readOnly novels.map { novel -> NovelModel.Main.from(novel)() }
                     }
                 }
             }

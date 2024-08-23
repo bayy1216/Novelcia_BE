@@ -31,8 +31,8 @@ class NovelScoringUseCase(
      */
     operator fun invoke(
         days: Int,
-    ):  List<NovelAndScore> = readOnly {
-        val (episodesAll, likesAll, viewsAll, commentsAll, novelIdSetTotal) = getScoringMetaByLocalDate(days)
+    ): List<NovelIdAndScore> = readOnly {
+        val (episodesAll, likesAll, viewsAll, commentsAll, totalNovelIdSet) = getScoringMetaByLocalDate(days)
 
 
         val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수
@@ -41,7 +41,7 @@ class NovelScoringUseCase(
         val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수
         val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
 
-        val novelIdAndScorePair = novelIdSetTotal.map { novelId ->
+        val novelIdAndScorePair = totalNovelIdSet.map { novelId ->
             val episodes = episodesAll.filter { episode -> episode.novelId == novelId }
             val likes = likesAll.filter { like -> like.episode.novelId == novelId }
             val views = viewsAll.filter { view -> view.novel.id == novelId }
@@ -52,7 +52,7 @@ class NovelScoringUseCase(
                 val lastEpisode = episodes.maxByOrNull { it.createdAt }!!
                 1.0 / (ChronoUnit.DAYS.between(lastEpisode.createdAt.toLocalDate(), LocalDate.now()).toDouble())
             } else {
-                1.0 / (days*2).toDouble() // 새로운 에피소드가 없는 경우의 기본 시간 가중치
+                1.0 / (days * 2).toDouble() // 새로운 에피소드가 없는 경우의 기본 시간 가중치
             }
 
             // 각 항목의 합산 값 계산
@@ -65,16 +65,18 @@ class NovelScoringUseCase(
             val commentsRatingSum = 1 * comments.groupBy { it.user.id }.size //sum(평가수*점수) 댓글을 단 유니크 유저의 수
 
 
-
             // Bayesian Average 계산
-            val likesScore = calculateBayesianAverage(likesRatingSum, likesCount, globalAverageLikes, regularizationFactor)
-            val viewsScore = calculateBayesianAverage(viewsRatingSum, viewsCount, globalAverageViews, regularizationFactor)
-            val commentsScore = calculateBayesianAverage(commentsRatingSum, commentsCount, globalAverageComments, regularizationFactor)
+            val likesScore =
+                calculateBayesianAverage(likesRatingSum, likesCount, globalAverageLikes, regularizationFactor)
+            val viewsScore =
+                calculateBayesianAverage(viewsRatingSum, viewsCount, globalAverageViews, regularizationFactor)
+            val commentsScore =
+                calculateBayesianAverage(commentsRatingSum, commentsCount, globalAverageComments, regularizationFactor)
 
             // 최종 스코어 계산 (예시: 각 점수의 가중합)
             val finalScore = (likesScore * 0.3 + viewsScore * 0.5 + commentsScore * 0.2) * timeDecay
 
-            return@map NovelAndScore(novelId, finalScore)
+            return@map NovelIdAndScore(novelId, finalScore)
         }
         return@readOnly novelIdAndScorePair.sortedByDescending { it.score }
     }
@@ -105,41 +107,29 @@ class NovelScoringUseCase(
         )
     }
 
-}
+    private data class ScoringMetaData(
+        val episodes: List<Episode>,
+        val likes: List<EpisodeLike>,
+        val views: List<EpisodeView>,
+        val comments: List<EpisodeComment>,
+    ) {
+        operator fun component5() = totalNovelIds()
 
-
-internal class ScoringMetaData(
-    val episodes: List<Episode>,
-    val likes: List<EpisodeLike>,
-    val views: List<EpisodeView>,
-    val comments: List<EpisodeComment>,
-) {
-    operator fun component1() = episodes
-    operator fun component2() = likes
-    operator fun component3() = views
-    operator fun component4() = comments
-    operator fun component5() = totalNovelIds()
-
-    private fun totalNovelIds(): Set<Long> {
-        val novelIds = episodes.map { it.novelId }.toSet()
-        val likesNovelIds = likes.map { it.episode.novelId }.toSet()
-        val viewsNovelIds = views.map { it.novelId }.toSet()
-        val commentsNovelIds = comments.map { it.episode.novelId }.toSet()
-        return novelIds + likesNovelIds + viewsNovelIds + commentsNovelIds
+        private fun totalNovelIds(): Set<Long> {
+            val novelIds = episodes.map { it.novelId }.toSet()
+            val likesNovelIds = likes.map { it.episode.novelId }.toSet()
+            val viewsNovelIds = views.map { it.novelId }.toSet()
+            val commentsNovelIds = comments.map { it.episode.novelId }.toSet()
+            return novelIds + likesNovelIds + viewsNovelIds + commentsNovelIds
+        }
     }
 }
 
 
-
-
-class NovelAndScore(
+data class NovelIdAndScore(
     val novelId: Long,
     val score: Double,
-){
-    operator fun component1() = novelId
-    operator fun component2() = score
-}
-
+)
 
 /** Bayesian Average 계산 함수
  * Bayesian Average는 평가 수가 적을 때, 전체 평균에 가까운 값을 가지도록 하는 방법이다.

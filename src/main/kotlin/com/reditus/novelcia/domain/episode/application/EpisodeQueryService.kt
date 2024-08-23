@@ -1,6 +1,7 @@
 package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.domain.common.LoginUserId
+import com.reditus.novelcia.domain.episode.EpisodeLike
 import com.reditus.novelcia.domain.episode.EpisodeReadEvent
 import com.reditus.novelcia.domain.episode.port.EpisodeLikeReader
 import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
@@ -72,6 +73,12 @@ class EpisodeQueryService(
         val novelFavorite: NovelFavorite? =
             novelFavoriteReader.findByUserIdAndNovelId(userId = userId, novelId = novelId)
         val maxEpisodeNumber = episodeReader.findLastEpisodeNumberByNovelId(novelId = novelId)!!
-        return@readOnly Triple(episodeLike, novelFavorite, maxEpisodeNumber)
+        return@readOnly EpisodeMetaData(episodeLike, novelFavorite, maxEpisodeNumber)
     }
+    private data class EpisodeMetaData(
+        val episodeLike: EpisodeLike?,
+        val novelFavorite: NovelFavorite?,
+        val maxEpisodeNumber: Int
+    )
+
 }
