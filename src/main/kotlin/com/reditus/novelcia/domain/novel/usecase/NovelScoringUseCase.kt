@@ -27,7 +27,6 @@ class NovelScoringUseCase(
      * 3. 스코어가 높은 순으로 정렬하여 반환한다.
      * @param days: 최근 n일간의 데이터를 조회한다.
      * @return List<NovelAndScore>: 소설 ID와 스코어를 담은 리스트를 score가 높은 순으로 정렬하여 반환한다.
-     * TODO: novelId 조회시 N+1 문제
      */
     operator fun invoke(
         days: Int,
@@ -44,7 +43,7 @@ class NovelScoringUseCase(
         val novelIdAndScorePair = totalNovelIdSet.map { novelId ->
             val episodes = episodesAll.filter { episode -> episode.novelId == novelId }
             val likes = likesAll.filter { like -> like.episode.novelId == novelId }
-            val views = viewsAll.filter { view -> view.novel.id == novelId }
+            val views = viewsAll.filter { view -> view.novelId == novelId }
             val comments = commentsAll.filter { comment -> comment.episode.novelId == novelId }
 
             // 시간 가중치 계산
@@ -87,7 +86,7 @@ class NovelScoringUseCase(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val likesAll = episodeLikeReader.findAllByDaysBetweenCreatedAt(
+        val likesAll = episodeLikeReader.findAllWithEpisodeByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
@@ -95,7 +94,7 @@ class NovelScoringUseCase(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val commentsAll = episodeCommentReader.findAllByDaysBetweenCreatedAt(
+        val commentsAll = episodeCommentReader.findAllWithEpisodeByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )

@@ -33,12 +33,13 @@ class EpisodeLikeReaderWriterImpl(
         return episodeLikeRepository.countByEpisodeId(episodeId)
     }
 
-    override fun findAllByDaysBetweenCreatedAt(
+    override fun findAllWithEpisodeByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeLike> {
         return jpaQueryFactory
             .selectFrom(QEpisodeLike.episodeLike)
+            .innerJoin(QEpisodeLike.episodeLike.episode).fetchJoin()
             .where(
                 QEpisodeLike.episodeLike.createdAt.between(
                     startDate.atStartOfDay(),
