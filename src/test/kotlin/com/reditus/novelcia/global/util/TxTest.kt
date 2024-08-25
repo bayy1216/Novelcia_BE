@@ -5,11 +5,13 @@ import com.reditus.novelcia.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.stereotype.Component
 
+@Tag("medium")
 @SpringBootTest
 class TxTest @Autowired constructor(
     private val testService: TestService,

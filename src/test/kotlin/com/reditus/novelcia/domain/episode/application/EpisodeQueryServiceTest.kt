@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
@@ -24,6 +25,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import java.util.concurrent.TimeUnit
 import kotlin.test.AfterTest
 
+@Tag("medium")
 @SpringBootTest
 class EpisodeQueryServiceTest @Autowired constructor(
     private val episodeService: EpisodeService,

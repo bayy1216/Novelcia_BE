@@ -12,9 +12,11 @@ import com.reditus.novelcia.infrastructure.user.UserRepository
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Tag
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
+@Tag("medium")
 @SpringBootTest
 class NovelScoringUseCaseTest @Autowired constructor(
     private val novelScoringUseCase: NovelScoringUseCase,

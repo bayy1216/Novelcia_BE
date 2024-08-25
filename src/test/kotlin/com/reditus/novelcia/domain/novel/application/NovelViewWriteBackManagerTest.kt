@@ -10,11 +10,12 @@ import com.reditus.novelcia.global.util.AsyncHelper
 import com.reditus.novelcia.global.util.AsyncTaskExecutor
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import java.util.concurrent.atomic.AtomicInteger
 
-
+@Tag("small")
 class NovelViewWriteBackManagerTest {
     private lateinit var asyncHelper: AsyncHelper
 

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
 
+@org.junit.jupiter.api.Tag("small")
 class NovelTest {
 
     @Test
