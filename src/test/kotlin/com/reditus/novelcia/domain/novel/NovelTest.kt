@@ -35,11 +35,13 @@ class NovelTest {
 
         // then (PUT 연산에 의해서 tag2는 삭제되고, tag3, tag4가 추가되어,
         // 결국 novel에는 tag1, tag3, tag4만 남아있어야 한다)
-        assertEquals("수정된 제목", novel.title)
-        assertEquals("수정된 설명", novel.description)
-        assertEquals("수정된 이미지", novel.thumbnailImageUrl)
-        assertEquals(3, novel.tags.size)
-        assertEquals(novel.novelAndTags.map { it.tag.name }.toSet(), setOf(tag1.name, tag3.name, tag4.name))
+        assertAll(
+            { assertEquals("수정된 제목", novel.title) },
+            { assertEquals("수정된 설명", novel.description) },
+            { assertEquals("수정된 이미지", novel.thumbnailImageUrl) },
+            { assertEquals(3, novel.tags.size) },
+            { assertEquals(novel.novelAndTags.map { it.tag.name }.toSet(), setOf(tag1.name, tag3.name, tag4.name)) }
+        )
     }
 
     @Test

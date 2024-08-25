@@ -39,7 +39,9 @@ class NovelScoringUseCaseTest @Autowired constructor(
         val novelAndScores = novelScoringUseCase(1)
 
         // then
-        assertEquals(1, novelAndScores.size)
-        assertEquals(novel.id, novelAndScores.first().novelId)
+        assertAll(
+            { assertEquals(1, novelAndScores.size) },
+            { assertEquals(novel.id, novelAndScores.first().novelId) }
+        )
     }
 }
