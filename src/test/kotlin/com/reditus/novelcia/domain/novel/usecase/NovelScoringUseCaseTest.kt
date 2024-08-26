@@ -40,8 +40,8 @@ class NovelScoringUseCaseTest @Autowired constructor(
 
         // then
         assertAll(
-            { assertEquals(1, novelAndScores.size) },
-            { assertEquals(novel.id, novelAndScores.first().novelId) }
+            { assertEquals(1, novelAndScores.size, {"스코어링 결과로 novel이 정상적으로 리턴"}) },
+            { assertEquals(novel.id, novelAndScores.first().novelId, {"novelId가 정상적으로 리턴"}) }
         )
     }
 }

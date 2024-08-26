@@ -35,7 +35,7 @@ class UserServiceTest @Autowired constructor(
 
         val user1 = userRepository.findByIdOrThrow(user.id)
 
-        assertEquals(user1.point, 20)
+        assertEquals(20, user1.point,{ "포인트가 정상적으로 충전되었다" })
     }
 
     @Test
@@ -45,7 +45,7 @@ class UserServiceTest @Autowired constructor(
 
         userService.chargePoint(LoginUserId(user.id), PositiveInt(10), "idempotencyKey")
 
-        assertThrows<RuntimeException> {
+        assertThrows<RuntimeException>("멱등키가 중복시 에러를 던진다") {
             userService.chargePoint(LoginUserId(user.id), PositiveInt(10), "idempotencyKey")
         }
     }
@@ -67,7 +67,7 @@ class UserServiceTest @Autowired constructor(
 
         val user1 = userRepository.findByIdOrThrow(user.id)
 
-        assertEquals(user1.point, 20)
+        assertEquals(20,user1.point, { "멱등키 중복시 한번만 충전되었다" })
 
     }
 
@@ -95,6 +95,6 @@ class UserServiceTest @Autowired constructor(
         val user1 =  userRepository.findByIdOrThrow(user.id)
 
         println("USER1 POINT IS ${user1.point}")
-        assertEquals(110, user1.point)
+        assertEquals(110, user1.point, {"동시성에 문제가 없어야 한다"})
     }
 }

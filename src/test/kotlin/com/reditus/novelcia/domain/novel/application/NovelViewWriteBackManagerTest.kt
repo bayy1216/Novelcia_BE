@@ -53,7 +53,7 @@ class NovelViewWriteBackManagerTest {
         novelViewWriteBackManager.flush()
 
 
-        assertEquals(1000, TestNovelWriterSpy.addCountTriggered.get())
+        assertEquals(1000, TestNovelWriterSpy.addCountTriggered.get(), {"write back이 정상적으로 1000번 호출"})
     }
 
 }

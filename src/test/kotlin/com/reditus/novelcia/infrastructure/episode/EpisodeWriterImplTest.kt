@@ -40,6 +40,6 @@ class EpisodeWriterImplTest @Autowired constructor(
         episodeWriter.deleteAllByNovelId(novel.id)
 
         val deletedEpisodes = episodeRepository.findAll()
-        assertTrue(deletedEpisodes.all { it.isDeleted })
+        assertTrue(deletedEpisodes.all { it.isDeleted }, { "삭제 마크가 작동한다." })
     }
 }

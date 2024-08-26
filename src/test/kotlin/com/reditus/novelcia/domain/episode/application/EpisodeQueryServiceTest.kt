@@ -101,6 +101,6 @@ class EpisodeQueryServiceTest @Autowired constructor(
 
         val episodeMetaModel: EpisodeModel.Meta = episodePaging.first()
 
-        assertEquals(episodeMetaModel.viewsCount, 5)
+        assertEquals(5, episodeMetaModel.viewsCount, {"5번 상세 조회하면 조회수가 5가 된다"})
     }
 }
