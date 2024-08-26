@@ -41,7 +41,7 @@ jobs:
       - name: Setup Gradle # Gradle을 설정합니다.
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test --parallel
+          ./gradlew clean build --parallel
 
       - name: Build docker image # 도커 이미지를 빌드합니다.
         run: |
