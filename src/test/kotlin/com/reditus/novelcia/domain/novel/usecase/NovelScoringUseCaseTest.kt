@@ -1,14 +1,15 @@
 package com.reditus.novelcia.domain.novel.usecase
 
-import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.EpisodeView
-import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.infrastructure.episode.EpisodeLikeRepository
-import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
-import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
-import com.reditus.novelcia.infrastructure.novel.NovelRepository
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.episode.domain.Episode
+import com.reditus.novelcia.episode.domain.EpisodeView
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.infrastructure.UserRepository
+import com.reditus.novelcia.novel.domain.usecase.NovelScoringUseCase
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

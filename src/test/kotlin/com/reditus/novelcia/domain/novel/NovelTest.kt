@@ -1,6 +1,9 @@
 package com.reditus.novelcia.domain.novel
 
-import com.reditus.novelcia.domain.user.User
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.novel.domain.NovelCommand
+import com.reditus.novelcia.novel.domain.Tag
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

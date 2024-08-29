@@ -1,7 +1,7 @@
 package com.reditus.novelcia.global.security
 
-import com.reditus.novelcia.domain.user.Role
-import com.reditus.novelcia.domain.user.UserModel
+import com.reditus.novelcia.user.domain.Role
+import com.reditus.novelcia.user.domain.UserModel
 import jakarta.servlet.http.HttpSession
 
 

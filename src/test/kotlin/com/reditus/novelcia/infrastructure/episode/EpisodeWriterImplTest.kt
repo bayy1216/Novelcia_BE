@@ -1,11 +1,12 @@
 package com.reditus.novelcia.infrastructure.episode
 
-import com.reditus.novelcia.domain.episode.Episode
-import com.reditus.novelcia.domain.episode.port.EpisodeWriter
-import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.infrastructure.novel.NovelRepository
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.episode.domain.Episode
+import com.reditus.novelcia.episode.domain.port.EpisodeWriter
+import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.Test
 

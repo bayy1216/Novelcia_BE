@@ -1,18 +1,21 @@
 package com.reditus.novelcia.domain.episode.application
 
-import com.reditus.novelcia.domain.common.LoginUserId
-import com.reditus.novelcia.domain.episode.EpisodeCommand
-import com.reditus.novelcia.domain.episode.port.EpisodePagingSort
-import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.novel.ReadAuthority
-import com.reditus.novelcia.domain.user.User
+import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.episode.domain.EpisodeCommand
+import com.reditus.novelcia.episode.domain.port.EpisodePagingSort
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.novel.domain.ReadAuthority
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.episode.domain.application.EpisodeModel
+import com.reditus.novelcia.episode.domain.application.EpisodeQueryService
+import com.reditus.novelcia.episode.domain.application.EpisodeService
 import com.reditus.novelcia.global.util.AsyncHelper
 import com.reditus.novelcia.global.util.AsyncTaskExecutor
-import com.reditus.novelcia.infrastructure.episode.EpisodeRepository
-import com.reditus.novelcia.infrastructure.episode.EpisodeViewRepository
-import com.reditus.novelcia.infrastructure.findByIdOrThrow
-import com.reditus.novelcia.infrastructure.novel.NovelRepository
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*
@@ -61,7 +64,8 @@ class EpisodeQueryServiceTest @Autowired constructor(
         // given
 
             val user = userRepository.save(User.fixture())
-            val novel = novelRepository.save(Novel.fixture(
+            val novel = novelRepository.save(
+                Novel.fixture(
                 author = user,
             ))
             val episodeId = episodeService.createEpisode(

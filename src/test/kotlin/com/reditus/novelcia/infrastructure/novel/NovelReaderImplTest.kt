@@ -1,10 +1,11 @@
 package com.reditus.novelcia.infrastructure.novel
 
-import com.reditus.novelcia.domain.common.CursorRequest
-import com.reditus.novelcia.domain.novel.Novel
-import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.infrastructure.novel.adapter.NovelReaderImpl
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.common.domain.CursorRequest
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.novel.infrastructure.adapter.NovelReaderImpl
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import jakarta.persistence.EntityManager
 import org.junit.jupiter.api.Test
 

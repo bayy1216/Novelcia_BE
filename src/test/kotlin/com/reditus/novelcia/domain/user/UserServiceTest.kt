@@ -1,9 +1,11 @@
 package com.reditus.novelcia.domain.user
 
-import com.reditus.novelcia.domain.common.LoginUserId
-import com.reditus.novelcia.domain.common.PositiveInt
-import com.reditus.novelcia.infrastructure.findByIdOrThrow
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.common.domain.PositiveInt
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
+import com.reditus.novelcia.user.infrastructure.UserRepository
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.user.domain.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag

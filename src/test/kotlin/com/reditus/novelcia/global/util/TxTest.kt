@@ -1,8 +1,8 @@
 package com.reditus.novelcia.global.util
 
-import com.reditus.novelcia.domain.user.User
-import com.reditus.novelcia.infrastructure.findByIdOrThrow
-import com.reditus.novelcia.infrastructure.user.UserRepository
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Tag

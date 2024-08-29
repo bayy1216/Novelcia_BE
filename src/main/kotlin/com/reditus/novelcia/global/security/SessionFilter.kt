@@ -1,6 +1,5 @@
 package com.reditus.novelcia.global.security
 
-import com.reditus.novelcia.domain.user.Role
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
