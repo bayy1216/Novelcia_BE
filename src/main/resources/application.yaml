@@ -53,6 +53,8 @@ server:
       cookie:
         name: NOVELCIA_SESSION
         max-age: 3600 # 1 hour
+        same-site: none # react app과 다른 도메인이므로 none
+        secure: true # https 사용시 쿠키 전송
   shutdown: graceful
   tomcat:
     connection-timeout: 3s
