@@ -32,6 +32,8 @@ spring: # test profile
   session:
     redis:
       namespace: novelcia
+      flush-mode: on_save
+    timeout: 3600
   lifecycle:
     timeout-per-shutdown-phase: 15s # 스프링이 종료될때 모든 작업이 종료될때 까지 기다리는 시간
   task:

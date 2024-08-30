@@ -17,5 +17,4 @@ fun HttpSession.getLoginUserDetails(): LoginUserDetails? {
 fun HttpSession.setLoginUserDetails(userModel: UserModel) {
     this.setAttribute("userId", userModel.id)
     this.setAttribute("role", userModel.role.name)
-    this.maxInactiveInterval = 60 * 60 // 1시간
 }

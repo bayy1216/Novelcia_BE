@@ -45,7 +45,10 @@ class WebSecurityConfig(
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.csrf{it.disable()}
-        http.sessionManagement{ it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)}
+        http.sessionManagement{
+            it.sessionCreationPolicy(SessionCreationPolicy.NEVER)
+            it.sessionFixation().none()
+        }
         http.formLogin{it.disable()}
         http.httpBasic{it.disable()}
         http.logout{it.disable()}
