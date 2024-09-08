@@ -1,5 +1,6 @@
 package com.reditus.novelcia.episode.interfaces
 
+import com.reditus.novelcia.common.domain.OffsetRequest
 import com.reditus.novelcia.episode.domain.application.EpisodeModel
 import com.reditus.novelcia.episode.domain.application.EpisodeQueryService
 import com.reditus.novelcia.episode.domain.application.EpisodeService
@@ -24,13 +25,12 @@ class EpisodeController(
         @PathVariable novelId: Long,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         sort: EpisodePagingSort = EpisodePagingSort.EPISODE_NUMBER_DESC,
-        page: Int = 0,
-        size: Int = 20,
+        offsetRequest: OffsetRequest,
     ): List<EpisodeModel.Meta> {
         val models = episodeQueryService.getEpisodeModelsByOffsetPaging(
             loginUserDetails.loginUserId,
             novelId,
-            PageRequest.of(page, size),
+            offsetRequest.toPageRequest(),
             sort,
         )
         return models
