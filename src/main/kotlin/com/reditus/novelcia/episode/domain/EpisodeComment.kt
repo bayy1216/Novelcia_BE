@@ -29,3 +29,14 @@ class EpisodeComment(
     val parent: EpisodeComment?,
 ) : BaseModifiableEntity() {
 }
+
+class EpisodeCommentCommand{
+    class Create(
+        val parentCommentId: Long?,
+        val content: String,
+    )
+
+    class Update(
+        val content: String,
+    )
+}

@@ -4,13 +4,14 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
+import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-class EpisodeCommentReaderImpl(
+class EpisodeCommentReaderWriterImpl(
     private val jpaQueryFactory: JPAQueryFactory,
-) : EpisodeCommentReader {
+) : EpisodeCommentReader, EpisodeCommentWriter {
 
     override fun findAllWithEpisodeByDaysBetweenCreatedAt(
         startDate: LocalDate,
