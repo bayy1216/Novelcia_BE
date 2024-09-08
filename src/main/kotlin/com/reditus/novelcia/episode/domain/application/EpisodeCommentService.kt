@@ -37,6 +37,15 @@ class EpisodeCommentService(
         val user = userReader.getReferenceById(userId.value)
         val episode = episodeReader.getById(episodeId)
         val parentComment: EpisodeComment? = command.parentCommentId?.let { episodeCommentReader.getById(it) }
+            ?.also {// 유효성 검사
+                if (it.episodeId != episodeId) {
+                    throw IllegalArgumentException("부모 댓글이 해당 에피소드에 속해있지 않습니다.")
+                }
+                if (it.parent != null) {
+                    throw IllegalArgumentException("대댓글에 대한 대댓글은 작성할 수 없습니다.")
+                }
+            }
+        
         val comment = EpisodeComment.create(
             episode = episode,
             user = user,
@@ -48,12 +57,14 @@ class EpisodeCommentService(
     }
 
     fun updateEpisodeComment(
-        commentId: Long, command: EpisodeCommentCommand.Update,
+        commentId: Long,
+        command: EpisodeCommentCommand.Update,
         loginUserId: LoginUserId,
     ) = transactional {
-        val comment = episodeCommentReader.getById(commentId)
-        if (comment.user.id != loginUserId.value) {
-            throw NoPermissionException("해당 댓글을 수정할 권한이 없습니다.")
+        val comment = episodeCommentReader.getById(commentId).also {
+            if (it.userId != loginUserId.value) {
+                throw NoPermissionException("해당 댓글을 수정할 권한이 없습니다.")
+            }
         }
         comment.update(command)
     }
@@ -62,9 +73,10 @@ class EpisodeCommentService(
         commentId: Long,
         loginUserId: LoginUserId,
     ) = transactional {
-        val comment = episodeCommentReader.getById(commentId)
-        if (comment.user.id != loginUserId.value) {
-            throw NoPermissionException("해당 댓글을 삭제할 권한이 없습니다.")
+        val comment = episodeCommentReader.getById(commentId).also {
+            if (it.userId != loginUserId.value) {
+                throw NoPermissionException("해당 댓글을 삭제할 권한이 없습니다.")
+            }
         }
         episodeCommentWriter.delete(comment)
     }

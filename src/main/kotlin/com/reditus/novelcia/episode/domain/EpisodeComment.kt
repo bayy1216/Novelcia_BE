@@ -30,6 +30,12 @@ class EpisodeComment(
     val parent: EpisodeComment?,
 ) : BaseModifiableEntity() {
 
+    val episodeId: Long
+        get() = episode.id
+
+    val userId: Long
+        get() = user.id
+
     fun update(command: EpisodeCommentCommand.Update) {
         this.content = command.content
     }
