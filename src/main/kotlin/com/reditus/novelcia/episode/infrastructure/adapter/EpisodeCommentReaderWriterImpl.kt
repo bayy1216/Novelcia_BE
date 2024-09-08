@@ -1,5 +1,7 @@
 package com.reditus.novelcia.episode.infrastructure.adapter
 
+import com.querydsl.core.types.OrderSpecifier
+import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.EpisodeComment
@@ -42,7 +44,25 @@ class EpisodeCommentReaderWriterImpl(
     }
 
     override fun findByEpisodeIdPagingOrderByPath(episodeId: Long, pageRequest: PageRequest): List<EpisodeComment> {
-        TODO("Not yet implemented")
+        val parentAlias = QEpisodeComment("parentAlias")
+        val commentAlias = QEpisodeComment.episodeComment
+        return jpaQueryFactory
+            .selectFrom(QEpisodeComment.episodeComment)
+            .innerJoin(QEpisodeComment.episodeComment.user).fetchJoin()
+            .leftJoin(commentAlias.parent, parentAlias)
+            .where(
+                QEpisodeComment.episodeComment.episode.id.eq(episodeId)
+            )
+            .orderBy(
+                CaseBuilder()
+                    .`when`(commentAlias.parent.isNull)
+                    .then(commentAlias.id)
+                    .otherwise(parentAlias.id)
+                    .asc(),
+            )
+            .offset(pageRequest.offset)
+            .limit(pageRequest.pageSize.toLong())
+            .fetch()
     }
 
     override fun save(comment: EpisodeComment): EpisodeComment {
