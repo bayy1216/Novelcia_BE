@@ -5,12 +5,12 @@ import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.domain.EpisodeReadEvent
 import com.reditus.novelcia.episode.domain.port.EpisodeLikeReader
 import com.reditus.novelcia.episode.domain.port.EpisodePagingSort
-import com.reditus.novelcia.episode.domain.port.EpisodeReadEventProducer
 import com.reditus.novelcia.episode.domain.port.EpisodeReader
 import com.reditus.novelcia.novel.domain.NovelFavorite
 import com.reditus.novelcia.novel.domain.port.NovelFavoriteReader
 import com.reditus.novelcia.user.domain.port.UserReader
 import com.reditus.novelcia.global.util.readOnly
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service
 class EpisodeQueryService(
     private val userReader: UserReader,
     private val episodeReader: EpisodeReader,
-    private val episodeReadEventProducer: EpisodeReadEventProducer,
     private val episodeLikeReader: EpisodeLikeReader,
     private val novelFavoriteReader: NovelFavoriteReader,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     /**
@@ -55,7 +55,7 @@ class EpisodeQueryService(
             throw IllegalAccessException("해당 에피소드를 읽을 권한이 없습니다.")
         }
         val event = EpisodeReadEvent(novelId = episode.novel.id, episodeId = episode.id, userId = userId.value)
-        episodeReadEventProducer.publish(event)
+        applicationEventPublisher.publishEvent(event)
 
 
         val (episodeLike, novelFavorite, maxEpisodeNumber) = getMetaDateFromEpisode(novelId, episode.id, userId.value)

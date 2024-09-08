@@ -4,6 +4,7 @@ import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.domain.Novel
 
 interface NovelReader {
+    fun getReferenceById(id: Long): Novel
     fun getNovelById(id: Long): Novel
     fun findNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel>
 

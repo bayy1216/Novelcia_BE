@@ -17,6 +17,10 @@ class NovelReaderImpl(
     private val novelRepository: NovelRepository,
     private val jpaQueryFactory: JPAQueryFactory,
 ) : NovelReader {
+    override fun getReferenceById(id: Long): Novel {
+        return novelRepository.getReferenceById(id)
+    }
+
     override fun getNovelById(id: Long): Novel {
         val novel = novelRepository.findByIdOrThrow(id)
         if(novel.isDeleted){
