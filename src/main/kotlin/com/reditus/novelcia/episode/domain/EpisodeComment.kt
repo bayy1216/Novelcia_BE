@@ -2,6 +2,7 @@ package com.reditus.novelcia.episode.domain
 
 
 import com.reditus.novelcia.common.domain.BaseModifiableEntity
+import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
 
@@ -31,6 +32,25 @@ class EpisodeComment(
 
     fun update(command: EpisodeCommentCommand.Update) {
         this.content = command.content
+    }
+
+    companion object {
+
+        fun fixture(
+            id: Long = 0L,
+            episode: Episode = Episode.fixture(),
+            user: User = User.fixture(),
+            content: String = "content",
+            isDeleted: Boolean = false,
+            parent: EpisodeComment? = null,
+        ) = EpisodeComment(
+            id = id,
+            episode = episode,
+            user = user,
+            content = content,
+            isDeleted = isDeleted,
+            parent = parent,
+        )
     }
 
 }

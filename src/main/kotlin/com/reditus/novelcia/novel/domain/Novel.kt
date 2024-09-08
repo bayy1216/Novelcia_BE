@@ -137,6 +137,7 @@ class Novel(
     fun addEpisodeCount() {
         episodeCount++
     }
+
     fun subtractEpisodeCount() {
         episodeCount--
     }
@@ -168,7 +169,7 @@ class Novel(
 
         fun fixture(
             id: Long = 0L,
-            author: User,
+            author: User = User.fixture(),
             title: String = "title",
             description: String = "description",
             thumbnailImageUrl: String? = null,

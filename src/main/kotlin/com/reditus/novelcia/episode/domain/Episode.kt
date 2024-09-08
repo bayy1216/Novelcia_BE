@@ -94,7 +94,7 @@ class Episode(
             isDeleted: Boolean = false,
             authorComment: String = "authorComment",
             readAuthority: ReadAuthority = ReadAuthority.FREE,
-            novel: Novel,
+            novel: Novel = Novel.fixture(),
         ) = Episode(
             title = title,
             content = content,
