@@ -7,6 +7,7 @@ import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
 import com.reditus.novelcia.episode.domain.port.EpisodeReader
+import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.user.domain.port.UserReader
@@ -23,7 +24,7 @@ class EpisodeCommentService(
     fun getEpisodeCommentModelsByPaging(
         episodeId: Long,
         pageRequest: PageRequest,
-    ): List<EpisodeCommentModel.Main> = readOnly{
+    ): List<EpisodeCommentModel.Main> = readOnly {
         val comments = episodeCommentReader.findByEpisodeIdPagingOrderByPath(episodeId, pageRequest)
         return@readOnly comments.map { EpisodeCommentModel.Main.from(it)() }
     }
@@ -52,7 +53,7 @@ class EpisodeCommentService(
     ) = transactional {
         val comment = episodeCommentReader.getById(commentId)
         if (comment.user.id != loginUserId.value) {
-            throw IllegalAccessException("해당 댓글을 수정할 권한이 없습니다.")
+            throw NoPermissionException("해당 댓글을 수정할 권한이 없습니다.")
         }
         comment.update(command)
     }
@@ -63,7 +64,7 @@ class EpisodeCommentService(
     ) = transactional {
         val comment = episodeCommentReader.getById(commentId)
         if (comment.user.id != loginUserId.value) {
-            throw IllegalAccessException("해당 댓글을 삭제할 권한이 없습니다.")
+            throw NoPermissionException("해당 댓글을 삭제할 권한이 없습니다.")
         }
         episodeCommentWriter.delete(comment)
     }
