@@ -7,6 +7,7 @@ import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
 import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
@@ -38,6 +39,10 @@ class EpisodeCommentReaderWriterImpl(
             throw NoSuchElementException()
         }
         return comment
+    }
+
+    override fun findByEpisodeIdPagingOrderByPath(episodeId: Long, pageRequest: PageRequest): List<EpisodeComment> {
+        TODO("Not yet implemented")
     }
 
     override fun save(comment: EpisodeComment): EpisodeComment {

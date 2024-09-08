@@ -7,6 +7,7 @@ import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
 import com.reditus.novelcia.episode.domain.port.EpisodeReader
+import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.user.domain.port.UserReader
 import org.springframework.data.domain.PageRequest
@@ -21,9 +22,10 @@ class EpisodeCommentService(
 ) {
     fun getEpisodeCommentModelsByPaging(
         episodeId: Long,
-        toPageRequest: PageRequest,
-    ): List<EpisodeCommentModel.Main> {
-        TODO("Not yet implemented")
+        pageRequest: PageRequest,
+    ): List<EpisodeCommentModel.Main> = readOnly{
+        val comments = episodeCommentReader.findByEpisodeIdPagingOrderByPath(episodeId, pageRequest)
+        return@readOnly comments.map { EpisodeCommentModel.Main.from(it)() }
     }
 
     fun createEpisodeComment(
