@@ -6,6 +6,7 @@ import com.reditus.novelcia.episode.domain.application.EpisodeCommentService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -20,9 +21,9 @@ class EpisodeCommentController(
     @GetMapping("/api/episodes/{episodeId}/comments")
     fun getEpisodeComments(
         @PathVariable episodeId: Long,
-        offsetRequest: OffsetRequest,
+        @ParameterObject offsetRequest: OffsetRequest,
     ) : List<EpisodeCommentModel.Main> {
-        return episodeCommentService.getEpisodeComments(episodeId, offsetRequest.toPageRequest())
+        return episodeCommentService.getEpisodeCommentModelsByPaging(episodeId, offsetRequest.toPageRequest())
     }
 
     @ResponseStatus(HttpStatus.CREATED)

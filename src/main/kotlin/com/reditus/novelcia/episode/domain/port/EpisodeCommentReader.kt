@@ -8,4 +8,6 @@ interface EpisodeCommentReader {
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeComment>
+
+    fun getById(id: Long): EpisodeComment
 }

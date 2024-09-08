@@ -4,6 +4,7 @@ import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
+import com.reditus.novelcia.global.util.transactional
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
@@ -12,9 +13,13 @@ class EpisodeCommentService(
     private val episodeCommentReader: EpisodeCommentReader,
     private val episodeCommentWriter: EpisodeCommentWriter,
 ) {
-    fun getEpisodeComments(episodeId: Long, toPageRequest: PageRequest): List<EpisodeCommentModel.Main> {
+    fun getEpisodeCommentModelsByPaging(
+        episodeId: Long,
+        toPageRequest: PageRequest,
+    ): List<EpisodeCommentModel.Main> {
         TODO("Not yet implemented")
     }
+
     fun createEpisodeComment(
         episodeId: Long,
         command: EpisodeCommentCommand.Create,
@@ -26,14 +31,22 @@ class EpisodeCommentService(
     fun updateEpisodeComment(
         commentId: Long, command: EpisodeCommentCommand.Update,
         loginUserId: LoginUserId,
-    ) {
-
+    ) = transactional {
+        val comment = episodeCommentReader.getById(commentId)
+        if (comment.user.id != loginUserId.value) {
+            throw IllegalAccessException("해당 댓글을 수정할 권한이 없습니다.")
+        }
+        comment.update(command)
     }
 
     fun deleteEpisodeComment(
         commentId: Long,
         loginUserId: LoginUserId,
-    ) {
-
+    ) = transactional {
+        val comment = episodeCommentReader.getById(commentId)
+        if (comment.user.id != loginUserId.value) {
+            throw IllegalAccessException("해당 댓글을 삭제할 권한이 없습니다.")
+        }
+        episodeCommentWriter.delete(comment)
     }
 }

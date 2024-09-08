@@ -28,6 +28,11 @@ class EpisodeComment(
     @JoinColumn(name = "parent_id", nullable = true)
     val parent: EpisodeComment?,
 ) : BaseModifiableEntity() {
+
+    fun update(command: EpisodeCommentCommand.Update) {
+        this.content = command.content
+    }
+
 }
 
 class EpisodeCommentCommand{

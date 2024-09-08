@@ -1,16 +1,19 @@
 package com.reditus.novelcia.episode.infrastructure.adapter
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
+import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
 class EpisodeCommentReaderWriterImpl(
     private val jpaQueryFactory: JPAQueryFactory,
+    private val episodeCommentRepository: EpisodeCommentRepository,
 ) : EpisodeCommentReader, EpisodeCommentWriter {
 
     override fun findAllWithEpisodeByDaysBetweenCreatedAt(
@@ -27,5 +30,17 @@ class EpisodeCommentReaderWriterImpl(
                 )
             )
             .fetch()
+    }
+
+    override fun getById(id: Long): EpisodeComment {
+        val comment =  episodeCommentRepository.findByIdOrThrow(id)
+        if(comment.isDeleted){
+            throw NoSuchElementException()
+        }
+        return comment
+    }
+
+    override fun delete(comment: EpisodeComment) {
+        comment.isDeleted = true
     }
 }
