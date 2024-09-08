@@ -1,15 +1,21 @@
 package com.reditus.novelcia.episode.domain.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.episode.domain.Episode
+import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
+import com.reditus.novelcia.episode.domain.port.EpisodeReader
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.user.domain.port.UserReader
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
 class EpisodeCommentService(
+    private val userReader: UserReader,
+    private val episodeReader: EpisodeReader,
     private val episodeCommentReader: EpisodeCommentReader,
     private val episodeCommentWriter: EpisodeCommentWriter,
 ) {
@@ -24,8 +30,18 @@ class EpisodeCommentService(
         episodeId: Long,
         command: EpisodeCommentCommand.Create,
         userId: LoginUserId,
-    ): Long {
-        TODO("Not yet implemented")
+    ): Long = transactional {
+        val user = userReader.getReferenceById(userId.value)
+        val episode = episodeReader.getById(episodeId)
+        val parentComment: EpisodeComment? = command.parentCommentId?.let { episodeCommentReader.getById(it) }
+        val comment = EpisodeComment.create(
+            episode = episode,
+            user = user,
+            command = command,
+            parentComment = parentComment,
+        )
+        episodeCommentWriter.save(comment)
+        return@transactional comment.id
     }
 
     fun updateEpisodeComment(

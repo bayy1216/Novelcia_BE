@@ -40,6 +40,10 @@ class EpisodeCommentReaderWriterImpl(
         return comment
     }
 
+    override fun save(comment: EpisodeComment): EpisodeComment {
+        return episodeCommentRepository.save(comment)
+    }
+
     override fun delete(comment: EpisodeComment) {
         comment.isDeleted = true
     }

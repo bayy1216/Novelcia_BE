@@ -35,6 +35,18 @@ class EpisodeComment(
     }
 
     companion object {
+        fun create(
+            command: EpisodeCommentCommand.Create,
+            episode: Episode,
+            user: User,
+            parentComment: EpisodeComment?
+        ) = EpisodeComment(
+            episode = episode,
+            user = user,
+            content = command.content,
+            isDeleted = false,
+            parent = parentComment,
+        )
 
         fun fixture(
             id: Long = 0L,
