@@ -29,9 +29,8 @@ class NovelViewWriteBackManager(
      * 1. `entity`를 `writeBackNovelIdCountMap`에 추가한다.
      * 2. 해당 `novelId`의 count가 `flushSize`를 넘으면 `flush`를 호출한다.
      *
-     * `synchronized block`이 있으므로 `Async`로 처리한다.
      */
-    override fun save(entity: EpisodeView) = executeAsync {
+    override fun save(entity: EpisodeView) {
         val shouldFlush: Boolean
         synchronized(writeBackNovelIdCountMap) {
             val count = writeBackNovelIdCountMap.getOrDefault(entity.novelId, 0) + 1
