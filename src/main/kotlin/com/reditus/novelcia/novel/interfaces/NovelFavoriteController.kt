@@ -2,8 +2,8 @@ package com.reditus.novelcia.novel.interfaces
 
 import com.reditus.novelcia.common.domain.OffsetRequest
 import com.reditus.novelcia.common.domain.OffsetResponse
-import com.reditus.novelcia.novel.domain.application.NovelFavoriteService
-import com.reditus.novelcia.novel.domain.application.NovelModel
+import com.reditus.novelcia.novel.application.NovelFavoriteService
+import com.reditus.novelcia.novel.application.model.NovelModel
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

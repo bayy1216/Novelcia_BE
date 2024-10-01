@@ -3,14 +3,14 @@ package com.reditus.novelcia
  import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.auth.domain.AuthService
 import com.reditus.novelcia.episode.domain.EpisodeCommand
- import com.reditus.novelcia.episode.domain.application.EpisodeQueryService
- import com.reditus.novelcia.episode.domain.application.EpisodeService
+ import com.reditus.novelcia.episode.application.EpisodeQueryService
+ import com.reditus.novelcia.episode.application.EpisodeService
  import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.novel.domain.Tag
- import com.reditus.novelcia.novel.domain.application.NovelFavoriteService
- import com.reditus.novelcia.novel.domain.application.NovelService
+ import com.reditus.novelcia.novel.application.NovelFavoriteService
+ import com.reditus.novelcia.novel.application.NovelService
 import com.reditus.novelcia.user.domain.User
 import com.reditus.novelcia.user.domain.UserCommand
  import com.reditus.novelcia.episode.infrastructure.EpisodeRepository

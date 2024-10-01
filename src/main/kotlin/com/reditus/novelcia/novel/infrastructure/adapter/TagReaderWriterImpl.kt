@@ -1,8 +1,8 @@
 package com.reditus.novelcia.novel.infrastructure.adapter
 
 import com.reditus.novelcia.novel.domain.Tag
-import com.reditus.novelcia.novel.domain.port.TagReader
-import com.reditus.novelcia.novel.domain.port.TagWriter
+import com.reditus.novelcia.novel.application.port.TagReader
+import com.reditus.novelcia.novel.application.port.TagWriter
 import com.reditus.novelcia.novel.infrastructure.TagRepository
 import org.springframework.stereotype.Repository
 

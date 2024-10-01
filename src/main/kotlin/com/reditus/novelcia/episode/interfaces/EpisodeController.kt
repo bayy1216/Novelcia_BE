@@ -1,14 +1,13 @@
 package com.reditus.novelcia.episode.interfaces
 
 import com.reditus.novelcia.common.domain.OffsetRequest
-import com.reditus.novelcia.episode.domain.application.EpisodeModel
-import com.reditus.novelcia.episode.domain.application.EpisodeQueryService
-import com.reditus.novelcia.episode.domain.application.EpisodeService
-import com.reditus.novelcia.episode.domain.port.EpisodePagingSort
+import com.reditus.novelcia.episode.application.model.EpisodeModel
+import com.reditus.novelcia.episode.application.EpisodeQueryService
+import com.reditus.novelcia.episode.application.EpisodeService
+import com.reditus.novelcia.episode.application.port.EpisodePagingSort
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.data.domain.PageRequest
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*

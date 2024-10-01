@@ -4,12 +4,12 @@ import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.Episode
-import com.reditus.novelcia.episode.domain.application.EpisodeModel
+import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.QEpisode
 import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeView
-import com.reditus.novelcia.episode.domain.port.EpisodePagingSort
-import com.reditus.novelcia.episode.domain.port.EpisodeReader
+import com.reditus.novelcia.episode.application.port.EpisodePagingSort
+import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import org.springframework.data.domain.PageRequest

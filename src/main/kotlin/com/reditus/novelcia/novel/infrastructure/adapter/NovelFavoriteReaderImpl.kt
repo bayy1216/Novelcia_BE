@@ -8,11 +8,11 @@ import com.reditus.novelcia.episode.domain.Episode
 
 import com.reditus.novelcia.episode.domain.QEpisode
 import com.reditus.novelcia.episode.domain.QEpisodeView
-import com.reditus.novelcia.novel.domain.application.NovelModel
-import com.reditus.novelcia.novel.domain.application.SpeciesModel
-import com.reditus.novelcia.novel.domain.application.TagModel
-import com.reditus.novelcia.novel.domain.port.NovelFavoriteReader
-import com.reditus.novelcia.user.domain.UserModel
+import com.reditus.novelcia.novel.application.model.NovelModel
+import com.reditus.novelcia.novel.application.model.SpeciesModel
+import com.reditus.novelcia.novel.application.model.TagModel
+import com.reditus.novelcia.novel.application.port.NovelFavoriteReader
+import com.reditus.novelcia.user.application.UserModel
 import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.novel.domain.*

@@ -1,7 +1,7 @@
 package com.reditus.novelcia.user.interfaces
 
 import com.reditus.novelcia.common.domain.PositiveInt
-import com.reditus.novelcia.user.domain.UserService
+import com.reditus.novelcia.user.application.UserService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

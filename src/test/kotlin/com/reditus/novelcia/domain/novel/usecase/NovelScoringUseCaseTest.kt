@@ -9,7 +9,7 @@ import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
-import com.reditus.novelcia.novel.domain.usecase.NovelScoringUseCase
+import com.reditus.novelcia.novel.application.usecase.NovelScoringUseCase
 import org.junit.jupiter.api.Test
 
 import org.junit.jupiter.api.Assertions.*

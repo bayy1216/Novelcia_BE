@@ -1,7 +1,7 @@
 package com.reditus.novelcia.novel.infrastructure.adapter
 
 import com.reditus.novelcia.novel.domain.NovelFavorite
-import com.reditus.novelcia.novel.domain.port.NovelFavoriteWriter
+import com.reditus.novelcia.novel.application.port.NovelFavoriteWriter
 import com.reditus.novelcia.novel.infrastructure.NovelFavoriteRepository
 import org.springframework.stereotype.Repository
 

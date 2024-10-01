@@ -1,8 +1,8 @@
 package com.reditus.novelcia.episode.interfaces
 
 import com.reditus.novelcia.common.domain.OffsetRequest
-import com.reditus.novelcia.episode.domain.application.EpisodeCommentModel
-import com.reditus.novelcia.episode.domain.application.EpisodeCommentService
+import com.reditus.novelcia.episode.application.model.EpisodeCommentModel
+import com.reditus.novelcia.episode.application.EpisodeCommentService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

@@ -1,7 +1,7 @@
 package com.reditus.novelcia.auth.interfaces
 
 import com.reditus.novelcia.auth.domain.AuthService
-import com.reditus.novelcia.user.domain.UserModel
+import com.reditus.novelcia.user.application.UserModel
 import com.reditus.novelcia.global.security.setLoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

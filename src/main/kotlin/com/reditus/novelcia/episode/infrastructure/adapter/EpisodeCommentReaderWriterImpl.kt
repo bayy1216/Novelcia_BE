@@ -6,8 +6,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeComment
-import com.reditus.novelcia.episode.domain.port.EpisodeCommentReader
-import com.reditus.novelcia.episode.domain.port.EpisodeCommentWriter
+import com.reditus.novelcia.episode.application.port.EpisodeCommentReader
+import com.reditus.novelcia.episode.application.port.EpisodeCommentWriter
 import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository

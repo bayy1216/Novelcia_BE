@@ -4,11 +4,11 @@ import com.reditus.novelcia.common.domain.PositiveInt
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.novel.domain.Novel
-import com.reditus.novelcia.novel.domain.port.NovelWriter
+import com.reditus.novelcia.novel.application.port.NovelWriter
 import com.reditus.novelcia.user.domain.User
 import com.reditus.novelcia.global.util.AsyncHelper
 import com.reditus.novelcia.global.util.AsyncTaskExecutor
-import com.reditus.novelcia.novel.domain.application.NovelViewWriteBackManager
+import com.reditus.novelcia.novel.application.NovelViewWriteBackManager
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Tag

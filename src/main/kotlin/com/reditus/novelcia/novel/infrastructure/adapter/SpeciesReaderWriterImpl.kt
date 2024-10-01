@@ -1,8 +1,8 @@
 package com.reditus.novelcia.novel.infrastructure.adapter
 
 import com.reditus.novelcia.novel.domain.Species
-import com.reditus.novelcia.novel.domain.port.SpeciesReader
-import com.reditus.novelcia.novel.domain.port.SpeciesWriter
+import com.reditus.novelcia.novel.application.port.SpeciesReader
+import com.reditus.novelcia.novel.application.port.SpeciesWriter
 import com.reditus.novelcia.novel.infrastructure.SpeciesRepository
 import org.springframework.stereotype.Repository
 

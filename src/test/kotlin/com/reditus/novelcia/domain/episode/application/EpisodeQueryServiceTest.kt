@@ -2,13 +2,13 @@ package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.episode.domain.EpisodeCommand
-import com.reditus.novelcia.episode.domain.port.EpisodePagingSort
+import com.reditus.novelcia.episode.application.port.EpisodePagingSort
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.user.domain.User
-import com.reditus.novelcia.episode.domain.application.EpisodeModel
-import com.reditus.novelcia.episode.domain.application.EpisodeQueryService
-import com.reditus.novelcia.episode.domain.application.EpisodeService
+import com.reditus.novelcia.episode.application.model.EpisodeModel
+import com.reditus.novelcia.episode.application.EpisodeQueryService
+import com.reditus.novelcia.episode.application.EpisodeService
 import com.reditus.novelcia.global.util.AsyncHelper
 import com.reditus.novelcia.global.util.AsyncTaskExecutor
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository

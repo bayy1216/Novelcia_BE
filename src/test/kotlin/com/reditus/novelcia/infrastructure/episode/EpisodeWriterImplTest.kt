@@ -1,7 +1,7 @@
 package com.reditus.novelcia.infrastructure.episode
 
 import com.reditus.novelcia.episode.domain.Episode
-import com.reditus.novelcia.episode.domain.port.EpisodeWriter
+import com.reditus.novelcia.episode.application.port.EpisodeWriter
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.user.domain.User

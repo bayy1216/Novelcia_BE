@@ -3,7 +3,7 @@ package com.reditus.novelcia.episode.infrastructure.adapter
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.episode.domain.QEpisodeView
-import com.reditus.novelcia.episode.domain.port.EpisodeViewReader
+import com.reditus.novelcia.episode.application.port.EpisodeViewReader
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 

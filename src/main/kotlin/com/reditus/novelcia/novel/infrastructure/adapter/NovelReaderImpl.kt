@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.domain.Novel
 
-import com.reditus.novelcia.novel.domain.port.NovelReader
+import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.novel.domain.QNovel.novel
 import com.reditus.novelcia.novel.infrastructure.NovelRepository

@@ -2,7 +2,7 @@ package com.reditus.novelcia.novel.infrastructure.adapter
 
 import com.reditus.novelcia.common.domain.PositiveInt
 import com.reditus.novelcia.novel.domain.Novel
-import com.reditus.novelcia.novel.domain.port.NovelWriter
+import com.reditus.novelcia.novel.application.port.NovelWriter
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional

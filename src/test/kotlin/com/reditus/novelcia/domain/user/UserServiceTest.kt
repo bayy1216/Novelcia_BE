@@ -5,7 +5,7 @@ import com.reditus.novelcia.common.domain.PositiveInt
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import com.reditus.novelcia.user.domain.User
-import com.reditus.novelcia.user.domain.UserService
+import com.reditus.novelcia.user.application.UserService
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag

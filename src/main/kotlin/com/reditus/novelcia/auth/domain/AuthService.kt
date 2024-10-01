@@ -2,9 +2,9 @@ package com.reditus.novelcia.auth.domain
 
 import com.reditus.novelcia.user.domain.User
 import com.reditus.novelcia.user.domain.UserCommand
-import com.reditus.novelcia.user.domain.UserModel
-import com.reditus.novelcia.user.domain.port.UserReader
-import com.reditus.novelcia.user.domain.port.UserWriter
+import com.reditus.novelcia.user.application.UserModel
+import com.reditus.novelcia.user.application.port.UserReader
+import com.reditus.novelcia.user.application.port.UserWriter
 import com.reditus.novelcia.global.exception.ElementConflictException
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional

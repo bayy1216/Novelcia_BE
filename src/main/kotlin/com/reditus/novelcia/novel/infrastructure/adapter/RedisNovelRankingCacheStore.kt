@@ -1,7 +1,7 @@
 package com.reditus.novelcia.novel.infrastructure.adapter
 
-import com.reditus.novelcia.novel.domain.port.NovelRankingCacheStore
-import com.reditus.novelcia.novel.domain.usecase.NovelIdAndScore
+import com.reditus.novelcia.novel.application.port.NovelRankingCacheStore
+import com.reditus.novelcia.novel.application.usecase.NovelIdAndScore
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.redis.core.ZSetOperations
 import org.springframework.stereotype.Component

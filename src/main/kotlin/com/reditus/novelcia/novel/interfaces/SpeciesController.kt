@@ -1,8 +1,8 @@
 package com.reditus.novelcia.novel.interfaces
 
 import com.reditus.novelcia.common.domain.UpsertResult
-import com.reditus.novelcia.novel.domain.application.SpeciesModel
-import com.reditus.novelcia.novel.domain.application.SpeciesService
+import com.reditus.novelcia.novel.application.model.SpeciesModel
+import com.reditus.novelcia.novel.application.SpeciesService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus

@@ -1,8 +1,8 @@
 package com.reditus.novelcia.novel.interfaces
 
 import com.reditus.novelcia.common.domain.UpsertResult
-import com.reditus.novelcia.novel.domain.application.TagModel
-import com.reditus.novelcia.novel.domain.application.TagService
+import com.reditus.novelcia.novel.application.model.TagModel
+import com.reditus.novelcia.novel.application.TagService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.web.bind.annotation.GetMapping
