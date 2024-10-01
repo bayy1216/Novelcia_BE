@@ -4,6 +4,7 @@ import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.domain.application.NovelQueryService
 import com.reditus.novelcia.novel.domain.application.NovelService
 import com.reditus.novelcia.global.security.LoginUserDetails
+import com.reditus.novelcia.novel.domain.NovelRankingSearchDays
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
@@ -29,15 +30,17 @@ class NovelController(
         return models.map(NovelRes.Meta.Companion::from)
     }
 
-    @Operation(summary = "소설 최근 N일 랭킹 조회")
+    @Operation(summary = "소설 최근 N일 랭킹 조회", description = "days는 1, 7, 30 중 하나여야 합니다.")
     @GetMapping("/api/novels/ranking")
     fun getNovelRanking(
         @RequestParam days: Int = 1,
         @RequestParam size: Int = 20,
         @RequestParam page: Int = 0,
     ): List<NovelRes.Meta> {
+
+        val rankingDays = NovelRankingSearchDays.from(days)
         val models = novelQueryService.getNovelModelsByRanking(
-            days = days,
+            days = rankingDays,
             size = size,
             page = page,
         )

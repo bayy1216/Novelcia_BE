@@ -6,6 +6,7 @@ import com.reditus.novelcia.novel.domain.port.NovelReader
 import com.reditus.novelcia.novel.domain.usecase.NovelIdAndScore
 import com.reditus.novelcia.novel.domain.usecase.NovelScoringUseCase
 import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.novel.domain.NovelRankingSearchDays
 import org.springframework.stereotype.Service
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -30,11 +31,11 @@ class NovelQueryService(
      * 1-2. 캐시가 존재하지 않으면 스코어링을 조회하여 캐시를 저장하고 반환한다.
      * 2. `novelIds`를 통해 소설을 조회한다.
      */
-    fun getNovelModelsByRanking(days: Int, size: Int, page: Int): List<NovelModel.Main> {
+    fun getNovelModelsByRanking(days: NovelRankingSearchDays, size: Int, page: Int): List<NovelModel.Main> {
         val localLockCheckNum = lockCheckNum
 
         val cache: List<NovelIdAndScore>? =
-            novelRankingCacheStore.getNovelIdRankingByPage(days = days, size = size, page = page)
+            novelRankingCacheStore.getNovelIdRankingByPage(days = days.value, size = size, page = page)
 
         if (cache != null) { // 캐시가 존재하면 캐시를 반환 early return
             return readOnly {
@@ -53,7 +54,7 @@ class NovelQueryService(
                 // 같다면, 캐시가 갱신이 안되었고, 현재 쓰레드가 락을 점유하였다.
                 // 같은데, 다른 쓰레드가 캐시를 갱신하였다면, 해당 임계구역을 진입하지 못했다.
                 // Volatile 변수를 사용했기 때문에 CPU 캐시에 저장되지 않고, 메인 메모리에 저장되어 쓰레드간 공유된다.
-                novelRankingCacheStore.getNovelIdRankingByPage(days = days, size = size, page = page)?.let {
+                novelRankingCacheStore.getNovelIdRankingByPage(days = days.value, size = size, page = page)?.let {
                     val novelIds = it.map { novelAndScore -> novelAndScore.novelId }
                     return@withLock readOnly {
                         val novels = novelReader.findNovelsByIdsIn(novelIds)
@@ -64,12 +65,12 @@ class NovelQueryService(
 
 
             log.warn("NovelScoringUseCase trigger by cache miss (days: $days, lockCheckNum: $lockCheckNum)")
-            val scoresByOrder = novelScoringUseCase(days = days) // TX BLOCK
+            val scoresByOrder = novelScoringUseCase(days = days.value) // TX BLOCK
             if (scoresByOrder.isEmpty()) { // 스코어링 결과가 없으면 early return
                 return@withLock emptyList()
             }
 
-            novelRankingCacheStore.saveNovelIdAndScoresAll(days, scoresByOrder) // 캐시 저장
+            novelRankingCacheStore.saveNovelIdAndScoresAll(days.value, scoresByOrder) // 캐시 저장
             lockCheckNum += 1 // 캐시 업데이트 했으므로 lockCheckNum 증가
             val novelIds = scoresByOrder.map { it.novelId }
             return@withLock readOnly { // 소설 DB 조회, // TX BLOCK
