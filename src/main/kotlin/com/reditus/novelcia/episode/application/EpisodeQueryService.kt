@@ -55,7 +55,12 @@ class EpisodeQueryService(
         if (!episode.canRead(user)) {
             throw IllegalAccessException("해당 에피소드를 읽을 권한이 없습니다.")
         }
-        val event = EpisodeReadEvent(novelId = episode.novel.id, episodeId = episode.id, userId = userId.value)
+        val event = EpisodeReadEvent(
+            novelId = episode.novel.id,
+            episodeId = episode.id,
+            userId = userId.value,
+            episodeNumber = episodeNumber,
+        )
         applicationEventPublisher.publishEvent(event)
 
 

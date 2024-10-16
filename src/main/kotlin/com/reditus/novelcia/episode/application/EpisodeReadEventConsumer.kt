@@ -7,6 +7,7 @@ import com.reditus.novelcia.episode.application.port.EpisodeViewWriter
 import com.reditus.novelcia.global.util.executeAsync
 import com.reditus.novelcia.global.util.newTransaction
 import com.reditus.novelcia.novel.application.NovelViewWriteBackManager
+import com.reditus.novelcia.novel.application.port.NovelFavoriteReader
 import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.user.application.port.UserReader
 import org.springframework.stereotype.Component
@@ -19,6 +20,7 @@ class EpisodeReadEventConsumer(
     private val novelReader: NovelReader,
     private val userReader: UserReader,
     private val episodeViewWriter: EpisodeViewWriter,
+    private val novelFavoriteReader: NovelFavoriteReader,
     private val novelWriteBackManager: NovelViewWriteBackManager,
 ) {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
@@ -30,6 +32,10 @@ class EpisodeReadEventConsumer(
         )
         newTransaction {
             episodeViewWriter.save(episodeView)
+            val favorite = novelFavoriteReader.findByUserIdAndNovelId(event.userId, event.novelId)
+            if (favorite != null) {
+                favorite.lastViewedEpisodeNumber = event.episodeNumber
+            }
         }
 
         novelWriteBackManager.save(episodeView)

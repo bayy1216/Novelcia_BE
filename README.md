@@ -21,6 +21,6 @@ Spring Boot로 만드는 소설 플랫폼
 ## 기타
 - 프로젝트 구조 : [convention.md](./docs/convention.md)
 - kotlinDSL 적용 : [TxManager](./src/main/kotlin/com/reditus/novelcia/global/util/TxUtils.kt)
-- 조회수 증가 WriteBack 적용 : [WriteBackManager](./src/main/kotlin/com/reditus/novelcia/domain/common/WriteBackManager.kt), [NovelViewWriteBackManager](./src/main/kotlin/com/reditus/novelcia/domain/novel/application/NovelViewWriteBackManager.kt)
-- Novel 랭킹 스코어링 캐싱 적용 : [NovelQueryService](./src/main/kotlin/com/reditus/novelcia/domain/novel/application/NovelQueryService.kt)
-- 유저 포인트 멱등키 적용 : [UserService](./src/main/kotlin/com/reditus/novelcia/domain/user/UserService.kt)
+- 조회수 증가 WriteBack 적용 : [WriteBackManager](./src/main/kotlin/com/reditus/novelcia/common/domain/WriteBackManager.kt), [NovelViewWriteBackManager](./src/main/kotlin/com/reditus/novelcia/novel/application/NovelViewWriteBackManager.kt)
+- Novel 랭킹 스코어링 캐싱 적용 : [NovelQueryService](./src/main/kotlin/com/reditus/novelcia/novel/application/NovelQueryService.kt)
+- 유저 포인트 멱등키 적용 : [UserService](./src/main/kotlin/com/reditus/novelcia/user/application/UserService.kt)

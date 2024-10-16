@@ -35,8 +35,7 @@ class NovelFavoriteReaderImpl(
      * 1. count 쿼리로 novelFavorite 개수 조회
      * 2. novelFavorite 페이징 조회 쿼리 - novel, author fetch join
      * 3. novelAndTag, novelAndSpecies in절 조회 쿼리 - tag, species fetch join
-     * 4. episodeView 테이블을 이용하여 마지막으로 본 에피소드 조회
-     * 5. novel in절로 최대 에피소드 번호 조회
+     * 4. novel in절로 최대 에피소드 번호 조회
      */
     override fun getUserFavoriteNovelPage(
         userId: Long,
@@ -88,33 +87,6 @@ class NovelFavoriteReaderImpl(
             .groupBy({ it.novel.id }, { it.species })
 
 
-        val lastTimeViewEpisode = jpaQueryFactory
-            .select(
-                Projections.constructor(
-                    EpisodeLastViewQuery::class.java,
-                    QEpisodeView.episodeView.novel.id,
-                    QEpisodeView.episodeView.episode.id,
-                    QEpisode.episode.episodeNumber,
-                )
-            )
-            .from(QEpisodeView.episodeView)
-            .join(QEpisode.episode).on(QEpisodeView.episodeView.episode.id.eq(QEpisode.episode.id))
-            .where(
-                QEpisodeView.episodeView.user.id.eq(userId),
-                QEpisodeView.episodeView.novel.id.`in`(novelIds),
-                QEpisodeView.episodeView.createdAt.eq(
-                    JPAExpressions
-                        .select(QEpisodeView.episodeView.createdAt.max())
-                        .from(QEpisodeView.episodeView)
-                        .where(
-                            QEpisodeView.episodeView.user.id.eq(userId),
-                            QEpisodeView.episodeView.novel.id.`in`(novelIds)
-                        )
-                        .groupBy(QEpisodeView.episodeView.novel.id)
-                )
-            )
-            .fetch()
-
         val maxEpisodeNumbers = jpaQueryFactory
             .select(
                 Projections.constructor(
@@ -133,7 +105,6 @@ class NovelFavoriteReaderImpl(
             it.toModel(
                 novelSpeciesMap,
                 novelTagMap,
-                lastTimeViewEpisode,
                 maxEpisodeNumbers,
             )()
         }
@@ -145,7 +116,6 @@ class NovelFavoriteReaderImpl(
 fun NovelFavorite.toModel(
     novelSpeciesMap: Map<Long, List<Species>>,
     novelTagMap: Map<Long, List<Tag>>,
-    lastTimeViewEpisode: List<EpisodeLastViewQuery>,
     maxEpisodeNumbers: List<EpisodeMaxNumberQuery>,
 ): TxScope.()-> NovelModel.UserFavorite = {
     NovelModel.UserFavorite(
@@ -160,20 +130,13 @@ fun NovelFavorite.toModel(
         species = novelSpeciesMap[novel.id]?.map { species -> SpeciesModel.from(species)() }
             ?: emptyList(),
         tags = novelTagMap[novel.id]?.map { tag -> TagModel.from(tag)() } ?: emptyList(),
-        userLastReadEpisodeNumber = lastTimeViewEpisode
-            .find { query -> query.novelId == novel.id }?.lastReadEpisodeNumber
-            ?: Episode.INITIAL_EPISODE_NUMBER,
+        userLastReadEpisodeNumber = lastViewedEpisodeNumber,
         maxEpisodeNumber = maxEpisodeNumbers
             .find { query -> query.novelId == novel.id }?.maxEpisodeNumber
             ?: Episode.INITIAL_EPISODE_NUMBER,
     )
 }
 
-data class EpisodeLastViewQuery(
-    val novelId: Long,
-    val lastReadEpisodeId: Long,
-    val lastReadEpisodeNumber: Int,
-)
 
 data class EpisodeMaxNumberQuery(
     val novelId: Long,
