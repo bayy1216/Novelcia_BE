@@ -1,6 +1,10 @@
 package com.reditus.novelcia.novel.domain
 
 import com.reditus.novelcia.common.domain.BaseModifiableEntity
+import com.reditus.novelcia.novelmeta.domain.NovelAndSpecies
+import com.reditus.novelcia.novelmeta.domain.NovelAndTag
+import com.reditus.novelcia.novelmeta.domain.Species
+import com.reditus.novelcia.novelmeta.domain.Tag
 import jakarta.persistence.Entity
 
 import com.reditus.novelcia.user.domain.User

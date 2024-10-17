@@ -7,8 +7,8 @@ import com.reditus.novelcia.episode.domain.EpisodeReadEvent
 import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
 import com.reditus.novelcia.episode.application.port.EpisodePagingSort
 import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.novel.domain.NovelFavorite
-import com.reditus.novelcia.novel.application.port.NovelFavoriteReader
+import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
+import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
 import com.reditus.novelcia.user.application.port.UserReader
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.context.ApplicationEventPublisher

@@ -7,7 +7,7 @@ import com.reditus.novelcia.episode.application.port.EpisodeViewWriter
 import com.reditus.novelcia.global.util.executeAsync
 import com.reditus.novelcia.global.util.newTransaction
 import com.reditus.novelcia.novel.application.NovelViewWriteBackManager
-import com.reditus.novelcia.novel.application.port.NovelFavoriteReader
+import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
 import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.user.application.port.UserReader
 import org.springframework.stereotype.Component

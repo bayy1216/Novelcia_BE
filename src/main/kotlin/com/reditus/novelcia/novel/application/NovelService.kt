@@ -5,8 +5,8 @@ import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
 import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.novel.application.port.NovelWriter
-import com.reditus.novelcia.novel.application.port.SpeciesReader
-import com.reditus.novelcia.novel.application.port.TagReader
+import com.reditus.novelcia.novelmeta.application.SpeciesReader
+import com.reditus.novelcia.novelmeta.application.TagReader
 import com.reditus.novelcia.novel.application.usecase.NovelDeleteUseCase
 import com.reditus.novelcia.user.application.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
