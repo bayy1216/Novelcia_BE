@@ -1,7 +1,6 @@
 package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.CursorRequest
-import com.reditus.novelcia.novel.application.port.NovelRankingCacheStore
 import com.reditus.novelcia.novel.application.usecase.NovelIdAndScore
 import com.reditus.novelcia.novel.application.usecase.NovelScoringUseCase
 import com.reditus.novelcia.global.util.readOnly
@@ -9,6 +8,7 @@ import com.reditus.novelcia.novel.application.model.NovelModel
 import com.reditus.novelcia.novel.domain.NovelRankingSearchDays
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.novel.infrastructure.NovelQueryRepository
+import com.reditus.novelcia.novel.infrastructure.RedisNovelRankingCacheStore
 import org.springframework.stereotype.Service
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -18,7 +18,7 @@ class NovelQueryService(
     private val novelQueryRepository: NovelQueryRepository,
     private val novelRepository: NovelRepository,
     private val novelScoringUseCase: NovelScoringUseCase,
-    private val novelRankingCacheStore: NovelRankingCacheStore,
+    private val novelRankingCacheStore: RedisNovelRankingCacheStore,
 ) {
 
     fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> = readOnly {
