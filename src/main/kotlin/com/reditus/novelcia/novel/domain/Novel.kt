@@ -9,6 +9,8 @@ import jakarta.persistence.Entity
 
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 @Entity
 class Novel(
@@ -47,6 +49,10 @@ class Novel(
 
     @Enumerated(EnumType.STRING)
     var readAuthority: ReadAuthority,
+
+    @Column(columnDefinition = "JSON")
+    @JdbcTypeCode(SqlTypes.JSON)
+    var novelMeta: NovelMeta,
 
     @OneToMany(mappedBy = "novel", cascade = [CascadeType.ALL], orphanRemoval = true)
     val novelAndTags: MutableList<NovelAndTag> = mutableListOf(),
@@ -95,6 +101,10 @@ class Novel(
             addAction = { addNovelAndTag(it) },
             removeAction = { removeTag ->
                 novelAndTags.find { it.tag == removeTag }?.let { novelAndTags.remove(it) }
+
+                novelMeta = novelMeta.copy(
+                    tags = novelMeta.tags.filter { it.name != removeTag.name }
+                )
             }
         )
 
@@ -105,6 +115,10 @@ class Novel(
             removeAction = { removeSpecies ->
                 novelAndSpeciesList
                     .find { it.species == removeSpecies }?.let { novelAndSpeciesList.remove(it) }
+
+                novelMeta = novelMeta.copy(
+                    speciesList = novelMeta.speciesList.filter { it.id != removeSpecies.id }
+                )
             }
         )
     }
@@ -112,11 +126,17 @@ class Novel(
     fun addNovelAndTag(tag: Tag) {
         val newNovelAndTag = NovelAndTag.create(novel = this, tag = tag)
         novelAndTags.add(newNovelAndTag)
+        novelMeta = novelMeta.copy(
+            tags = novelMeta.tags + NovelMeta.TagData(tag.name, tag.colorHexCode)
+        )
     }
 
     fun addNovelAndSpecies(species: Species) {
         val newNovelAndSpecies = NovelAndSpecies(novel = this, species = species)
         novelAndSpeciesList.add(newNovelAndSpecies)
+        novelMeta = novelMeta.copy(
+            speciesList = novelMeta.speciesList + NovelMeta.SpeciesData(species.id, species.name, species.colorHexCode)
+        )
     }
 
 
@@ -165,6 +185,7 @@ class Novel(
                 episodeCount = 0,
                 isDeleted = false,
                 readAuthority = ReadAuthority.FREE,
+                novelMeta = NovelMeta.from(tags, speciesList),
             ).apply {
                 tags.forEach { addNovelAndTag(it) }
                 speciesList.forEach { addNovelAndSpecies(it) }
@@ -184,6 +205,7 @@ class Novel(
             episodeCount: Int = 0,
             isDeleted: Boolean = false,
             readAuthority: ReadAuthority = ReadAuthority.FREE,
+            metaData: NovelMeta = NovelMeta.empty(),
         ) = Novel(
             id = id,
             author = author,
@@ -197,9 +219,45 @@ class Novel(
             episodeCount = episodeCount,
             isDeleted = isDeleted,
             readAuthority = readAuthority,
+            novelMeta = metaData,
         )
     }
 }
+
+data class NovelMeta(
+    val tags: List<TagData>,
+    val speciesList: List<SpeciesData>,
+){
+    data class TagData(
+        val name: String,
+        val colorHexCode: String,
+    ){
+        companion object {
+            fun from(tag: Tag) = TagData(tag.name, tag.colorHexCode)
+        }
+    }
+
+    data class SpeciesData(
+        val id: Long,
+        val name: String,
+        val colorHexCode: String,
+    ){
+        companion object {
+            fun from(species: Species) = SpeciesData(species.id, species.name, species.colorHexCode)
+        }
+    }
+
+    companion object {
+        fun from(tags: List<Tag>, speciesList: List<Species>): NovelMeta {
+            return NovelMeta(
+                tags = tags.map { TagData.from(it) },
+                speciesList = speciesList.map { SpeciesData.from(it) }
+            )
+        }
+        fun empty() = NovelMeta(emptyList(), emptyList())
+    }
+}
+
 
 enum class ReadAuthority {
     FREE,
