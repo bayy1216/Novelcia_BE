@@ -5,8 +5,8 @@ import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeCommand
 import com.reditus.novelcia.episode.domain.EpisodeLike
-import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service
 @Service
 class EpisodeService(
     private val novelRepository: NovelRepository,
-    private val episodeReader: EpisodeReader,
+    private val episodeQueryRepository: EpisodeQueryRepository,
     private val episodeRepository: EpisodeRepository,
     private val userRepository: UserRepository,
     private val episodeLikeRepository: EpisodeLikeRepository,
@@ -37,7 +37,7 @@ class EpisodeService(
         if (!novel.isAuthor(userId.value)) {
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }
-        val lastEpisodeNumber: Int? = episodeReader.findLastEpisodeNumberByNovelId(novelId)
+        val lastEpisodeNumber: Int? = episodeQueryRepository.findLastEpisodeNumberByNovelId(novelId)
         val episodeNumber = if (lastEpisodeNumber == null) {
             Episode.INITIAL_EPISODE_NUMBER
         } else {
@@ -55,7 +55,7 @@ class EpisodeService(
         episodeId: Long,
         command: EpisodeCommand.Patch,
     ) = transactional {
-        val episode = episodeReader.getByIdWithNovel(episodeId)
+        val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
         if (!episode.canEdit(userId.value)) {
             throw NoPermissionException("해당 에피소드를 수정할 권한이 없습니다.")
         }
@@ -66,7 +66,7 @@ class EpisodeService(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        val episode = episodeReader.getByIdWithNovel(episodeId)
+        val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
         if (!episode.canEdit(userId.value)) {
             throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
         }
@@ -78,7 +78,7 @@ class EpisodeService(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        val episode = episodeReader.getReferenceById(episodeId)
+        val episode = episodeRepository.getReferenceById(episodeId)
         val user = userRepository.getReferenceById(userId.value)
         val episodeLike = EpisodeLike.create(episode, user)
         episodeLikeRepository.save(episodeLike)

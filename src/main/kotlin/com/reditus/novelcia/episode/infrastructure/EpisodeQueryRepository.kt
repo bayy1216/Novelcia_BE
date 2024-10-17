@@ -1,4 +1,4 @@
-package com.reditus.novelcia.episode.infrastructure.adapter
+package com.reditus.novelcia.episode.infrastructure
 
 import com.querydsl.core.types.Projections
 import com.querydsl.core.types.dsl.Expressions
@@ -8,23 +8,18 @@ import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.QEpisode
 import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeView
-import com.reditus.novelcia.episode.application.port.EpisodePagingSort
-import com.reditus.novelcia.episode.application.port.EpisodeReader
+import com.reditus.novelcia.episode.application.EpisodePagingSort
 import com.reditus.novelcia.novel.domain.ReadAuthority
-import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Repository
-class EpisodeReaderImpl(
-    private val episodeRepository: EpisodeRepository,
+class EpisodeQueryRepository(
     private val jpaQueryFactory: JPAQueryFactory,
-) : EpisodeReader {
-
-
-    override fun getEpisodeModelsByOffsetPaging(
+)  {
+    fun getEpisodeModelsByOffsetPaging(
         userId: Long,
         novelId: Long,
         pageRequest: PageRequest,
@@ -70,18 +65,8 @@ class EpisodeReaderImpl(
         return episodeProjections.map(EpisodeProjection::toMetaModel)
     }
 
-    override fun getById(episodeId: Long): Episode {
-        val episode = jpaQueryFactory
-            .select(QEpisode.episode)
-            .from(QEpisode.episode)
-            .where(
-                QEpisode.episode.id.eq(episodeId),
-                QEpisode.episode.isDeleted.eq(false),
-            ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
-        return episode
-    }
 
-    override fun getByIdWithNovel(episodeId: Long): Episode {
+    fun getByIdWithNovel(episodeId: Long): Episode {
         val episode = jpaQueryFactory
             .select(QEpisode.episode)
             .from(QEpisode.episode)
@@ -93,7 +78,7 @@ class EpisodeReaderImpl(
         return episode
     }
 
-    override fun getByEpisodeNumberAndNovelIdWithNovel(novelId: Long, episodeNumber: Int): Episode {
+    fun getByEpisodeNumberAndNovelIdWithNovel(novelId: Long, episodeNumber: Int): Episode {
         return jpaQueryFactory
             .select(QEpisode.episode)
             .from(QEpisode.episode)
@@ -105,7 +90,7 @@ class EpisodeReaderImpl(
             ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
     }
 
-    override fun findLastEpisodeNumberByNovelId(novelId: Long): Int? {
+    fun findLastEpisodeNumberByNovelId(novelId: Long): Int? {
         val query = jpaQueryFactory.select(QEpisode.episode.episodeNumber.max())
             .from(QEpisode.episode)
             .where(
@@ -115,11 +100,8 @@ class EpisodeReaderImpl(
         return query
     }
 
-    override fun getReferenceById(id: Long): Episode {
-        return episodeRepository.getReferenceById(id)
-    }
 
-    override fun findEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode> {
+    fun findEpisodesDaysBetweenByCreatedAt(startDate: LocalDate, endDate: LocalDate): List<Episode> {
         return jpaQueryFactory.select(QEpisode.episode)
             .from(QEpisode.episode)
             .where(

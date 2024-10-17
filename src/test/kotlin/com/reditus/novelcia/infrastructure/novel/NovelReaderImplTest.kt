@@ -2,8 +2,8 @@ package com.reditus.novelcia.infrastructure.novel
 
 import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.novel.infrastructure.NovelQueryRepository
 import com.reditus.novelcia.user.domain.User
-import com.reditus.novelcia.novel.infrastructure.adapter.NovelReaderImpl
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import jakarta.persistence.EntityManager
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @Transactional
 class NovelReaderImplTest @Autowired constructor(
-    private val novelReaderImpl: NovelReaderImpl,
+    private val novelQueryRepository: NovelQueryRepository,
     private val novelRepository: NovelRepository,
     private val userRepository: UserRepository,
     private val em: EntityManager,
@@ -45,10 +45,10 @@ class NovelReaderImplTest @Autowired constructor(
             size = 10
         )
         val novels =
-            novelReaderImpl.findNovelsByCursorOrderByCreatedAt(cursorRequest)
+            novelQueryRepository.findNovelsByCursorOrderByCreatedAt(cursorRequest)
         assertEquals(4, novels.size) // 1, 2, 3, 4가 오래전이라 나와야함
 
-        val novels2 = novelReaderImpl.findNovelsByCursorOrderByCreatedAt(
+        val novels2 = novelQueryRepository.findNovelsByCursorOrderByCreatedAt(
             CursorRequest(
                 size = 10,
             )

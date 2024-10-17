@@ -2,7 +2,7 @@ package com.reditus.novelcia.domain.episode.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.episode.domain.EpisodeCommand
-import com.reditus.novelcia.episode.application.port.EpisodePagingSort
+import com.reditus.novelcia.episode.application.EpisodePagingSort
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.user.domain.User
