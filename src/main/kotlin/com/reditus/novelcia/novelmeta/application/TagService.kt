@@ -5,16 +5,16 @@ import com.reditus.novelcia.novelmeta.domain.Tag
 import com.reditus.novelcia.novelmeta.domain.TagCommand
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.novelmeta.infrasturcture.TagRepository
 import org.springframework.stereotype.Service
 
 
 @Service
 class TagService(
-    private val tagReader: TagReader,
-    private val tagWriter: TagWriter,
+    private val tagRepository: TagRepository,
 ) {
     fun upsertTags(commands: List<TagCommand.Upsert>): UpsertResult<String> = transactional {
-        val existTags = tagReader.findTagsByTagNamesIn(commands.map { it.name })
+        val existTags = tagRepository.findAllByNameIn(commands.map { it.name })
         val newTags = mutableListOf<Tag>()
         commands.forEach { upsertCommand ->
             val exitsTag = existTags.find { tag -> tag.name == upsertCommand.name }
@@ -24,7 +24,7 @@ class TagService(
                 newTags.add(Tag.create(upsertCommand))
             }
         }
-        tagWriter.saveTags(newTags)
+        tagRepository.saveAll(newTags)
         return@transactional UpsertResult(
             insertedCount = newTags.size,
             insertedIds = newTags.map(Tag::name),
@@ -33,7 +33,7 @@ class TagService(
     }
 
     fun getAllTags(): List<TagModel> = readOnly {
-        val tags = tagReader.findAllTags()
+        val tags = tagRepository.findAll()
         return@readOnly tags.map { TagModel.from(it)(this) }
     }
 }
