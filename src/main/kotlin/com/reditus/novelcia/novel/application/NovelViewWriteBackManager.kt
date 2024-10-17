@@ -1,10 +1,8 @@
 package com.reditus.novelcia.novel.application
 
-import com.reditus.novelcia.common.domain.PositiveInt
 import com.reditus.novelcia.common.domain.WriteBackManager
 import com.reditus.novelcia.episode.domain.EpisodeView
-import com.reditus.novelcia.novel.application.port.NovelWriter
-import com.reditus.novelcia.global.util.executeAsync
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -21,7 +19,7 @@ import org.springframework.stereotype.Component
 class NovelViewWriteBackManager(
     @Value("\${write-back.flush-size.novel:100}")
     override val flushSize: Int,
-    private val novelWriter: NovelWriter,
+    private val novelRepository: NovelRepository,
 ) : WriteBackManager<EpisodeView> {
     private val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
 
@@ -56,7 +54,7 @@ class NovelViewWriteBackManager(
         }
 
         writeMapSnapshot.forEach { (novelId, count) ->
-            novelWriter.addViewCount(novelId, PositiveInt(count))
+            novelRepository.addViewCount(novelId, count)
         }
     }
 

@@ -1,21 +1,22 @@
 package com.reditus.novelcia.episode.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeCommand
 import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.application.port.EpisodeLikeWriter
 import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.episode.application.port.EpisodeWriter
-import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
 class EpisodeService(
-    private val novelReader: NovelReader,
+    private val novelRepository: NovelRepository,
     private val episodeReader: EpisodeReader,
     private val episodeWriter: EpisodeWriter,
     private val userRepository: UserRepository,
@@ -32,7 +33,7 @@ class EpisodeService(
         novelId: Long,
         command: EpisodeCommand.Create,
     ): Long = transactional {
-        val novel = novelReader.getNovelById(novelId)
+        val novel = novelRepository.findByIdOrThrow(novelId)
         if (!novel.isAuthor(userId.value)) {
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }

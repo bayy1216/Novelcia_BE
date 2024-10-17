@@ -1,13 +1,13 @@
 package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
-import com.reditus.novelcia.novel.application.port.NovelReader
-import com.reditus.novelcia.novel.application.port.NovelWriter
 import com.reditus.novelcia.novel.application.usecase.NovelDeleteUseCase
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.novelmeta.infrasturcture.SpeciesRepository
 import com.reditus.novelcia.novelmeta.infrasturcture.TagRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
@@ -18,8 +18,7 @@ class NovelService(
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
     private val speciesRepository: SpeciesRepository,
-    private val novelReader: NovelReader,
-    private val novelWriter: NovelWriter,
+    private val novelRepository: NovelRepository,
     private val novelDeleteUseCase: NovelDeleteUseCase,
 ) {
 
@@ -36,7 +35,7 @@ class NovelService(
             }
         }
         val novel = Novel.create(author, command, tags, speciesList)
-        novelWriter.save(novel)
+        novelRepository.save(novel)
         return@transactional novel.id
     }
 
@@ -46,7 +45,7 @@ class NovelService(
         novelId: Long,
         command: NovelCommand.Update,
     ) = transactional {
-        val novel = novelReader.getNovelById(novelId)
+        val novel = novelRepository.findByIdOrThrow(novelId)
         if (!novel.isAuthor(loginUserId.value)) {
             throw NoPermissionException("해당 소설을 수정할 권한이 없습니다.")
         }
@@ -68,7 +67,7 @@ class NovelService(
     }
 
     fun deleteNovel(loginUserId: LoginUserId, novelId: Long) = transactional {
-        val novel = novelReader.getNovelById(novelId)
+        val novel = novelRepository.findByIdOrThrow(novelId)
         if (!novel.isAuthor(loginUserId.value)) {
             throw NoPermissionException("해당 소설을 삭제할 권한이 없습니다.")
         }

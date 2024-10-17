@@ -1,4 +1,4 @@
-package com.reditus.novelcia.novel.infrastructure.adapter
+package com.reditus.novelcia.novel.infrastructure
 
 import com.querydsl.core.types.dsl.BooleanExpression
 import com.querydsl.jpa.JPAExpressions
@@ -6,30 +6,15 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.domain.Novel
 
-import com.reditus.novelcia.novel.application.port.NovelReader
-import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.novel.domain.QNovel.novel
-import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-class NovelReaderImpl(
-    private val novelRepository: NovelRepository,
+class NovelQueryRepository(
     private val jpaQueryFactory: JPAQueryFactory,
-) : NovelReader {
-    override fun getReferenceById(id: Long): Novel {
-        return novelRepository.getReferenceById(id)
-    }
+)  {
 
-    override fun getNovelById(id: Long): Novel {
-        val novel = novelRepository.findByIdOrThrow(id)
-        if(novel.isDeleted){
-            throw NoSuchElementException()
-        }
-        return novel
-    }
-
-    override fun findNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel> {
+    fun findNovelsByCursorOrderByCreatedAt(cursorRequest: CursorRequest): List<Novel> {
         val query = jpaQueryFactory
             .select(novel).from(novel)
             .where(
@@ -42,9 +27,6 @@ class NovelReaderImpl(
         return query
     }
 
-    override fun findNovelsByIdsIn(ids: List<Long>): List<Novel> {
-        return novelRepository.findAllById(ids)
-    }
 
     private fun cursorWhereIdEqExpression(cursorRequest: CursorRequest): BooleanExpression? {
         if(cursorRequest.cursorId == null){
