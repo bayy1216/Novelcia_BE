@@ -3,7 +3,7 @@ package com.reditus.novelcia.episode.application
 import com.reditus.novelcia.episode.domain.EpisodeReadEvent
 import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.episode.application.port.EpisodeViewWriter
+import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
 import com.reditus.novelcia.global.util.executeAsync
 import com.reditus.novelcia.global.util.newTransaction
 import com.reditus.novelcia.novel.application.NovelViewWriteBackManager
@@ -19,7 +19,7 @@ class EpisodeReadEventConsumer(
     private val episodeReader: EpisodeReader,
     private val novelReader: NovelReader,
     private val userRepository: UserRepository,
-    private val episodeViewWriter: EpisodeViewWriter,
+    private val episodeViewRepository: EpisodeViewRepository,
     private val novelFavoriteRepository: NovelFavoriteRepository,
     private val novelWriteBackManager: NovelViewWriteBackManager,
 ) {
@@ -31,7 +31,7 @@ class EpisodeReadEventConsumer(
             user = userRepository.getReferenceById(event.userId),
         )
         newTransaction {
-            episodeViewWriter.save(episodeView)
+            episodeViewRepository.save(episodeView)
             val favorite = novelFavoriteRepository.findByUserIdAndNovelId(event.userId, event.novelId)
             if (favorite != null) {
                 favorite.lastViewedEpisodeNumber = event.episodeNumber

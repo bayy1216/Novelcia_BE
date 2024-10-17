@@ -3,15 +3,14 @@ package com.reditus.novelcia.episode.infrastructure.adapter
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.episode.domain.QEpisodeView
-import com.reditus.novelcia.episode.application.port.EpisodeViewReader
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-class EpisodeViewReaderImpl(
+class EpisodeViewQueryRepository(
     private val jpaQueryFactory: JPAQueryFactory,
-) : EpisodeViewReader {
-    override fun findAllByDaysBetweenCreatedAt(
+)  {
+    fun findAllByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeView> {

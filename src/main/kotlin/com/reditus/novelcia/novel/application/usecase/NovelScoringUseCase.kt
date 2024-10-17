@@ -7,7 +7,7 @@ import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.episode.application.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
 import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.episode.application.port.EpisodeViewReader
+import com.reditus.novelcia.episode.infrastructure.adapter.EpisodeViewQueryRepository
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 class NovelScoringUseCase(
     private val episodeReader: EpisodeReader,
     private val episodeLikeReader: EpisodeLikeReader,
-    private val episodeViewReader: EpisodeViewReader,
+    private val episodeViewQueryRepository: EpisodeViewQueryRepository,
     private val episodeCommentReader: EpisodeCommentReader,
 ) {
     /**
@@ -90,7 +90,7 @@ class NovelScoringUseCase(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val viewsAll = episodeViewReader.findAllByDaysBetweenCreatedAt(
+        val viewsAll = episodeViewQueryRepository.findAllByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
