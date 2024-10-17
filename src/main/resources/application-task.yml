@@ -1,0 +1,6 @@
+spring:
+  task:
+    execution:
+      pool:
+        core-size: 8
+        max-size: 16
