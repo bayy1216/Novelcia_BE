@@ -41,7 +41,6 @@ class EpisodeModel {
         }
     }
 
-    // TODO 좋아요, 즐겨찾기 여부 추가
     class Detail(
         val id: Long,
         val title: String,
@@ -49,7 +48,6 @@ class EpisodeModel {
         val episodeNumber: Int,
         val authorComment: String,
         val createdAt: LocalDateTime,
-        //
         val novelId: Long,
         val isLiked: Boolean,
         val isFavoriteNovel: Boolean,

@@ -5,7 +5,7 @@ import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.domain.EpisodeReadEvent
-import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
+import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
 import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
 import com.reditus.novelcia.global.util.readOnly
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 class EpisodeQueryService(
     private val userRepository: UserRepository,
     private val episodeQueryRepository: EpisodeQueryRepository,
-    private val episodeLikeReader: EpisodeLikeReader,
+    private val episodeLikeRepository: EpisodeLikeRepository,
     private val novelFavoriteRepository: NovelFavoriteRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
@@ -75,7 +75,7 @@ class EpisodeQueryService(
     }
 
     private fun getMetaDateFromEpisode(novelId:Long, episodeId: Long, userId: Long)= readOnly {
-        val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episodeId, userId = userId)
+        val episodeLike = episodeLikeRepository.findByEpisodeIdAndUserId(episodeId = episodeId, userId = userId)
         val novelFavorite: NovelFavorite? =
             novelFavoriteRepository.findByUserIdAndNovelId(userId = userId, novelId = novelId)
         val maxEpisodeNumber = episodeQueryRepository.findLastEpisodeNumberByNovelId(novelId = novelId)!!
