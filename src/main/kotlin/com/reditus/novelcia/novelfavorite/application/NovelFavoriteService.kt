@@ -7,6 +7,8 @@ import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
 import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.novelfavorite.infrastructure.NovelFavoriteQueryRepository
+import com.reditus.novelcia.novelfavorite.infrastructure.NovelFavoriteRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
@@ -14,14 +16,14 @@ import org.springframework.stereotype.Service
 class NovelFavoriteService(
     private val userRepository: UserRepository,
     private val novelReader: NovelReader,
-    private val novelFavoriteReader: NovelFavoriteReader,
-    private val novelFavoriteWriter: NovelFavoriteWriter,
+    private val novelFavoriteRepository: NovelFavoriteRepository,
+    private val novelFavoriteQueryRepository: NovelFavoriteQueryRepository
 ) {
     fun getFavoriteNovels(
         loginUserId: LoginUserId,
         offsetRequest: OffsetRequest,
     ): OffsetResponse<NovelFavoriteModel.UserFavorite> = readOnly {
-        val page = novelFavoriteReader.getUserFavoriteNovelPage(loginUserId.value, offsetRequest)
+        val page = novelFavoriteQueryRepository.getUserFavoriteNovelPage(loginUserId.value, offsetRequest)
         return@readOnly OffsetResponse(
             data = page.content,
             totalElements = page.totalElements,
@@ -35,13 +37,13 @@ class NovelFavoriteService(
         val user = userRepository.getReferenceById(loginUserId.value)
         val novel = novelReader.getNovelById(novelId)
         val novelFavorite = NovelFavorite.create(novel, user)
-        novelFavoriteWriter.save(novelFavorite)
+        novelFavoriteRepository.save(novelFavorite)
     }
 
     fun deleteFavoriteNovel(
         loginUserId: LoginUserId,
         novelId: Long,
     ) = transactional {
-        novelFavoriteWriter.deleteByUserIdAndNovelId(loginUserId.value, novelId)
+        novelFavoriteRepository.deleteByNovelIdAndUserId(userId = loginUserId.value, novelId = novelId)
     }
 }

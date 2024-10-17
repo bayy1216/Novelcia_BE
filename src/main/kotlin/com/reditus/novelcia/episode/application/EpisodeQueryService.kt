@@ -9,8 +9,8 @@ import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
 import com.reditus.novelcia.episode.application.port.EpisodePagingSort
 import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
-import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
 import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.novelfavorite.infrastructure.NovelFavoriteRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
@@ -21,7 +21,7 @@ class EpisodeQueryService(
     private val userRepository: UserRepository,
     private val episodeReader: EpisodeReader,
     private val episodeLikeReader: EpisodeLikeReader,
-    private val novelFavoriteReader: NovelFavoriteReader,
+    private val novelFavoriteRepository: NovelFavoriteRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
@@ -78,7 +78,7 @@ class EpisodeQueryService(
     private fun getMetaDateFromEpisode(novelId:Long, episodeId: Long, userId: Long)= readOnly {
         val episodeLike = episodeLikeReader.findByEpisodeIdAndUserId(episodeId = episodeId, userId = userId)
         val novelFavorite: NovelFavorite? =
-            novelFavoriteReader.findByUserIdAndNovelId(userId = userId, novelId = novelId)
+            novelFavoriteRepository.findByUserIdAndNovelId(userId = userId, novelId = novelId)
         val maxEpisodeNumber = episodeReader.findLastEpisodeNumberByNovelId(novelId = novelId)!!
         return@readOnly EpisodeMetaData(episodeLike, novelFavorite, maxEpisodeNumber)
     }

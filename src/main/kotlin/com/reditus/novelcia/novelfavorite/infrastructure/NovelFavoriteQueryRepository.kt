@@ -9,9 +9,7 @@ import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.novelmeta.application.SpeciesModel
 import com.reditus.novelcia.novelmeta.application.TagModel
-import com.reditus.novelcia.novel.domain.*
 import com.reditus.novelcia.novelfavorite.application.NovelFavoriteModel
-import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
 import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
 import com.reditus.novelcia.novelfavorite.domain.QNovelFavorite
 import com.reditus.novelcia.novelmeta.domain.*
@@ -22,13 +20,9 @@ import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
 
 @Repository
-class NovelFavoriteReaderImpl(
+class NovelFavoriteQueryRepository(
     private val jpaQueryFactory: JPAQueryFactory,
-    private val novelFavoriteRepository: NovelFavoriteRepository,
-) : NovelFavoriteReader {
-    override fun findByUserIdAndNovelId(userId: Long, novelId: Long): NovelFavorite? {
-        return novelFavoriteRepository.findByUserIdAndNovelId(userId, novelId)
-    }
+)  {
 
     /**
      * 1. count 쿼리로 novelFavorite 개수 조회
@@ -36,7 +30,7 @@ class NovelFavoriteReaderImpl(
      * 3. novelAndTag, novelAndSpecies in절 조회 쿼리 - tag, species fetch join
      * 4. novel in절로 최대 에피소드 번호 조회
      */
-    override fun getUserFavoriteNovelPage(
+    fun getUserFavoriteNovelPage(
         userId: Long,
         offsetRequest: OffsetRequest,
     ): Page<NovelFavoriteModel.UserFavorite> = readOnly {
