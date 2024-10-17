@@ -1,26 +1,28 @@
 package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.CursorRequest
-import com.reditus.novelcia.novel.application.port.NovelRankingCacheStore
-import com.reditus.novelcia.novel.application.port.NovelReader
 import com.reditus.novelcia.novel.application.usecase.NovelIdAndScore
 import com.reditus.novelcia.novel.application.usecase.NovelScoringUseCase
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.novel.application.model.NovelModel
 import com.reditus.novelcia.novel.domain.NovelRankingSearchDays
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.novel.infrastructure.NovelQueryRepository
+import com.reditus.novelcia.novel.infrastructure.RedisNovelRankingCacheStore
 import org.springframework.stereotype.Service
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
 @Service
 class NovelQueryService(
-    private val novelReader: NovelReader,
+    private val novelQueryRepository: NovelQueryRepository,
+    private val novelRepository: NovelRepository,
     private val novelScoringUseCase: NovelScoringUseCase,
-    private val novelRankingCacheStore: NovelRankingCacheStore,
+    private val novelRankingCacheStore: RedisNovelRankingCacheStore,
 ) {
 
     fun getNovelModelsByCursor(cursorRequest: CursorRequest): List<NovelModel.Main> = readOnly {
-        val novels = novelReader.findNovelsByCursorOrderByCreatedAt(cursorRequest)
+        val novels = novelQueryRepository.findNovelsByCursorOrderByCreatedAt(cursorRequest)
         return@readOnly novels.map { NovelModel.Main.from(it)(this) }
     }
 
@@ -40,7 +42,7 @@ class NovelQueryService(
 
         if (cache != null) { // 캐시가 존재하면 캐시를 반환 early return
             return readOnly {
-                val novels = novelReader.findNovelsByIdsIn(cache.map { it.novelId })
+                val novels = novelRepository.findAllById(cache.map { it.novelId })
                 return@readOnly novels.map { NovelModel.Main.from(it)() }
             }
         }
@@ -58,7 +60,7 @@ class NovelQueryService(
                 novelRankingCacheStore.getNovelIdRankingByPage(days = days.value, size = size, page = page)?.let {
                     val novelIds = it.map { novelAndScore -> novelAndScore.novelId }
                     return@withLock readOnly {
-                        val novels = novelReader.findNovelsByIdsIn(novelIds)
+                        val novels = novelRepository.findAllById(novelIds)
                         return@readOnly novels.map { novel -> NovelModel.Main.from(novel)() }
                     }
                 }
@@ -75,7 +77,7 @@ class NovelQueryService(
             lockCheckNum += 1 // 캐시 업데이트 했으므로 lockCheckNum 증가
             val novelIds = scoresByOrder.map { it.novelId }
             return@withLock readOnly { // 소설 DB 조회, // TX BLOCK
-                val novels = novelReader.findNovelsByIdsIn(novelIds)
+                val novels = novelRepository.findAllById(novelIds)
                 return@readOnly novels.map { NovelModel.Main.from(it)() }
             }
         }

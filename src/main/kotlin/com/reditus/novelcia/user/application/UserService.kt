@@ -3,20 +3,19 @@ package com.reditus.novelcia.user.application
 import com.reditus.novelcia.common.domain.IdempotencyEventStore
 import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.common.domain.PositiveInt
-import com.reditus.novelcia.user.application.port.UserReader
-import com.reditus.novelcia.user.application.port.UserWriter
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    private val userReader: UserReader,
-    private val userWriter: UserWriter,
+    private val userRepository: UserRepository,
     private val idempotencyEventStore: IdempotencyEventStore,
 ) {
     fun getUserModelById(userId: Long): UserModel = transactional {
-        val user = userReader.getById(userId)
+        val user = userRepository.findByIdOrThrow(userId)
         UserModel.from(user)(this)
     }
 
@@ -38,7 +37,7 @@ class UserService(
         }
 
 
-        userWriter.chargePoint(userId = userId.value, point = point)
+        userRepository.chargePoint(userId = userId.value, point = point.value)
     }
 }
 

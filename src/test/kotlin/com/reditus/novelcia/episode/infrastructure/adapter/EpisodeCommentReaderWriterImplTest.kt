@@ -2,6 +2,7 @@ package com.reditus.novelcia.episode.infrastructure.adapter
 
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeComment
+import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.novel.domain.Novel
@@ -23,7 +24,7 @@ class EpisodeCommentReaderWriterImplTest @Autowired constructor(
     private val novelRepository: NovelRepository,
     private val episodeRepository: EpisodeRepository,
     private val episodeCommentRepository: EpisodeCommentRepository,
-    private val episodeCommentReaderWriterImpl: EpisodeCommentReaderWriterImpl,
+    private val episodeCommentQueryRepository: EpisodeCommentQueryRepository,
     private val em: EntityManager,
 ) {
 
@@ -49,7 +50,7 @@ class EpisodeCommentReaderWriterImplTest @Autowired constructor(
         em.clear()
 
         // when
-        val comments = episodeCommentReaderWriterImpl.findByEpisodeIdPagingOrderByPath(episode.id, PageRequest.of(0, 10))
+        val comments = episodeCommentQueryRepository.findByEpisodeIdPagingOrderByPath(episode.id, PageRequest.of(0, 10))
 
         // then
         assertAll(

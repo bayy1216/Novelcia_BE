@@ -1,25 +1,26 @@
 package com.reditus.novelcia.episode.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeCommand
 import com.reditus.novelcia.episode.domain.EpisodeLike
-import com.reditus.novelcia.episode.application.port.EpisodeLikeWriter
-import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.episode.application.port.EpisodeWriter
-import com.reditus.novelcia.novel.application.port.NovelReader
-import com.reditus.novelcia.user.application.port.UserReader
+import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
 class EpisodeService(
-    private val novelReader: NovelReader,
-    private val episodeReader: EpisodeReader,
-    private val episodeWriter: EpisodeWriter,
-    private val userReader: UserReader,
-    private val episodeLikeWriter: EpisodeLikeWriter,
+    private val novelRepository: NovelRepository,
+    private val episodeQueryRepository: EpisodeQueryRepository,
+    private val episodeRepository: EpisodeRepository,
+    private val userRepository: UserRepository,
+    private val episodeLikeRepository: EpisodeLikeRepository,
 ) {
 
     /**
@@ -32,11 +33,11 @@ class EpisodeService(
         novelId: Long,
         command: EpisodeCommand.Create,
     ): Long = transactional {
-        val novel = novelReader.getNovelById(novelId)
+        val novel = novelRepository.findByIdOrThrow(novelId)
         if (!novel.isAuthor(userId.value)) {
             throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
         }
-        val lastEpisodeNumber: Int? = episodeReader.findLastEpisodeNumberByNovelId(novelId)
+        val lastEpisodeNumber: Int? = episodeQueryRepository.findLastEpisodeNumberByNovelId(novelId)
         val episodeNumber = if (lastEpisodeNumber == null) {
             Episode.INITIAL_EPISODE_NUMBER
         } else {
@@ -44,7 +45,7 @@ class EpisodeService(
         }
 
         val episode = Episode.create(novel, episodeNumber, command)
-        episodeWriter.save(episode)
+        episodeRepository.save(episode)
         novel.addEpisodeCount()
         return@transactional episode.id
     }
@@ -54,7 +55,7 @@ class EpisodeService(
         episodeId: Long,
         command: EpisodeCommand.Patch,
     ) = transactional {
-        val episode = episodeReader.getByIdWithNovel(episodeId)
+        val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
         if (!episode.canEdit(userId.value)) {
             throw NoPermissionException("해당 에피소드를 수정할 권한이 없습니다.")
         }
@@ -65,11 +66,11 @@ class EpisodeService(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        val episode = episodeReader.getByIdWithNovel(episodeId)
+        val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
         if (!episode.canEdit(userId.value)) {
             throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
         }
-        episodeWriter.delete(episode.id)
+        episodeRepository.delete(episode)
         episode.novel.subtractEpisodeCount()
     }
 
@@ -77,16 +78,16 @@ class EpisodeService(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        val episode = episodeReader.getReferenceById(episodeId)
-        val user = userReader.getReferenceById(userId.value)
+        val episode = episodeRepository.getReferenceById(episodeId)
+        val user = userRepository.getReferenceById(userId.value)
         val episodeLike = EpisodeLike.create(episode, user)
-        episodeLikeWriter.save(episodeLike)
+        episodeLikeRepository.save(episodeLike)
     }
 
     fun unlikeEpisode(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        episodeLikeWriter.deleteByEpisodeIdAndUserId(episodeId, userId.value)
+        episodeLikeRepository.deleteByEpisodeIdAndUserId(episodeId, userId.value)
     }
 }

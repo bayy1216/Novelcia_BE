@@ -1,0 +1,14 @@
+spring:
+  session:
+    redis:
+      namespace: novelcia
+      flush-mode: on_save
+    timeout: 3600
+server:
+  servlet:
+    session:
+      cookie:
+        name: NOVELCIA_SESSION
+        max-age: 3600 # 1 hour
+        same-site: none # react app과 다른 도메인이므로 none
+        secure: true # https 사용시 쿠키 전송

@@ -8,15 +8,15 @@ import com.reditus.novelcia.episode.domain.EpisodeCommand
  import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
 import com.reditus.novelcia.novel.domain.ReadAuthority
-import com.reditus.novelcia.novel.domain.Tag
- import com.reditus.novelcia.novel.application.NovelFavoriteService
+import com.reditus.novelcia.novelmeta.domain.Tag
+ import com.reditus.novelcia.novelfavorite.application.NovelFavoriteService
  import com.reditus.novelcia.novel.application.NovelService
 import com.reditus.novelcia.user.domain.User
 import com.reditus.novelcia.user.domain.UserCommand
  import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
  import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
  import com.reditus.novelcia.novel.infrastructure.NovelRepository
-import com.reditus.novelcia.novel.infrastructure.TagRepository
+import com.reditus.novelcia.novelmeta.infrasturcture.TagRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
