@@ -1,7 +1,7 @@
-package com.reditus.novelcia.novelmeta.domain
+package com.reditus.novelcia.novel.domain
 
 import com.reditus.novelcia.common.domain.BaseTimeEntity
-import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.novelmeta.domain.Tag
 import jakarta.persistence.*
 
 @Entity
