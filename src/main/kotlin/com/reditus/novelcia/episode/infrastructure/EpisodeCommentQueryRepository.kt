@@ -1,25 +1,19 @@
-package com.reditus.novelcia.episode.infrastructure.adapter
+package com.reditus.novelcia.episode.infrastructure
 
-import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeComment
-import com.reditus.novelcia.episode.application.port.EpisodeCommentReader
-import com.reditus.novelcia.episode.application.port.EpisodeCommentWriter
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-class EpisodeCommentReaderWriterImpl(
+class EpisodeCommentQueryRepository(
     private val jpaQueryFactory: JPAQueryFactory,
-    private val episodeCommentRepository: EpisodeCommentRepository,
-) : EpisodeCommentReader, EpisodeCommentWriter {
+) {
 
-    override fun findAllWithEpisodeByDaysBetweenCreatedAt(
+    fun findAllWithEpisodeByDaysBetweenCreatedAt(
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<EpisodeComment> {
@@ -35,15 +29,8 @@ class EpisodeCommentReaderWriterImpl(
             .fetch()
     }
 
-    override fun getById(id: Long): EpisodeComment {
-        val comment =  episodeCommentRepository.findByIdOrThrow(id)
-        if(comment.isDeleted){
-            throw NoSuchElementException()
-        }
-        return comment
-    }
 
-    override fun findByEpisodeIdPagingOrderByPath(episodeId: Long, pageRequest: PageRequest): List<EpisodeComment> {
+    fun findByEpisodeIdPagingOrderByPath(episodeId: Long, pageRequest: PageRequest): List<EpisodeComment> {
         val parentAlias = QEpisodeComment("parentAlias")
         val commentAlias = QEpisodeComment.episodeComment
         return jpaQueryFactory
@@ -65,11 +52,4 @@ class EpisodeCommentReaderWriterImpl(
             .fetch()
     }
 
-    override fun save(comment: EpisodeComment): EpisodeComment {
-        return episodeCommentRepository.save(comment)
-    }
-
-    override fun delete(comment: EpisodeComment) {
-        comment.isDeleted = true
-    }
 }

@@ -5,9 +5,9 @@ import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeCommand
 import com.reditus.novelcia.episode.domain.EpisodeLike
-import com.reditus.novelcia.episode.application.port.EpisodeLikeWriter
 import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.episode.application.port.EpisodeWriter
+import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
@@ -18,9 +18,9 @@ import org.springframework.stereotype.Service
 class EpisodeService(
     private val novelRepository: NovelRepository,
     private val episodeReader: EpisodeReader,
-    private val episodeWriter: EpisodeWriter,
+    private val episodeRepository: EpisodeRepository,
     private val userRepository: UserRepository,
-    private val episodeLikeWriter: EpisodeLikeWriter,
+    private val episodeLikeRepository: EpisodeLikeRepository,
 ) {
 
     /**
@@ -45,7 +45,7 @@ class EpisodeService(
         }
 
         val episode = Episode.create(novel, episodeNumber, command)
-        episodeWriter.save(episode)
+        episodeRepository.save(episode)
         novel.addEpisodeCount()
         return@transactional episode.id
     }
@@ -70,7 +70,7 @@ class EpisodeService(
         if (!episode.canEdit(userId.value)) {
             throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
         }
-        episodeWriter.delete(episode.id)
+        episodeRepository.delete(episode)
         episode.novel.subtractEpisodeCount()
     }
 
@@ -81,13 +81,13 @@ class EpisodeService(
         val episode = episodeReader.getReferenceById(episodeId)
         val user = userRepository.getReferenceById(userId.value)
         val episodeLike = EpisodeLike.create(episode, user)
-        episodeLikeWriter.save(episodeLike)
+        episodeLikeRepository.save(episodeLike)
     }
 
     fun unlikeEpisode(
         userId: LoginUserId,
         episodeId: Long,
     ) = transactional {
-        episodeLikeWriter.deleteByEpisodeIdAndUserId(episodeId, userId.value)
+        episodeLikeRepository.deleteByEpisodeIdAndUserId(episodeId, userId.value)
     }
 }

@@ -1,4 +1,4 @@
-package com.reditus.novelcia.episode.infrastructure.adapter
+package com.reditus.novelcia.episode.infrastructure
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.EpisodeView

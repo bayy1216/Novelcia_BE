@@ -4,7 +4,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.domain.QEpisodeLike
 import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
-import com.reditus.novelcia.episode.application.port.EpisodeLikeWriter
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -13,17 +12,8 @@ import java.time.LocalDate
 class EpisodeLikeReaderWriterImpl(
     private val jpaQueryFactory: JPAQueryFactory,
     private val episodeLikeRepository: EpisodeLikeRepository,
-) : EpisodeLikeWriter, EpisodeLikeReader {
-    override fun save(episodeLike: EpisodeLike): EpisodeLike {
-        return episodeLikeRepository.save(episodeLike)
-    }
+) : EpisodeLikeReader {
 
-    override fun deleteByEpisodeIdAndUserId(episodeId: Long, userId: Long) {
-        val affected = episodeLikeRepository.deleteByEpisodeIdAndUserId(episodeId, userId)
-        if (affected == 0) {
-            throw IllegalArgumentException("해당 에피소드 좋아요 정보가 존재하지 않습니다.")
-        }
-    }
 
     override fun findByEpisodeIdAndUserId(episodeId: Long, userId: Long): EpisodeLike? {
         return episodeLikeRepository.findByEpisodeIdAndUserId(episodeId, userId)

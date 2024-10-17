@@ -4,10 +4,10 @@ import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.domain.EpisodeView
-import com.reditus.novelcia.episode.application.port.EpisodeCommentReader
 import com.reditus.novelcia.episode.application.port.EpisodeLikeReader
 import com.reditus.novelcia.episode.application.port.EpisodeReader
-import com.reditus.novelcia.episode.infrastructure.adapter.EpisodeViewQueryRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
+import com.reditus.novelcia.episode.infrastructure.EpisodeViewQueryRepository
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -18,7 +18,7 @@ class NovelScoringUseCase(
     private val episodeReader: EpisodeReader,
     private val episodeLikeReader: EpisodeLikeReader,
     private val episodeViewQueryRepository: EpisodeViewQueryRepository,
-    private val episodeCommentReader: EpisodeCommentReader,
+    private val episodeCommentQueryRepository: EpisodeCommentQueryRepository,
 ) {
     /**
      * 최근 n일간의 소설을 스코어링하여 반환한다.
@@ -94,7 +94,7 @@ class NovelScoringUseCase(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val commentsAll = episodeCommentReader.findAllWithEpisodeByDaysBetweenCreatedAt(
+        val commentsAll = episodeCommentQueryRepository.findAllWithEpisodeByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )

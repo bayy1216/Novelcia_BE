@@ -67,7 +67,7 @@ class EpisodeQueryService(
 
         val (episodeLike, novelFavorite, maxEpisodeNumber) = getMetaDateFromEpisode(novelId, episode.id, userId.value)
 
-        return@readOnly  EpisodeModel.Detail.from(
+        return@readOnly EpisodeModel.Detail.from(
             episode,
             episodeLike != null,
             novelFavorite != null,
