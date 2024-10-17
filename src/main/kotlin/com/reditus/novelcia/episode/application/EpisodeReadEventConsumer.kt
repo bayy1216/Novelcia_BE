@@ -9,7 +9,7 @@ import com.reditus.novelcia.global.util.newTransaction
 import com.reditus.novelcia.novel.application.NovelViewWriteBackManager
 import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
 import com.reditus.novelcia.novel.application.port.NovelReader
-import com.reditus.novelcia.user.application.port.UserReader
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -18,7 +18,7 @@ import org.springframework.transaction.event.TransactionalEventListener
 class EpisodeReadEventConsumer(
     private val episodeReader: EpisodeReader,
     private val novelReader: NovelReader,
-    private val userReader: UserReader,
+    private val userRepository: UserRepository,
     private val episodeViewWriter: EpisodeViewWriter,
     private val novelFavoriteReader: NovelFavoriteReader,
     private val novelWriteBackManager: NovelViewWriteBackManager,
@@ -28,7 +28,7 @@ class EpisodeReadEventConsumer(
         val episodeView = EpisodeView(
             episode = episodeReader.getReferenceById(event.episodeId),
             novel = novelReader.getReferenceById(event.novelId),
-            user = userReader.getReferenceById(event.userId),
+            user = userRepository.getReferenceById(event.userId),
         )
         newTransaction {
             episodeViewWriter.save(episodeView)

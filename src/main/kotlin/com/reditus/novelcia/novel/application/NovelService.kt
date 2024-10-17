@@ -8,14 +8,14 @@ import com.reditus.novelcia.novel.application.port.NovelWriter
 import com.reditus.novelcia.novelmeta.application.SpeciesReader
 import com.reditus.novelcia.novelmeta.application.TagReader
 import com.reditus.novelcia.novel.application.usecase.NovelDeleteUseCase
-import com.reditus.novelcia.user.application.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
 class NovelService(
-    private val userReader: UserReader,
+    private val userRepository: UserRepository,
     private val tagReader: TagReader,
     private val speciesReader: SpeciesReader,
     private val novelReader: NovelReader,
@@ -24,7 +24,7 @@ class NovelService(
 ) {
 
     fun registerNovel(loginUserId: LoginUserId, command: NovelCommand.Create): Long = transactional {
-        val author = userReader.getReferenceById(loginUserId.value)
+        val author = userRepository.getReferenceById(loginUserId.value)
         val tags = tagReader.findTagsByTagNamesIn(command.tagNames).apply {
             if (this.size != command.tagNames.size) {
                 throw IllegalArgumentException("태그 이름이 잘못되었습니다.")

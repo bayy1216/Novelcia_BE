@@ -10,13 +10,13 @@ import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional
-import com.reditus.novelcia.user.application.port.UserReader
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
 class EpisodeCommentService(
-    private val userReader: UserReader,
+    private val userRepository: UserRepository,
     private val episodeReader: EpisodeReader,
     private val episodeCommentReader: EpisodeCommentReader,
     private val episodeCommentWriter: EpisodeCommentWriter,
@@ -34,7 +34,7 @@ class EpisodeCommentService(
         command: EpisodeCommentCommand.Create,
         userId: LoginUserId,
     ): Long = transactional {
-        val user = userReader.getReferenceById(userId.value)
+        val user = userRepository.getReferenceById(userId.value)
         val episode = episodeReader.getById(episodeId)
         val parentComment: EpisodeComment? = command.parentCommentId?.let { episodeCommentReader.getById(it) }
             ?.also {// 유효성 검사

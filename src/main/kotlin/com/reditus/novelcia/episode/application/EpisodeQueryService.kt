@@ -1,6 +1,7 @@
 package com.reditus.novelcia.episode.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
+import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.domain.EpisodeReadEvent
@@ -9,15 +10,15 @@ import com.reditus.novelcia.episode.application.port.EpisodePagingSort
 import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.novelfavorite.domain.NovelFavorite
 import com.reditus.novelcia.novelfavorite.application.NovelFavoriteReader
-import com.reditus.novelcia.user.application.port.UserReader
 import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Service
 
 @Service
 class EpisodeQueryService(
-    private val userReader: UserReader,
+    private val userRepository: UserRepository,
     private val episodeReader: EpisodeReader,
     private val episodeLikeReader: EpisodeLikeReader,
     private val novelFavoriteReader: NovelFavoriteReader,
@@ -51,7 +52,7 @@ class EpisodeQueryService(
         userId: LoginUserId,
     ): EpisodeModel.Detail = readOnly {
         val episode = episodeReader.getByEpisodeNumberAndNovelIdWithNovel(episodeNumber=episodeNumber, novelId=novelId)
-        val user = userReader.getById(userId.value)
+        val user = userRepository.findByIdOrThrow(userId.value)
         if (!episode.canRead(user)) {
             throw IllegalAccessException("해당 에피소드를 읽을 권한이 없습니다.")
         }

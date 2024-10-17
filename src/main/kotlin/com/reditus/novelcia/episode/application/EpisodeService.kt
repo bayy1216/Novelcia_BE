@@ -8,9 +8,9 @@ import com.reditus.novelcia.episode.application.port.EpisodeLikeWriter
 import com.reditus.novelcia.episode.application.port.EpisodeReader
 import com.reditus.novelcia.episode.application.port.EpisodeWriter
 import com.reditus.novelcia.novel.application.port.NovelReader
-import com.reditus.novelcia.user.application.port.UserReader
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.transactional
+import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,7 +18,7 @@ class EpisodeService(
     private val novelReader: NovelReader,
     private val episodeReader: EpisodeReader,
     private val episodeWriter: EpisodeWriter,
-    private val userReader: UserReader,
+    private val userRepository: UserRepository,
     private val episodeLikeWriter: EpisodeLikeWriter,
 ) {
 
@@ -78,7 +78,7 @@ class EpisodeService(
         episodeId: Long,
     ) = transactional {
         val episode = episodeReader.getReferenceById(episodeId)
-        val user = userReader.getReferenceById(userId.value)
+        val user = userRepository.getReferenceById(userId.value)
         val episodeLike = EpisodeLike.create(episode, user)
         episodeLikeWriter.save(episodeLike)
     }
