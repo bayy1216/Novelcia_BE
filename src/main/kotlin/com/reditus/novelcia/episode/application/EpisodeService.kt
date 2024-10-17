@@ -8,7 +8,7 @@ import com.reditus.novelcia.episode.domain.EpisodeLike
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
-import com.reditus.novelcia.global.exception.NoPermissionException
+import com.reditus.novelcia.global.util.authenticate
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
@@ -34,20 +34,25 @@ class EpisodeService(
         command: EpisodeCommand.Create,
     ): Long = transactional {
         val novel = novelRepository.findByIdOrThrow(novelId)
-        if (!novel.isAuthor(userId.value)) {
-            throw NoPermissionException("해당 소설에 에피소드를 작성할 권한이 없습니다.")
-        }
-        val lastEpisodeNumber: Int? = episodeQueryRepository.findLastEpisodeNumberByNovelId(novelId)
-        val episodeNumber = if (lastEpisodeNumber == null) {
-            Episode.INITIAL_EPISODE_NUMBER
-        } else {
-            lastEpisodeNumber + 1
-        }
 
-        val episode = Episode.create(novel, episodeNumber, command)
-        episodeRepository.save(episode)
-        novel.addEpisodeCount()
-        return@transactional episode.id
+        authenticate(
+            condition = novel.isAuthor(userId.value),
+            message = "해당 소설에 에피소드를 작성할 권한이 없습니다."
+        ) {
+
+            val lastEpisodeNumber: Int? = episodeQueryRepository.findLastEpisodeNumberByNovelId(novelId)
+            val episodeNumber = if (lastEpisodeNumber == null) {
+                Episode.INITIAL_EPISODE_NUMBER
+            } else {
+                lastEpisodeNumber + 1
+            }
+
+            val episode = Episode.create(novel, episodeNumber, command)
+            episodeRepository.save(episode)
+            novel.addEpisodeCount()
+
+            episode.id
+        }
     }
 
     fun patchEpisode(
@@ -56,10 +61,12 @@ class EpisodeService(
         command: EpisodeCommand.Patch,
     ) = transactional {
         val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
-        if (!episode.canEdit(userId.value)) {
-            throw NoPermissionException("해당 에피소드를 수정할 권한이 없습니다.")
+        authenticate(
+            condition = episode.canEdit(userId.value),
+            message = "해당 에피소드를 수정할 권한이 없습니다."
+        ) {
+            episode.patch(command)
         }
-        episode.patch(command)
     }
 
     fun deleteEpisode(
@@ -67,11 +74,15 @@ class EpisodeService(
         episodeId: Long,
     ) = transactional {
         val episode = episodeQueryRepository.getByIdWithNovel(episodeId)
-        if (!episode.canEdit(userId.value)) {
-            throw NoPermissionException("해당 에피소드를 삭제할 권한이 없습니다.")
+
+        authenticate(
+            condition = episode.canEdit(userId.value),
+            message = "해당 에피소드를 삭제할 권한이 없습니다."
+        ){
+            episodeRepository.delete(episode)
+            episode.novel.subtractEpisodeCount()
         }
-        episodeRepository.delete(episode)
-        episode.novel.subtractEpisodeCount()
+
     }
 
     fun likeEpisode(
