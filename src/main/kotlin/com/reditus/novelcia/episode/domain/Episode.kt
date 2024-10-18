@@ -7,6 +7,8 @@ import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
+import java.time.LocalDateTime
 
 @Entity
 @Table(
@@ -15,9 +17,10 @@ import jakarta.persistence.*
         UniqueConstraint(name = "uk__novel_id__episode_number", columnNames = ["novel_id", "episode_number"]),
     ],
     indexes = [
-        Index(name = "idx__novel_id__is_deleted__episode_number", columnList = "novel_id, is_deleted, episode_number"),
+        Index(name = "idx__novel_id__episode_number", columnList = "novel_id, episode_number"),
     ]
 )
+@SQLDelete(sql = "UPDATE novel_episode SET deleted_at = current_timestamp() WHERE id = ?")
 class Episode(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -31,8 +34,8 @@ class Episode(
     @Column(nullable = false)
     var episodeNumber: Int,
 
-    @Column(nullable = false)
-    var isDeleted: Boolean,
+    @Column(nullable = true)
+    var deletedAt: LocalDateTime?,
 
     @Column(nullable = false)
     var authorComment: String,
@@ -87,7 +90,7 @@ class Episode(
             episodeNumber = episodeNumber,
             authorComment = command.authorComment,
             readAuthority = command.readAuthority,
-            isDeleted = false,
+            deletedAt = null,
             novel = novel,
             viewsCount = 0,
         )
@@ -96,7 +99,7 @@ class Episode(
             title: String = "title",
             content: String = "content",
             episodeNumber: Int = 1,
-            isDeleted: Boolean = false,
+            deletedAt: LocalDateTime? = null,
             authorComment: String = "authorComment",
             readAuthority: ReadAuthority = ReadAuthority.FREE,
             novel: Novel = Novel.fixture(),
@@ -104,7 +107,7 @@ class Episode(
             title = title,
             content = content,
             episodeNumber = episodeNumber,
-            isDeleted = isDeleted,
+            deletedAt = deletedAt,
             authorComment = authorComment,
             readAuthority = readAuthority,
             novel = novel,

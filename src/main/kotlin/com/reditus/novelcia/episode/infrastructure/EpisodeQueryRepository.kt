@@ -5,8 +5,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.QEpisode
-import com.reditus.novelcia.episode.domain.QEpisodeComment
 import com.reditus.novelcia.episode.domain.EpisodePagingSort
+import com.reditus.novelcia.episodecomment.domain.QEpisodeComment
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
@@ -41,7 +41,7 @@ class EpisodeQueryRepository(
                 .on(QEpisodeComment.episodeComment.episode.id.eq(QEpisode.episode.id))
                 .where(
                     QEpisode.episode.novel.id.eq(novelId),
-                    QEpisode.episode.isDeleted.eq(false),
+                    QEpisode.episode.deletedAt.isNull
                 )
                 .groupBy(QEpisode.episode.id)
                 .orderBy(
@@ -65,7 +65,7 @@ class EpisodeQueryRepository(
             .innerJoin(QEpisode.episode.novel).fetchJoin()
             .where(
                 QEpisode.episode.id.eq(episodeId),
-                QEpisode.episode.isDeleted.eq(false),
+                QEpisode.episode.deletedAt.isNull
             ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
         return episode
     }
@@ -78,7 +78,7 @@ class EpisodeQueryRepository(
             .where(
                 QEpisode.episode.novel.id.eq(novelId),
                 QEpisode.episode.episodeNumber.eq(episodeNumber),
-                QEpisode.episode.isDeleted.eq(false),
+                QEpisode.episode.deletedAt.isNull
             ).fetchOne() ?: throw NoSuchElementException("해당 에피소드가 존재하지 않습니다.")
     }
 
@@ -87,7 +87,7 @@ class EpisodeQueryRepository(
             .from(QEpisode.episode)
             .where(
                 QEpisode.episode.novel.id.eq(novelId),
-                QEpisode.episode.isDeleted.eq(false),
+                QEpisode.episode.deletedAt.isNull
             ).fetchOne()
         return query
     }
@@ -101,7 +101,7 @@ class EpisodeQueryRepository(
                     startDate.atStartOfDay(),
                     endDate.atStartOfDay().plusDays(1)
                 ),
-                QEpisode.episode.isDeleted.eq(false),
+                QEpisode.episode.deletedAt.isNull
             ).fetch()
     }
 }

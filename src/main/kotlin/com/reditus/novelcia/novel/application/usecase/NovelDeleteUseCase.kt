@@ -17,7 +17,7 @@ class NovelDeleteUseCase(
      * - episode와 관련된 comment는 삭제하지 않습니다.
      */
     operator fun invoke(novel: Novel) = transactional{
-        novel.isDeleted = true //TODO: soft delete
+        novelRepository.delete(novel)
         episodeRepository.softDeleteAllByNovelId(novel.id)
     }
 }

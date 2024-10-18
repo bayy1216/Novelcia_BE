@@ -9,9 +9,13 @@ import jakarta.persistence.Entity
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
 import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 import org.hibernate.type.SqlTypes
+import java.time.LocalDateTime
 
 @Entity
+@SQLDelete(sql = "UPDATE novel SET deleted_at = current_timestamp() WHERE id = ?")
 class Novel(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -43,8 +47,8 @@ class Novel(
     @Column(nullable = false)
     var episodeCount: Int,
 
-    @Column(nullable = false)
-    var isDeleted: Boolean,
+    @Column(nullable = true)
+    var deletedAt: LocalDateTime?,
 
     @Enumerated(EnumType.STRING)
     var readAuthority: ReadAuthority,
@@ -111,7 +115,7 @@ class Novel(
                 favoriteCount = 0,
                 alarmCount = 0,
                 episodeCount = 0,
-                isDeleted = false,
+                deletedAt = null,
                 readAuthority = ReadAuthority.FREE,
                 novelMeta = NovelMeta.from(tags, speciesList),
             )
@@ -128,7 +132,7 @@ class Novel(
             favoriteCount: Long = 0,
             alarmCount: Long = 0,
             episodeCount: Int = 0,
-            isDeleted: Boolean = false,
+            deletedAt: LocalDateTime? = null,
             readAuthority: ReadAuthority = ReadAuthority.FREE,
             metaData: NovelMeta = NovelMeta.empty(),
         ) = Novel(
@@ -142,7 +146,7 @@ class Novel(
             favoriteCount = favoriteCount,
             alarmCount = alarmCount,
             episodeCount = episodeCount,
-            isDeleted = isDeleted,
+            deletedAt = deletedAt,
             readAuthority = readAuthority,
             novelMeta = metaData,
         )

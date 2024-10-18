@@ -19,7 +19,7 @@ class NovelQueryRepository(
             .select(novel).from(novel)
             .where(
                 cursorWhereIdEqExpression(cursorRequest),
-                novel.isDeleted.eq(false)
+                novel.deletedAt.isNull
             )
             .orderBy(novel.createdAt.desc(), novel.id.desc())
             .limit(cursorRequest.size.toLong())

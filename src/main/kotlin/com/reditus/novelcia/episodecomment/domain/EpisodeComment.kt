@@ -5,8 +5,11 @@ import com.reditus.novelcia.common.domain.BaseModifiableEntity
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLDelete
+import java.time.LocalDateTime
 
 @Entity
+@SQLDelete(sql = "UPDATE episode_comment SET deleted_at = current_timestamp() WHERE id = ?")
 class EpisodeComment(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0L,
@@ -22,8 +25,8 @@ class EpisodeComment(
     @Column(nullable = false)
     var content: String,
 
-    @Column(nullable = false)
-    var isDeleted: Boolean,
+    @Column(nullable = true)
+    var deletedAt: LocalDateTime?,
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(name = "parent_id", nullable = true)
@@ -50,7 +53,7 @@ class EpisodeComment(
             episode = episode,
             user = user,
             content = command.content,
-            isDeleted = false,
+            deletedAt = null,
             parent = parentComment,
         )
 
@@ -59,14 +62,14 @@ class EpisodeComment(
             episode: Episode = Episode.fixture(),
             user: User = User.fixture(),
             content: String = "content",
-            isDeleted: Boolean = false,
+            deletedAt: LocalDateTime? = null,
             parent: EpisodeComment? = null,
         ) = EpisodeComment(
             id = id,
             episode = episode,
             user = user,
             content = content,
-            isDeleted = isDeleted,
+            deletedAt = deletedAt,
             parent = parent,
         )
     }
