@@ -22,6 +22,9 @@ spring:
     redis: # redis auto-config ?? (RedisProperties ? ???? ??)
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/search?authSource=admin
+      authentication-database: admin
 ---
 spring: # local profile
   config:

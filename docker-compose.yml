@@ -23,3 +23,14 @@ services:
     restart: always
     volumes:
       - ./redis-insight-data:/data
+  novelcia-mongodb:
+    image: mongo
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: novelcia

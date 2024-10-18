@@ -1,4 +1,7 @@
 logging:
-  level.org.hibernate:
-    orm.jdbc.bind: trace
-    SQL: debug
+  level:
+    org.hibernate:
+      orm.jdbc.bind: trace
+      SQL: debug
+    org.springframework.data:
+      mongodb: debug
