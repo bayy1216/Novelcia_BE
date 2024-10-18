@@ -1,6 +1,7 @@
 package com.reditus.novelcia.novel.domain
 
 import com.reditus.novelcia.common.domain.BaseModifiableEntity
+import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.novelmeta.domain.Species
 import com.reditus.novelcia.novelmeta.domain.Tag
 import jakarta.persistence.Entity
@@ -182,6 +183,12 @@ data class NovelMeta(
     }
 }
 
+inline fun <T> Novel.authAsAuthor(userId: Long, message: String = "해당 소설을 수정할 권한이 없습니다.", action: Novel.() -> T): T {
+    if (!this.isAuthor(userId)) {
+        throw NoPermissionException(message)
+    }
+    return this.action()
+}
 
 enum class ReadAuthority {
     FREE,

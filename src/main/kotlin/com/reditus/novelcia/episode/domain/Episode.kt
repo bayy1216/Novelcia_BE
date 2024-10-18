@@ -2,6 +2,7 @@ package com.reditus.novelcia.episode.domain
 
 
 import com.reditus.novelcia.common.domain.BaseModifiableEntity
+import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.user.domain.User
@@ -105,6 +106,17 @@ class Episode(
             novel = novel
         )
     }
+}
+
+inline fun <T> Episode.authAsAuthor(
+    condition: Boolean,
+    message: String = "해당 에피소드를 수정할 권한이 없습니다.",
+    action: Episode.() -> T,
+): T {
+    if (!condition) {
+        throw NoPermissionException(message)
+    }
+    return this.action()
 }
 
 class EpisodeCommand{

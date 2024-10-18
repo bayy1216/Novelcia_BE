@@ -2,11 +2,11 @@ package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
-import com.reditus.novelcia.global.util.authenticate
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.novel.application.usecase.NovelDeleteUseCase
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
+import com.reditus.novelcia.novel.domain.authAsAuthor
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.novelmeta.domain.Species
 import com.reditus.novelcia.novelmeta.domain.Tag
@@ -48,32 +48,27 @@ class NovelService(
     ) = transactional {
         val novel = novelRepository.findByIdOrThrow(novelId)
 
-
-        authenticate(
-            condition = novel.isAuthor(loginUserId.value),
-            message = "해당 소설을 수정할 권한이 없습니다."
-        ){
+        novel.authAsAuthor(loginUserId.value) {
             val tags = tagRepository.findAllByNameIn(command.tagNames)
                 .checkTagSizeConsistency(command.tagNames)
 
             val speciesList = speciesRepository.findByNameIn(command.speciesNames)
                 .checkSpeciesSizeConsistency(command.speciesNames)
 
-            novel.update(command, tags, speciesList)
+            update(command, tags, speciesList)
 
             novelMetaRelationManager.putNovelRelations(novelId, novel, tags, speciesList)
         }
+
     }
 
     fun deleteNovel(loginUserId: LoginUserId, novelId: Long) = transactional {
         val novel = novelRepository.findByIdOrThrow(novelId)
 
-        authenticate(
-            condition = novel.isAuthor(loginUserId.value),
-            message = "해당 소설을 삭제할 권한이 없습니다."
-        ){
+        novel.authAsAuthor(loginUserId.value) {
             novelDeleteUseCase(novel)
         }
+
     }
 }
 
