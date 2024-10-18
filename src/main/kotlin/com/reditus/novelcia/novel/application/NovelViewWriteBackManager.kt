@@ -1,7 +1,7 @@
 package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.WriteBackManager
-import com.reditus.novelcia.episode.domain.EpisodeView
+import com.reditus.novelcia.episode.domain.EpisodeReadEvent
 import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import org.slf4j.LoggerFactory
@@ -21,14 +21,14 @@ class NovelViewWriteBackManager(
     @Value("\${write-back.flush-size.novel:100}")
     override val flushSize: Int,
     private val novelRepository: NovelRepository,
-) : WriteBackManager<EpisodeView> {
+) : WriteBackManager<EpisodeReadEvent> {
     private val writeBackNovelIdCountMap = mutableMapOf<Long, Int>() // Map<NovelId, Count>
 
     /**
      * 1. `entity`를 `writeBackNovelIdCountMap`에 추가한다.
      * 2. 해당 `novelId`의 count가 `flushSize`를 넘으면 `flush`를 호출한다.
      */
-    override fun save(entity: EpisodeView) {
+    override fun save(entity: EpisodeReadEvent) {
         val shouldFlush: Boolean
         synchronized(writeBackNovelIdCountMap) {
             val count = writeBackNovelIdCountMap.getOrDefault(entity.novelId, 0) + 1

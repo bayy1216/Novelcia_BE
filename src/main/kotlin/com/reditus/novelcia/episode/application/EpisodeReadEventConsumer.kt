@@ -32,6 +32,6 @@ class EpisodeReadEventConsumer(
             episodeViewRepository.save(episodeView)
         }
 
-        novelWriteBackManager.save(episodeView)
+        novelWriteBackManager.save(event)
     }
 }
