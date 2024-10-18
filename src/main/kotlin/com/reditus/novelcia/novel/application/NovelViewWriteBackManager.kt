@@ -55,7 +55,7 @@ class NovelViewWriteBackManager(
 
         writeMapSnapshot.forEach { (novelId, count) ->
             transactional {
-                novelRepository.addViewCount(novelId, count)
+                novelRepository.addViewCount(novelId, count.toLong())
             }
         }
     }
