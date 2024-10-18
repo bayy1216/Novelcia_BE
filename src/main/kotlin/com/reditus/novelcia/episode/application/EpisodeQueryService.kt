@@ -4,6 +4,7 @@ import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.EpisodeLike
+import com.reditus.novelcia.episode.domain.EpisodePagingSort
 import com.reditus.novelcia.episode.domain.EpisodeReadEvent
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository

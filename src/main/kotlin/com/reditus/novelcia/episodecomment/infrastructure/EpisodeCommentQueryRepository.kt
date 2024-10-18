@@ -1,8 +1,8 @@
-package com.reditus.novelcia.episode.infrastructure
+package com.reditus.novelcia.episodecomment.infrastructure
 
 import com.querydsl.core.types.dsl.CaseBuilder
 import com.querydsl.jpa.impl.JPAQueryFactory
-import com.reditus.novelcia.episode.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.QEpisodeComment
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository

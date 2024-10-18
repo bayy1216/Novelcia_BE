@@ -1,8 +1,8 @@
-package com.reditus.novelcia.episode.domain
+package com.reditus.novelcia.episodecomment.domain
 
 
 import com.reditus.novelcia.common.domain.BaseModifiableEntity
-import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.user.domain.User
 import jakarta.persistence.*
 

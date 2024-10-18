@@ -1,13 +1,12 @@
-package com.reditus.novelcia.episode.application
+package com.reditus.novelcia.episodecomment.application
 
 import com.reditus.novelcia.common.domain.LoginUserId
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
-import com.reditus.novelcia.episode.application.model.EpisodeCommentModel
-import com.reditus.novelcia.episode.domain.EpisodeComment
-import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.domain.EpisodeCommentCommand
+import com.reditus.novelcia.episodecomment.infrastructure.EpisodeCommentRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
+import com.reditus.novelcia.episodecomment.infrastructure.EpisodeCommentQueryRepository
 import com.reditus.novelcia.global.exception.NoPermissionException
 import com.reditus.novelcia.global.util.readOnly
 import com.reditus.novelcia.global.util.transactional

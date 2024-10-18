@@ -1,9 +1,9 @@
 package com.reditus.novelcia.novel.application.usecase
 
 import com.reditus.novelcia.episode.domain.Episode
-import com.reditus.novelcia.episode.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.EpisodeLike
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
+import com.reditus.novelcia.episodecomment.infrastructure.EpisodeCommentQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
 import com.reditus.novelcia.episodeview.EpisodeView

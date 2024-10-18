@@ -2,7 +2,7 @@ package com.reditus.novelcia.novel.interfaces
 
 import com.reditus.novelcia.common.domain.CursorRequest
 import com.reditus.novelcia.novel.application.NovelQueryService
-import com.reditus.novelcia.novel.application.NovelService
+import com.reditus.novelcia.novel.application.NovelCommandService
 import com.reditus.novelcia.global.security.LoginUserDetails
 import com.reditus.novelcia.novel.domain.NovelRankingSearchDays
 import io.swagger.v3.oas.annotations.Operation
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Novel", description = "소설")
 @RestController
 class NovelController(
-    private val novelService: NovelService,
+    private val novelCommandService: NovelCommandService,
     private val novelQueryService: NovelQueryService,
 ) {
 
@@ -54,7 +54,7 @@ class NovelController(
         @RequestBody req: NovelReq.Create,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) :Long {
-        return novelService.registerNovel(
+        return novelCommandService.registerNovel(
             loginUserId = loginUserDetails.loginUserId,
             command = req.toCommand(),
         )
@@ -68,7 +68,7 @@ class NovelController(
         @RequestBody req: NovelReq.Update,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
-        novelService.updateNovel(
+        novelCommandService.updateNovel(
             loginUserId = loginUserDetails.loginUserId,
             novelId = novelId,
             command = req.toCommand(),
@@ -82,7 +82,7 @@ class NovelController(
         @PathVariable novelId: Long,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
-        novelService.deleteNovel(
+        novelCommandService.deleteNovel(
             loginUserId = loginUserDetails.loginUserId,
             novelId = novelId,
         )

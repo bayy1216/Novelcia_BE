@@ -1,9 +1,9 @@
 package com.reditus.novelcia.episode.infrastructure.adapter
 
 import com.reditus.novelcia.episode.domain.Episode
-import com.reditus.novelcia.episode.domain.EpisodeComment
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
-import com.reditus.novelcia.episode.infrastructure.EpisodeCommentRepository
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.infrastructure.EpisodeCommentQueryRepository
+import com.reditus.novelcia.episodecomment.infrastructure.EpisodeCommentRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
 import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.infrastructure.NovelRepository

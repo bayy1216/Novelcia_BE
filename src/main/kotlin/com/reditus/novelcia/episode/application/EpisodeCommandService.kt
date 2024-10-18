@@ -16,7 +16,7 @@ import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
-class EpisodeService(
+class EpisodeCommandService(
     private val novelRepository: NovelRepository,
     private val episodeQueryRepository: EpisodeQueryRepository,
     private val episodeRepository: EpisodeRepository,

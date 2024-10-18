@@ -6,7 +6,7 @@ import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.domain.QEpisode
 import com.reditus.novelcia.episode.domain.QEpisodeComment
-import com.reditus.novelcia.episode.application.EpisodePagingSort
+import com.reditus.novelcia.episode.domain.EpisodePagingSort
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository

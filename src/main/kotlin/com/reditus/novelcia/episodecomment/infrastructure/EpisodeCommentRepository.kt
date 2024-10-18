@@ -1,6 +1,6 @@
-package com.reditus.novelcia.episode.infrastructure
+package com.reditus.novelcia.episodecomment.infrastructure
 
-import com.reditus.novelcia.episode.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface EpisodeCommentRepository: JpaRepository<EpisodeComment, Long> {

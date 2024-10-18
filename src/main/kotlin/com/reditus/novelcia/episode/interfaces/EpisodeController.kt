@@ -3,8 +3,8 @@ package com.reditus.novelcia.episode.interfaces
 import com.reditus.novelcia.common.domain.OffsetRequest
 import com.reditus.novelcia.episode.application.model.EpisodeModel
 import com.reditus.novelcia.episode.application.EpisodeQueryService
-import com.reditus.novelcia.episode.application.EpisodeService
-import com.reditus.novelcia.episode.application.EpisodePagingSort
+import com.reditus.novelcia.episode.application.EpisodeCommandService
+import com.reditus.novelcia.episode.domain.EpisodePagingSort
 import com.reditus.novelcia.global.security.LoginUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*
 @Tag(name = "Episodes", description = "에피소드")
 @RestController
 class EpisodeController(
-    private val episodeService: EpisodeService,
+    private val episodeCommandService: EpisodeCommandService,
     private val episodeQueryService: EpisodeQueryService,
 ) {
     @Operation(summary = "에피소드 목록 조회")
@@ -58,7 +58,7 @@ class EpisodeController(
         @RequestBody req: EpisodeReq.Create,
     ): Long {
         val command = req.toCommand()
-        return episodeService.createEpisode(
+        return episodeCommandService.createEpisode(
             userId = loginUserDetails.loginUserId,
             novelId = novelId,
             command = command,
@@ -74,7 +74,7 @@ class EpisodeController(
         @RequestBody req: EpisodeReq.Patch,
     ) {
         val command = req.toCommand()
-        episodeService.patchEpisode(
+        episodeCommandService.patchEpisode(
             userId = loginUserDetails.loginUserId,
             episodeId = episodeId,
             command = command,
@@ -88,7 +88,7 @@ class EpisodeController(
         @PathVariable episodeId: Long,
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
     ) {
-        episodeService.deleteEpisode(
+        episodeCommandService.deleteEpisode(
             userId = loginUserDetails.loginUserId,
             episodeId = episodeId,
         )
@@ -101,7 +101,7 @@ class EpisodeController(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         @PathVariable episodeId: Long,
     ) {
-        episodeService.likeEpisode(
+        episodeCommandService.likeEpisode(
             userId = loginUserDetails.loginUserId,
             episodeId = episodeId,
         )
@@ -114,7 +114,7 @@ class EpisodeController(
         @AuthenticationPrincipal loginUserDetails: LoginUserDetails,
         @PathVariable episodeId: Long,
     ) {
-        episodeService.unlikeEpisode(
+        episodeCommandService.unlikeEpisode(
             userId = loginUserDetails.loginUserId,
             episodeId = episodeId,
         )

@@ -1,6 +1,6 @@
-package com.reditus.novelcia.episode.application.model
+package com.reditus.novelcia.episodecomment.application
 
-import com.reditus.novelcia.episode.domain.EpisodeComment
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
 import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.user.application.UserModel
 

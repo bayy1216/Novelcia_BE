@@ -16,7 +16,7 @@ import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
-class NovelService(
+class NovelCommandService(
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
     private val speciesRepository: SpeciesRepository,

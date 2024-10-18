@@ -4,13 +4,13 @@ package com.reditus.novelcia
 import com.reditus.novelcia.auth.domain.AuthService
 import com.reditus.novelcia.episode.domain.EpisodeCommand
  import com.reditus.novelcia.episode.application.EpisodeQueryService
- import com.reditus.novelcia.episode.application.EpisodeService
+ import com.reditus.novelcia.episode.application.EpisodeCommandService
  import com.reditus.novelcia.novel.domain.Novel
 import com.reditus.novelcia.novel.domain.NovelCommand
 import com.reditus.novelcia.novel.domain.ReadAuthority
 import com.reditus.novelcia.novelmeta.domain.Tag
  import com.reditus.novelcia.novelfavorite.application.NovelFavoriteService
- import com.reditus.novelcia.novel.application.NovelService
+ import com.reditus.novelcia.novel.application.NovelCommandService
 import com.reditus.novelcia.user.domain.User
 import com.reditus.novelcia.user.domain.UserCommand
  import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
@@ -33,8 +33,8 @@ class FakeDataConfig {
         tagRepository: TagRepository,
         userRepository: UserRepository,
         authService: AuthService,
-        episodeService: EpisodeService,
-        novelService: NovelService,
+        episodeCommandService: EpisodeCommandService,
+        novelCommandService: NovelCommandService,
         novelRepository: NovelRepository,
         episodeQueryService: EpisodeQueryService,
         novelFavoriteService: NovelFavoriteService,
@@ -45,10 +45,10 @@ class FakeDataConfig {
         `회원 가입`(authService)
         val user = userRepository.findAll().first()
 
-        `novel 생성`(novelService, user)
+        `novel 생성`(novelCommandService, user)
 
         val novel = novelRepository.findAll().first()
-        val newId = createEpisode(episodeService, user, novel)
+        val newId = createEpisode(episodeCommandService, user, novel)
 
 
         novelFavoriteService.addFavoriteNovel(LoginUserId(user.id), novel.id)
@@ -58,7 +58,7 @@ class FakeDataConfig {
     }
 
     private fun createEpisode(
-        episodeService: EpisodeService,
+        episodeCommandService: EpisodeCommandService,
         user: User,
         novel: Novel,
     ) :Long {
@@ -68,7 +68,7 @@ class FakeDataConfig {
             authorComment = "에피소드1 작가의 말",
             readAuthority = ReadAuthority.FREE
         )
-        return episodeService.createEpisode(
+        return episodeCommandService.createEpisode(
             LoginUserId(user.id),
             novel.id,
             episodeCommand
@@ -76,7 +76,7 @@ class FakeDataConfig {
     }
 
     private fun `novel 생성`(
-        novelService: NovelService,
+        novelCommandService: NovelCommandService,
         user: User?,
     ) {
         val novelCommand = NovelCommand.Create(
@@ -86,7 +86,7 @@ class FakeDataConfig {
             thumbnailImageUrl = null,
             speciesNames = listOf(),
         )
-        novelService.registerNovel(LoginUserId(user!!.id), novelCommand)
+        novelCommandService.registerNovel(LoginUserId(user!!.id), novelCommand)
     }
 
     private fun `회원 가입`(authService: AuthService) {

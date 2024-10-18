@@ -1,6 +1,6 @@
-package com.reditus.novelcia.episode.interfaces
+package com.reditus.novelcia.episodecomment.interfaces
 
-import com.reditus.novelcia.episode.domain.EpisodeCommentCommand
+import com.reditus.novelcia.episodecomment.domain.EpisodeCommentCommand
 
 class EpisodeCommentReq {
     data class Create(
