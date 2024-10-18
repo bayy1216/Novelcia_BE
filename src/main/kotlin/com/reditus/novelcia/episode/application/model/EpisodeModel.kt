@@ -14,7 +14,6 @@ class EpisodeModel {
         val viewsCount: Int,
         val createdAt: LocalDateTime,
         val readAuthority: ReadAuthority,
-        val isRead: Boolean,
     )
 
     class Main(

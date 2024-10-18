@@ -40,6 +40,9 @@ class Episode(
     @Enumerated(EnumType.STRING)
     var readAuthority: ReadAuthority,
 
+    @Column(nullable = false)
+    var viewsCount: Int,
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "novel_id", nullable = false)
     val novel: Novel,
@@ -86,6 +89,7 @@ class Episode(
             readAuthority = command.readAuthority,
             isDeleted = false,
             novel = novel,
+            viewsCount = 0,
         )
 
         fun fixture(
@@ -103,7 +107,8 @@ class Episode(
             isDeleted = isDeleted,
             authorComment = authorComment,
             readAuthority = readAuthority,
-            novel = novel
+            novel = novel,
+            viewsCount = 0,
         )
     }
 }

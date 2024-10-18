@@ -1,19 +1,18 @@
 package com.reditus.novelcia.domain.novel.usecase
 
 import com.reditus.novelcia.episode.domain.Episode
-import com.reditus.novelcia.episode.domain.EpisodeView
-import com.reditus.novelcia.novel.domain.Novel
-import com.reditus.novelcia.user.domain.User
-import com.reditus.novelcia.episode.infrastructure.EpisodeLikeRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
-import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
-import com.reditus.novelcia.novel.infrastructure.NovelRepository
-import com.reditus.novelcia.user.infrastructure.UserRepository
+import com.reditus.novelcia.episodeview.EpisodeView
+import com.reditus.novelcia.episodeview.EpisodeViewRepository
 import com.reditus.novelcia.novel.application.usecase.NovelScoringUseCase
-import org.junit.jupiter.api.Test
-
-import org.junit.jupiter.api.Assertions.*
+import com.reditus.novelcia.novel.domain.Novel
+import com.reditus.novelcia.novel.infrastructure.NovelRepository
+import com.reditus.novelcia.user.domain.User
+import com.reditus.novelcia.user.infrastructure.UserRepository
+import org.junit.jupiter.api.Assertions.assertAll
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
@@ -26,7 +25,6 @@ class NovelScoringUseCaseTest @Autowired constructor(
     private val novelRepository: NovelRepository,
     private val episodeRepository: EpisodeRepository,
     private val userRepository: UserRepository,
-    private val episodeLikeRepository: EpisodeLikeRepository,
     private val episodeViewRepository: EpisodeViewRepository,
 ) {
 
@@ -36,7 +34,7 @@ class NovelScoringUseCaseTest @Autowired constructor(
         val user = userRepository.save(User.fixture(email = "test@user.com"))
         val novel = novelRepository.save(Novel.fixture(author = user))
         val episode = episodeRepository.save(Episode.fixture(novel = novel))
-        val episodeView = episodeViewRepository.save(EpisodeView(user = user, episode = episode, novel = novel))
+        val episodeView = episodeViewRepository.save(EpisodeView(userId = user.id, novelId = novel.id, episodeId = episode.id))
 
         // when
         val novelAndScores = novelScoringUseCase(1)

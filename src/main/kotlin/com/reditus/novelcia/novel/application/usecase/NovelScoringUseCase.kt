@@ -3,11 +3,11 @@ package com.reditus.novelcia.novel.application.usecase
 import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.EpisodeComment
 import com.reditus.novelcia.episode.domain.EpisodeLike
-import com.reditus.novelcia.episode.domain.EpisodeView
 import com.reditus.novelcia.episode.infrastructure.EpisodeCommentQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeLikeQueryRepository
 import com.reditus.novelcia.episode.infrastructure.EpisodeQueryRepository
-import com.reditus.novelcia.episode.infrastructure.EpisodeViewQueryRepository
+import com.reditus.novelcia.episodeview.EpisodeView
+import com.reditus.novelcia.episodeview.EpisodeViewRepository
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Component
 import java.time.LocalDate
@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit
 class NovelScoringUseCase(
     private val episodeQueryRepository: EpisodeQueryRepository,
     private val episodeLikeQueryRepository: EpisodeLikeQueryRepository,
-    private val episodeViewQueryRepository: EpisodeViewQueryRepository,
+    private val episodeViewRepository: EpisodeViewRepository,
     private val episodeCommentQueryRepository: EpisodeCommentQueryRepository,
 ) {
     /**
@@ -36,7 +36,7 @@ class NovelScoringUseCase(
 
         val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수
 
-        val globalAverageViews = viewsAll.groupBy { it.user.id }.size.toDouble() // 전체의 조회수의 평균 점수
+        val globalAverageViews = viewsAll.groupBy { it.userId }.size.toDouble() // 전체의 조회수의 평균 점수
         val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수
         val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
 
@@ -60,7 +60,7 @@ class NovelScoringUseCase(
             val commentsCount = comments.size
 
             val likesRatingSum = 1 * likes.groupBy { it.user.id }.size //sum(평가수*점수) 좋아요를 누른 유니크 유저의 수
-            val viewsRatingSum = 1 * views.groupBy { it.user.id }.size //sum(평가수*점수) 조회수의 유니크 유저의 수
+            val viewsRatingSum = 1 * views.groupBy { it.userId }.size //sum(평가수*점수) 조회수의 유니크 유저의 수
             val commentsRatingSum = 1 * comments.groupBy { it.user.id }.size //sum(평가수*점수) 댓글을 단 유니크 유저의 수
 
 
@@ -90,7 +90,7 @@ class NovelScoringUseCase(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )
-        val viewsAll = episodeViewQueryRepository.findAllByDaysBetweenCreatedAt(
+        val viewsAll = episodeViewRepository.findAllByDaysBetweenCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
         )

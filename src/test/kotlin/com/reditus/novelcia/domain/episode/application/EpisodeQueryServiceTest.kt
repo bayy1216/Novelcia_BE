@@ -12,8 +12,8 @@ import com.reditus.novelcia.episode.application.EpisodeService
 import com.reditus.novelcia.global.util.AsyncHelper
 import com.reditus.novelcia.global.util.AsyncTaskExecutor
 import com.reditus.novelcia.episode.infrastructure.EpisodeRepository
-import com.reditus.novelcia.episode.infrastructure.EpisodeViewRepository
 import com.reditus.novelcia.common.infrastructure.findByIdOrThrow
+import com.reditus.novelcia.episodeview.EpisodeViewRepository
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import com.reditus.novelcia.user.infrastructure.UserRepository
 import org.junit.jupiter.api.Test
@@ -53,7 +53,7 @@ class EpisodeQueryServiceTest @Autowired constructor(
 
     @AfterTest
     fun cleanUp() {
-        episodeViewRepository.deleteAllInBatch()
+        episodeViewRepository.deleteAll()
         episodeRepository.deleteAllInBatch()
         novelRepository.deleteAllInBatch()
         userRepository.deleteAllInBatch()
