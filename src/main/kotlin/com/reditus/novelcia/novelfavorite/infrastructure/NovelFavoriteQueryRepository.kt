@@ -7,6 +7,8 @@ import com.reditus.novelcia.episode.domain.Episode
 import com.reditus.novelcia.episode.domain.QEpisode
 import com.reditus.novelcia.global.util.TxScope
 import com.reditus.novelcia.global.util.readOnly
+import com.reditus.novelcia.novel.domain.QNovelAndSpecies
+import com.reditus.novelcia.novel.domain.QNovelAndTag
 import com.reditus.novelcia.novelmeta.application.SpeciesModel
 import com.reditus.novelcia.novelmeta.application.TagModel
 import com.reditus.novelcia.novelfavorite.application.NovelFavoriteModel
@@ -27,8 +29,7 @@ class NovelFavoriteQueryRepository(
     /**
      * 1. count 쿼리로 novelFavorite 개수 조회
      * 2. novelFavorite 페이징 조회 쿼리 - novel, author fetch join
-     * 3. novelAndTag, novelAndSpecies in절 조회 쿼리 - tag, species fetch join
-     * 4. novel in절로 최대 에피소드 번호 조회
+     * 3. novel in절로 최대 에피소드 번호 조회
      */
     fun getUserFavoriteNovelPage(
         userId: Long,
@@ -52,33 +53,6 @@ class NovelFavoriteQueryRepository(
 
         val novelIds = novelFavorites.map { it.novel.id }
 
-        val novelTags = jpaQueryFactory
-            .select(QNovelAndTag.novelAndTag)
-            .from(QNovelAndTag.novelAndTag)
-            .join(QNovelFavorite.novelFavorite)
-            .on(
-                QNovelAndTag.novelAndTag.novel.id.eq(QNovelFavorite.novelFavorite.novel.id),
-                QNovelFavorite.novelFavorite.novel.id.`in`(novelIds)
-            )
-            .innerJoin(QNovelAndTag.novelAndTag.tag, QTag.tag).fetchJoin()
-            .fetch()
-
-        val novelSpecies = jpaQueryFactory
-            .select(QNovelAndSpecies.novelAndSpecies)
-            .from(QNovelAndSpecies.novelAndSpecies)
-            .join(QNovelFavorite.novelFavorite)
-            .on(
-                QNovelAndSpecies.novelAndSpecies.novel.id.eq(QNovelFavorite.novelFavorite.novel.id),
-                QNovelFavorite.novelFavorite.novel.id.`in`(novelIds)
-            )
-            .innerJoin(QNovelAndSpecies.novelAndSpecies.species).fetchJoin()
-            .fetch()
-
-        val novelTagMap = novelTags
-            .groupBy({ it.novel.id }, { it.tag })
-        val novelSpeciesMap = novelSpecies
-            .groupBy({ it.novel.id }, { it.species })
-
 
         val maxEpisodeNumbers = jpaQueryFactory
             .select(
@@ -95,11 +69,7 @@ class NovelFavoriteQueryRepository(
 
 
         val novelModels = novelFavorites.map {
-            it.toModel(
-                novelSpeciesMap,
-                novelTagMap,
-                maxEpisodeNumbers,
-            )()
+            it.toModel(maxEpisodeNumbers)()
         }
 
         return@readOnly PageImpl(novelModels, Pageable.ofSize(offsetRequest.size), count ?: 0L)
@@ -107,8 +77,6 @@ class NovelFavoriteQueryRepository(
 }
 
 fun NovelFavorite.toModel(
-    novelSpeciesMap: Map<Long, List<Species>>,
-    novelTagMap: Map<Long, List<Tag>>,
     maxEpisodeNumbers: List<EpisodeMaxNumberQuery>,
 ): TxScope.()-> NovelFavoriteModel.UserFavorite = {
     NovelFavoriteModel.UserFavorite(
@@ -120,9 +88,8 @@ fun NovelFavorite.toModel(
         likeCount = novel.likeCount,
         favoriteCount = novel.favoriteCount,
         episodeCount = novel.episodeCount,
-        species = novelSpeciesMap[novel.id]?.map { species -> SpeciesModel.from(species)() }
-            ?: emptyList(),
-        tags = novelTagMap[novel.id]?.map { tag -> TagModel.from(tag)() } ?: emptyList(),
+        species = novel.novelMeta.speciesList.map { SpeciesModel.from(it)() },
+        tags = novel.novelMeta.tags.map { TagModel.from(it)() },
         userLastReadEpisodeNumber = lastViewedEpisodeNumber,
         maxEpisodeNumber = maxEpisodeNumbers
             .find { query -> query.novelId == novel.id }?.maxEpisodeNumber
