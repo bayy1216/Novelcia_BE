@@ -2,6 +2,7 @@ package com.reditus.novelcia.novel.application
 
 import com.reditus.novelcia.common.domain.WriteBackManager
 import com.reditus.novelcia.episode.domain.EpisodeView
+import com.reditus.novelcia.global.util.transactional
 import com.reditus.novelcia.novel.infrastructure.NovelRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -26,7 +27,6 @@ class NovelViewWriteBackManager(
     /**
      * 1. `entity`를 `writeBackNovelIdCountMap`에 추가한다.
      * 2. 해당 `novelId`의 count가 `flushSize`를 넘으면 `flush`를 호출한다.
-     *
      */
     override fun save(entity: EpisodeView) {
         val shouldFlush: Boolean
@@ -54,7 +54,9 @@ class NovelViewWriteBackManager(
         }
 
         writeMapSnapshot.forEach { (novelId, count) ->
-            novelRepository.addViewCount(novelId, count)
+            transactional {
+                novelRepository.addViewCount(novelId, count)
+            }
         }
     }
 
