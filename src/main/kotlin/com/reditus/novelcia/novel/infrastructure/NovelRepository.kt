@@ -10,5 +10,5 @@ interface NovelRepository : JpaRepository<Novel, Long> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("UPDATE Novel n SET n.viewCount = n.viewCount + :count WHERE n.id = :novelId")
-    fun addViewCount(@Param("novelId")novelId: Long, @Param("count")count: Int) : Int
+    fun addViewCount(@Param("novelId")novelId: Long, @Param("count")count: Long) : Int
 }
