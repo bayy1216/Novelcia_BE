@@ -1,14 +1,11 @@
 package com.reditus.novelcia.global.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.reditus.novelcia.global.controller.ApiResponse
-import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializer
 import org.springframework.http.HttpMethod
-import org.springframework.http.MediaType
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -31,6 +28,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig(
     private val objectMapper: ObjectMapper,
     private val sessionFilter: SessionFilter,
+    private val jsonEntryPoint: JsonEntryPoint,
 ) {
 
     @Bean
@@ -74,12 +72,8 @@ class WebSecurityConfig(
 
 
         http.exceptionHandling {
-            it.authenticationEntryPoint { request, response, _ ->
-                sendError(response, "UNAUTHORIZED", "인증이 필요합니다. path:${request.requestURI}",401)
-            }
-            it.accessDeniedHandler { _, response, _ ->
-                sendError(response, "ACCESS-DENIED", "권한이 올바르지 않습니다.",403)
-            }
+            it.authenticationEntryPoint(jsonEntryPoint)
+            it.accessDeniedHandler(jsonEntryPoint)
         }
 
 
@@ -88,15 +82,7 @@ class WebSecurityConfig(
         return http.build()
     }
 
-    private fun sendError(response: HttpServletResponse, errorCode: String, message: String, status: Int) {
-        val apiError = ApiResponse.fail(message, errorCode)
-        val json = objectMapper.writeValueAsString(apiError)
-        response.status = status
-        response.contentType = MediaType.APPLICATION_JSON_VALUE
-        response.characterEncoding = "UTF-8"
-        response.writer.write(json)
-        response.writer.flush()
-    }
+
 
 
 
