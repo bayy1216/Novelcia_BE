@@ -17,8 +17,7 @@ class ScoreCalculator {
         views: List<EpisodeView>,
         comments: List<EpisodeComment>,
         days: Int,
-        globalAverage: GlobalAverage,
-        regularizationFactor: Int,
+        globalAverageData: GlobalAverageData,
     ): Double {
         val timeDecay = calcTimeDecay(episodes, days)
 
@@ -31,11 +30,11 @@ class ScoreCalculator {
         val commentsRatingSum = comments.groupBy { it.user.id }.size
         // Bayesian Average 계산
         val likesScore =
-            calculateBayesianAverage(likesRatingSum, likesCount, globalAverage.likes, regularizationFactor)
+            calculateBayesianAverage(likesRatingSum, likesCount, globalAverageData.likes, globalAverageData.regularizationFactor)
         val viewsScore =
-            calculateBayesianAverage(viewsRatingSum, viewsCount, globalAverage.views, regularizationFactor)
+            calculateBayesianAverage(viewsRatingSum, viewsCount, globalAverageData.views, globalAverageData.regularizationFactor)
         val commentsScore =
-            calculateBayesianAverage(commentsRatingSum, commentsCount, globalAverage.comments, regularizationFactor)
+            calculateBayesianAverage(commentsRatingSum, commentsCount, globalAverageData.comments, globalAverageData.regularizationFactor)
 
         val finalScore = (likesScore * 0.3 + viewsScore * 0.5 + commentsScore * 0.2) * timeDecay
         return finalScore
@@ -50,10 +49,11 @@ class ScoreCalculator {
         }
     }
 
-    data class GlobalAverage(
+    data class GlobalAverageData(
         val likes: Double,
         val views: Double,
         val comments: Double,
+        val regularizationFactor: Int,
     )
 }
 

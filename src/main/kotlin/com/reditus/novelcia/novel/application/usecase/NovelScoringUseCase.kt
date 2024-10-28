@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class NovelScoringUseCase(
-    private val scoreMetaDataExtractor: ScoreMetaDataExtractor,
+    private val scoreDataSourceExtractor: ScoreDataSourceExtractor,
     private val scoreCalculator: ScoreCalculator,
 ) {
     /**
@@ -20,20 +20,21 @@ class NovelScoringUseCase(
         days: Int,
     ): List<NovelIdAndScore> = readOnly {
         val (episodesAll, likesAll, viewsAll, commentsAll, totalNovelIdSet)
-            = scoreMetaDataExtractor.getScoringMetaByLocalDate(days)
+            = scoreDataSourceExtractor.getByLocalDate(days)
 
 
         val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수(유니크한 유저 수)
         val globalAverageViews = viewsAll.groupBy { it.userId }.size.toDouble() // 전체의 조회수의 평균 점수(유니크한 유저 수)
         val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수(유니크한 유저 수)
 
-        val globalAverage = ScoreCalculator.GlobalAverage(
+        val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
+
+        val globalAverageData = ScoreCalculator.GlobalAverageData(
             likes = globalAverageLikes,
             views = globalAverageViews,
             comments = globalAverageComments,
+            regularizationFactor = regularizationFactor,
         )
-
-        val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
 
         val novelIdAndScorePair = totalNovelIdSet.map { novelId ->
             val episodes = episodesAll.filter { episode -> episode.novelId == novelId }
@@ -47,8 +48,7 @@ class NovelScoringUseCase(
                 views = views,
                 comments = comments,
                 days = days,
-                globalAverage = globalAverage,
-                regularizationFactor = regularizationFactor,
+                globalAverageData = globalAverageData,
             )
 
             return@map NovelIdAndScore(novelId, finalScore)

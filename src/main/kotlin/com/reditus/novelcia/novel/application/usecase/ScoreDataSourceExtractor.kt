@@ -14,13 +14,13 @@ import java.time.LocalDate
 
 
 @Component
-class ScoreMetaDataExtractor(
+class ScoreDataSourceExtractor(
     private val episodeQueryRepository: EpisodeQueryRepository,
     private val episodeLikeQueryRepository: EpisodeLikeQueryRepository,
     private val episodeViewRepository: EpisodeViewRepository,
     private val episodeCommentQueryRepository: EpisodeCommentQueryRepository,
 ) {
-    fun getScoringMetaByLocalDate(days: Int): ScoringMetaData = readOnly {
+    fun getByLocalDate(days: Int): ScoringMetaData = readOnly {
         val episodesAll = episodeQueryRepository.findEpisodesDaysBetweenByCreatedAt(
             startDate = LocalDate.now().minusDays(days.toLong()),
             endDate = LocalDate.now()
