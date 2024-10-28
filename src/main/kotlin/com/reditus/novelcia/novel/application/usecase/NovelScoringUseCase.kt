@@ -1,5 +1,8 @@
 package com.reditus.novelcia.novel.application.usecase
 
+import com.reditus.novelcia.episode.domain.EpisodeLike
+import com.reditus.novelcia.episodecomment.domain.EpisodeComment
+import com.reditus.novelcia.episodeview.EpisodeView
 import com.reditus.novelcia.global.util.readOnly
 import org.springframework.stereotype.Component
 
@@ -22,19 +25,8 @@ class NovelScoringUseCase(
         val (episodesAll, likesAll, viewsAll, commentsAll, totalNovelIdSet)
             = scoreDataSourceExtractor.getByLocalDate(days)
 
-
-        val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수(유니크한 유저 수)
-        val globalAverageViews = viewsAll.groupBy { it.userId }.size.toDouble() // 전체의 조회수의 평균 점수(유니크한 유저 수)
-        val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수(유니크한 유저 수)
-
-        val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
-
-        val globalAverageData = ScoreCalculator.GlobalAverageData(
-            likes = globalAverageLikes,
-            views = globalAverageViews,
-            comments = globalAverageComments,
-            regularizationFactor = regularizationFactor,
-        )
+        val globalAverageData: ScoreCalculator.GlobalAverageData =
+            convertToGlobalAverageData(likesAll, viewsAll, commentsAll)
 
         val novelIdAndScorePair = totalNovelIdSet.map { novelId ->
             val episodes = episodesAll.filter { episode -> episode.novelId == novelId }
@@ -54,6 +46,25 @@ class NovelScoringUseCase(
             return@map NovelIdAndScore(novelId, finalScore)
         }
         return@readOnly novelIdAndScorePair.sortedByDescending { it.score }
+    }
+
+    private fun convertToGlobalAverageData(
+        likesAll: List<EpisodeLike>,
+        viewsAll: List<EpisodeView>,
+        commentsAll: List<EpisodeComment>,
+    ): ScoreCalculator.GlobalAverageData {
+        val globalAverageLikes = likesAll.groupBy { it.user.id }.size.toDouble() // 전체의 좋아요의 평균 점수(유니크한 유저 수)
+        val globalAverageViews = viewsAll.groupBy { it.userId }.size.toDouble() // 전체의 조회수의 평균 점수(유니크한 유저 수)
+        val globalAverageComments = commentsAll.groupBy { it.user.id }.size.toDouble() // 전체의 댓글수의 평균 점수(유니크한 유저 수)
+
+        val regularizationFactor = likesAll.size + viewsAll.size + commentsAll.size
+
+        return ScoreCalculator.GlobalAverageData(
+            likes = globalAverageLikes,
+            views = globalAverageViews,
+            comments = globalAverageComments,
+            regularizationFactor = regularizationFactor,
+        )
     }
 
 
